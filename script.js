@@ -34,6 +34,89 @@ function validarRut(rut) {
     return dvCalculado.toLowerCase() === dv.toLowerCase();
 }
 
+// Función para formatear automáticamente RUT mientras se escribe
+function formatRutInput(input) {
+    // Guardar la posición del cursor y la longitud anterior para restaurarla correctamente
+    let cursorPosition = 0;
+    let previousLength = 0;
+    
+    // Función auxiliar para formatear el RUT correctamente
+    function formatRut(value) {
+        // Eliminar puntos y guión
+        value = value.replace(/\./g, '').replace('-', '');
+        
+        // Obtener solo números y la letra K (mayúscula o minúscula)
+        value = value.replace(/[^\dkK]/g, '');
+        
+        // Separar el dígito verificador
+        let dv = '';
+        if (value.length > 0) {
+            dv = value.slice(-1);
+            value = value.slice(0, -1);
+        }
+        
+        // Formatear con puntos
+        let formattedValue = '';
+        let i = value.length;
+        
+        while (i > 0) {
+            const chunk = i >= 3 ? value.slice(i - 3, i) : value.slice(0, i);
+            formattedValue = chunk + (formattedValue ? '.' + formattedValue : '');
+            i -= 3;
+        }
+        
+        // Añadir el guión y el dígito verificador
+        if (dv) {
+            formattedValue += '-' + dv;
+        }
+        
+        return formattedValue;
+    }
+    
+    input.addEventListener('input', function(e) {
+        try {
+            // Guardar la posición del cursor antes de modificar el valor
+            cursorPosition = this.selectionStart;
+            previousLength = this.value.length;
+            
+            // Obtener el valor formateado
+            const formattedValue = formatRut(this.value);
+            
+            // Actualizar el valor del input
+            this.value = formattedValue;
+            
+            // Calcular la nueva posición del cursor
+            let newPosition = cursorPosition;
+            
+            // Ajustar la posición si se añadieron caracteres (puntos o guión)
+            if (formattedValue.length > previousLength) {
+                const addedChars = formattedValue.length - previousLength;
+                newPosition = Math.min(cursorPosition + addedChars, formattedValue.length);
+            }
+            
+            // Establecer la nueva posición del cursor
+            if (typeof this.setSelectionRange === 'function') {
+                this.setSelectionRange(newPosition, newPosition);
+            }
+        } catch (error) {
+            console.warn('Error al formatear RUT:', error);
+        }
+    });
+    
+    // También manejar el pegado para formatear inmediatamente
+    input.addEventListener('paste', function(e) {
+        // Pequeño retraso para permitir que el evento de pegado complete
+        setTimeout(() => {
+            try {
+                // Formatear el valor pegado
+                this.value = formatRut(this.value);
+            } catch (error) {
+                console.warn('Error al formatear RUT pegado:', error);
+            }
+        }, 0);
+    });
+}
+
 // Función para validar formato de email
 function validarEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -206,6 +289,23 @@ function formatDateInput(input) {
     });
 }
 
+// Función para inicializar el formateo de RUT en campos correspondientes
+function initializeRutFormatting() {
+    // Seleccionar todos los inputs que tengan placeholder con formato de RUT o contengan "rut" en su id o name
+    const rutInputs = document.querySelectorAll('input[placeholder*="RUT"], input[id*="rut"], input[name*="rut"], input[id*="Rut"], input[name*="Rut"]');
+    
+    if (rutInputs.length > 0) {
+        console.log('Inicializando formateo de RUT en', rutInputs.length, 'campos');
+        
+        rutInputs.forEach(input => {
+            // Aplicar formateo automático mientras se escribe
+            formatRutInput(input);
+        });
+    } else {
+        console.warn('No se encontraron campos de RUT para inicializar formateo');
+    }
+}
+
 // Función para inicializar datepickers en campos de fecha
 function initializeDatepickers() {
     // Seleccionar todos los inputs que tengan placeholder con formato de fecha o sean de tipo date
@@ -288,6 +388,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar datepickers
     initializeDatepickers();
+    
+    // Inicializar formateo de RUT
+    initializeRutFormatting();
 
     // Función para inicializar el breadcrumb
     function initializeBreadcrumb() {
