@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Envío - Formulario ATN</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button { padding: 10px 20px; margin: 5px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #1e8449; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>Test de Envío - Formulario ATN</h1>
+    <p>Esta página permite probar el envío de datos a Power Automate sin usar el formulario completo.</p>
+    
+    <div class="test-section">
+        <h3>Test 1: Actualización de Datos Personales</h3>
+        <button onclick="testDatosPersonales()">Enviar Test</button>
+        <div id="result1" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 2: Exhibición de Obra</h3>
+        <button onclick="testExhibicion()">Enviar Test</button>
+        <div id="result2" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 3: Certificado de Afiliación</h3>
+        <button onclick="testCertificado()">Enviar Test</button>
+        <div id="result3" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 4: Ámbito y Clase</h3>
+        <button onclick="testAmbitoClase()">Enviar Test</button>
+        <div id="result4" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 5: Conflicto en Obra</h3>
+        <button onclick="testConflicto()">Enviar Test</button>
+        <div id="result5" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test 6: Sociedades</h3>
+        <button onclick="testSociedades()">Enviar Test</button>
+        <div id="result6" class="result"></div>
+    </div>
+
+    <script>
+        const powerAutomateUrl = 'https://default0c13096209bc40fc8db89d043ff625.1a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/971fb86a29204a7aaaa83de432406db9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=09izjqz5nu4vqRe_PDvYq9iyx2r2WWSUrZqhwWTARSc';
+
+        async function enviarTest(datos, tipoSolicitud, resultId) {
+            const resultDiv = document.getElementById(resultId);
+            resultDiv.innerHTML = 'Enviando...';
+            resultDiv.className = 'result';
+            
+            try {
+                const response = await fetch(powerAutomateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tipoSolicitud: tipoSolicitud,
+                        datos: datos,
+                        fechaEnvio: new Date().toISOString()
+                    })
+                });
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = '✅ Envío exitoso! Status: ' + response.status;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.innerHTML = '❌ Error en envío. Status: ' + response.status + ' - ' + response.statusText;
+                    resultDiv.className = 'result error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '❌ Error de conexión: ' + error.message;
+                resultDiv.className = 'result error';
+            }
+        }
+
+        function testDatosPersonales() {
+            const datos = {
+                rut: "12345678-9",
+                campos: {
+                    nombre: "Juan Pérez Test",
+                    genero: "masculino"
+                },
+                observaciones: "Observaciones obligatorias para test de datos personales"
+            };
+            enviarTest(datos, 'actualizacion-datos-personales', 'result1');
+        }
+
+        function testAmbitoClase() {
+            const datos = {
+                rut: "11111111-1",
+                campos: {
+                    ambitos: ["Audiovisual", "Dramático"],
+                    clases: ["Director", "Guionista", "Dramaturgo"]
+                },
+                observaciones: "Observaciones obligatorias para test de ámbito y clase"
+            };
+            enviarTest(datos, 'actualizacion-datos-autor-ambito', 'result4');
+        }
+
+        function testConflicto() {
+            const datos = {
+                rut: "22222222-2",
+                ambito: "Audiovisual",
+                obra: "Mi Obra en Conflicto",
+                descripcion: "Descripción detallada del conflicto con la obra"
+            };
+            enviarTest(datos, 'conflicto-obra', 'result5');
+        }
+
+        function testSociedades() {
+            const datos = {
+                rut: "33333333-3",
+                sociedades: [
+                    {
+                        sociedad: "SCD - Sociedad Chilena del Derecho de Autor",
+                        pais: "Chile",
+                        ambito: "Audiovisual",
+                        clase: "Director"
+                    },
+                    {
+                        sociedad: "SGAE - Sociedad General de Autores y Editores",
+                        pais: "España",
+                        ambito: "Dramático",
+                        clase: "Dramaturgo"
+                    }
+                ],
+                observaciones: "Observaciones obligatorias para test de sociedades"
+            };
+            enviarTest(datos, 'actualizacion-datos-autor-sociedades', 'result6');
+        }
+
+        function testExhibicion() {
+            const datos = {
+                rut: "98765432-1",
+                exhibiciones: [
+                    {
+                        ambito: "Audiovisual",
+                        obra: "Película de Prueba",
+                        pais: "Argentina",
+                        fecha: "15-04-2024"
+                    }
+                ]
+            };
+            enviarTest(datos, 'exhibicion-obra-extranjero', 'result2');
+        }
+
+        function testCertificado() {
+            const datos = {
+                rut: "11223344-5",
+                tipoAfiliacion: "con-obra",
+                nombreObra: "Mi Obra Test",
+                motivo: "Prueba de certificado"
+            };
+            enviarTest(datos, 'certificado-afiliacion', 'result3');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1202 @@
+/* Variables de colores institucionales */
+:root {
+    --primary-gray: #575656;
+    --primary-green: #097137;
+    --white: #FFFFFF;
+    --light-gray: #f5f5f5;
+    --border-color: #ddd;
+    --error-color: #d9534f;
+    --success-color: #5cb85c;
+    --breadcrumb-bg: #f8f9fa;
+    --breadcrumb-active: #097137;
+}
+
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--primary-gray);
+    background-color: var(--light-gray);
+}
+
+/* Asegurar que inputs, textareas y sus placeholders usen la misma fuente */
+input,
+textarea,
+select,
+button {
+    font-family: 'Roboto', sans-serif;
+    color: var(--primary-gray);
+}
+
+::placeholder {
+    font-family: 'Roboto', sans-serif;
+    color: #999;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilos del encabezado */
+.header {
+    text-align: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+}
+
+.logo {
+    max-width: 300px;
+    height: auto;
+}
+
+/* Contenido principal */
+.main-content {
+    flex: 1;
+    padding: 0 20px;
+}
+
+h1 {
+    color: var(--primary-green);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h2 {
+    color: var(--primary-green);
+    margin-bottom: 15px;
+}
+
+h3 {
+    color: var(--primary-gray);
+    margin-bottom: 10px;
+}
+
+.description {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 18px;
+}
+
+/* Estilos para el breadcrumb */
+.breadcrumb-container {
+    margin-bottom: 30px;
+}
+
+.breadcrumb {
+    display: flex;
+    list-style: none;
+    padding: 10px 15px;
+    background-color: var(--breadcrumb-bg);
+    border-radius: 4px;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.breadcrumb:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.breadcrumb-item {
+    position: relative;
+    padding: 0 10px;
+    cursor: pointer;
+    color: var(--primary-gray);
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-item:not(:last-child)::after {
+    content: '>';
+    margin-left: 10px;
+    color: #ccc;
+    transition: transform 0.3s ease;
+}
+
+.breadcrumb-item.active {
+    color: var(--breadcrumb-active);
+    font-weight: 600;
+    transform: scale(1.05);
+}
+
+.breadcrumb-item:hover {
+    text-decoration: underline;
+    color: var(--primary-green);
+}
+
+.breadcrumb-item:hover:not(:last-child)::after {
+    transform: translateX(3px);
+}
+
+/* Estilos para el carrusel */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: visible;
+    margin: 20px 0;
+    padding: 10px 0;
+}
+
+.carousel-step {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: translateX(50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+    height: 0;
+}
+
+.carousel-step.active {
+    opacity: 1;
+    transform: translateX(0);
+    position: relative;
+    pointer-events: all;
+    height: auto;
+}
+
+.carousel-step.slide-out {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.carousel-step.hidden {
+    display: none;
+}
+
+/* Estilos para los tipos de solicitud */
+.request-types,
+.subsection-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin: 20px 0 40px;
+    padding: 10px;
+}
+
+.request-type,
+.subsection-type {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    margin: 5px;
+}
+
+.request-type:before,
+.subsection-type:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(9, 113, 55, 0.05) 0%, rgba(9, 113, 55, 0.1) 100%);
+    transform: translateY(100%);
+    transition: transform 0.4s ease;
+    z-index: -1;
+}
+
+.request-type:hover,
+.subsection-type:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-green);
+    z-index: 2;
+}
+
+.request-type:hover:before,
+.subsection-type:hover:before {
+    transform: translateY(0);
+}
+
+.request-type h3,
+.subsection-type h3 {
+    color: var(--primary-green);
+    margin-bottom: 10px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.request-type:hover h3,
+.subsection-type:hover h3 {
+    transform: translateY(-2px);
+    color: #065d2d;
+}
+
+.request-type p,
+.subsection-type p {
+    color: var(--primary-gray);
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+}
+
+.request-type:hover p,
+.subsection-type:hover p {
+    opacity: 0.9;
+}
+
+/* Estilos para el formulario */
+.form-container {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--primary-gray);
+}
+
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 2px rgba(9, 113, 55, 0.2);
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Estilos para los checkboxes */
+.checkbox-group {
+    margin-bottom: 20px;
+}
+
+.checkbox-item {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-item label {
+    display: inline;
+    cursor: pointer;
+}
+
+/* Estilos específicos para la sección Ámbito o Clase */
+#step-ambito-clase .form-group h3 {
+    margin-bottom: 15px;
+    color: var(--primary-green);
+    font-size: 18px;
+}
+
+#step-ambito-clase .checkbox-group {
+    padding-left: 10px;
+    border-left: 3px solid var(--light-gray);
+}
+
+#step-ambito-clase .checkbox-item {
+    transition: all 0.3s ease;
+}
+
+#step-ambito-clase .checkbox-item:hover {
+    transform: translateX(5px);
+}
+
+/* Estilos para las opciones de clase según ámbito */
+.clase-audiovisual,
+.clase-dramatico {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.clase-audiovisual:not(.hidden),
+.clase-dramatico:not(.hidden) {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Estilos para la tabla de exhibiciones */
+.table-container {
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.exhibiciones-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+    margin-bottom: 20px;
+}
+
+.exhibiciones-table th,
+.exhibiciones-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.exhibiciones-table th {
+    background: var(--gradient-primary);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    position: relative;
+    background-color: #097137;
+}
+
+.exhibiciones-table th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.exhibiciones-table tr:nth-child(even) {
+    background-color: var(--lighter-gray);
+}
+
+.exhibiciones-table tr:hover {
+    background-color: rgba(39, 174, 96, 0.05);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.exhibiciones-table .action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.exhibiciones-table .action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-green);
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.exhibiciones-table .action-button:hover {
+    background-color: rgba(39, 174, 96, 0.1);
+    transform: translateY(-1px);
+}
+
+.exhibiciones-table .delete-button {
+    color: var(--error-color);
+}
+
+.exhibiciones-table .delete-button:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Estilos para el formulario de exhibición */
+.exhibicion-form {
+    background-color: var(--light-gray);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.exhibicion-form h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--primary-green);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Estilos para los botones */
+.btn {
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn:hover {
+    background-color: #065d2d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover:before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--primary-gray);
+}
+
+.btn-secondary:hover {
+    background-color: #444444;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+/* Estilos mejorados para radio buttons */
+.styled-radio {
+    margin: 15px 0;
+}
+
+.styled-radio .radio-option {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.styled-radio input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-green);
+    border-radius: 50%;
+    margin-right: 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.styled-radio input[type="radio"]:checked {
+    background-color: var(--primary-green);
+    border: 2px solid var(--primary-green);
+}
+
+.styled-radio input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.styled-radio label {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Estilos mejorados para inputs y textareas */
+.styled-input,
+.styled-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.styled-input:focus,
+.styled-textarea:focus {
+    border-color: var(--primary-green);
+    outline: none;
+    box-shadow: 0 0 5px rgba(9, 113, 55, 0.2);
+}
+
+.styled-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Estilos para la validación */
+.validation-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Estilos para el campo de observaciones */
+.observaciones-container {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Estilos para el indicador de carga */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    font-family: 'Roboto', sans-serif;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--primary-green);
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-indicator p {
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+/* Estilos para el modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--white);
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary-gray);
+}
+
+.close-modal:hover {
+    color: var(--error-color);
+}
+
+.modal h2 {
+    color: var(--primary-green);
+    margin-bottom: 15px;
+}
+
+.modal p {
+    margin-bottom: 20px;
+}
+
+/* Utilidades */
+.hidden {
+    display: none;
+}
+
+/* Estilos para el pie de página */
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 30px;
+    border-top: 1px solid var(--border-color);
+    color: var(--primary-gray);
+    font-size: 14px;
+}
+
+/* Estilos para el datepicker */
+.flatpickr-calendar {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--primary-green);
+}
+
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange, 
+.flatpickr-day.selected.inRange, 
+.flatpickr-day.startRange.inRange, 
+.flatpickr-day.endRange.inRange, 
+.flatpickr-day.selected:focus, 
+.flatpickr-day.startRange:focus, 
+.flatpickr-day.endRange:focus, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.startRange:hover, 
+.flatpickr-day.endRange:hover, 
+.flatpickr-day.selected.prevMonthDay, 
+.flatpickr-day.startRange.prevMonthDay, 
+.flatpickr-day.endRange.prevMonthDay, 
+.flatpickr-day.selected.nextMonthDay, 
+.flatpickr-day.startRange.nextMonthDay, 
+.flatpickr-day.endRange.nextMonthDay {
+    background: var(--primary-green);
+    border-color: var(--primary-green);
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    font-weight: 500;
+    color: var(--primary-gray);
+}
+
+.flatpickr-day.today {
+    border-color: var(--primary-green);
+}
+
+.flatpickr-day.today:hover,
+.flatpickr-day.today:focus {
+    background: rgba(9, 113, 55, 0.2);
+    border-color: var(--primary-green);
+    color: var(--primary-gray);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+
+    .request-types,
+    .subsection-types {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .navigation-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .navigation-buttons button {
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .logo {
+        max-width: 200px;
+    }
+
+    .breadcrumb {
+        flex-wrap: wrap;
+        font-size: 0.9rem;
+    }
+}
+
+/* Est
+ilos específicos para la sección Ámbito o Clase */
+#step-ambito-clase .form-description {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    font-style: italic;
+}
+
+#step-ambito-clase .form-group h3 {
+    margin-bottom: 8px;
+    color: var(--primary-green);
+    font-size: 1.2rem;
+    position: relative;
+    padding-left: 0;
+}
+
+#step-ambito-clase .form-group h3::before {
+    display: none;
+}
+
+#step-ambito-clase .checkbox-group {
+    border-left: 3px solid var(--primary-green-light);
+    padding-left: 20px;
+    margin-left: 10px;
+}
+
+#step-ambito-clase .checkbox-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(0);
+}
+
+#step-ambito-clase .checkbox-item:hover {
+    transform: translateX(8px);
+    border-color: var(--primary-green);
+}
+
+#step-ambito-clase .clase-audiovisual,
+#step-ambito-clase .clase-dramatico {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+#step-ambito-clase .clase-audiovisual:not(.hidden),
+#step-ambito-clase .clase-dramatico:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 80px;
+    margin-bottom: 16px;
+    padding: 16px;
+}
+
+#step-ambito-clase .clase-audiovisual:not(.hidden):nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+#step-ambito-clase .clase-audiovisual:not(.hidden):nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.info-note {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 1px solid #2196f3;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    color: #1565c0;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.info-note p {
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Animación para mostrar clases */
+@keyframes slideInClass {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+        max-height: 0;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 80px;
+    }
+}
+
+#step-ambito-clase .clase-audiovisual.show,
+#step-ambito-clase .clase-dramatico.show {
+    animation: slideInClass 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Esti
+los para campos requeridos */
+.required {
+    color: var(--error-color);
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+/* Estilos mejorados para textareas requeridas */
+textarea[required] {
+    border-left: 4px solid var(--primary-green-light);
+}
+
+textarea[required]:invalid {
+    border-left: 4px solid var(--error-color);
+}
+
+textarea[required]:valid {
+    border-left: 4px solid var(--success-color);
+}
+
+/* Mensaje de ayuda para campos requeridos */
+.form-group:has(textarea[required]) {
+    position: relative;
+}
+
+.form-group:has(textarea[required])::after {
+    content: "Este campo es obligatorio";
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    font-size: 0.8rem;
+    color: var(--primary-gray);
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.sociedades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-light);
+}
+
+.sociedades-table th,
+.sociedades-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sociedades-table th {
+    background: var(--gradient-primary);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    position: relative;
+    background-color: #097137;
+}
+
+.sociedades-table th::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.sociedades-table tr:nth-child(even) {
+    background-color: var(--lighter-gray);
+}
+
+.sociedades-table tr:hover {
+    background-color: rgba(39, 174, 96, 0.05);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+.sociedades-table .action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.sociedades-table .action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--primary-green);
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.sociedades-table .action-button:hover {
+    background-color: rgba(39, 174, 96, 0.1);
+    transform: translateY(-1px);
+}
+
+.sociedades-table .delete-button {
+    color: var(--error-color);
+}
+
+.sociedades-table .delete-button:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Estilos para el formulario de sociedad */
+.sociedad-form {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 24px;
+    border-radius: 16px;
+    margin: 24px 0;
+    box-shadow: var(--shadow-light);
+    border: 2px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.sociedad-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-secondary);
+}
+
+.sociedad-form h3 {
+    margin-top: 0;
+    margin-bottom: 24px;
+    color: var(--primary-green);
+    font-size: 1.3rem;
+}
+
+.sociedad-form .form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    justify-content: flex-end;
+}
+
+/* Animaciones para la tabla de sociedades */
+@keyframes fadeInSociedad {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sociedades-table tbody tr {
+    animation: fadeInSociedad 0.3s ease-out;
+}
+
+/* Estilos responsivos para sociedades */
+@media (max-width: 768px) {
+    .sociedades-table {
+        font-size: 0.9rem;
+    }
+
+    .sociedades-table th,
+    .sociedades-table td {
+        padding: 12px 8px;
+    }
+
+    .sociedad-form {
+        padding: 16px;
+    }
+
+    .sociedad-form .form-actions {
+        flex-direction: column;
+    }
+}
+
+/* Mejora
+s adicionales para el breadcrumb */
+.breadcrumb-item {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.breadcrumb-item:hover {
+    color: var(--white) !important;
+    transform: scale(1.05);
+}
+
+.breadcrumb-item:active {
+    transform: scale(0.98);
+}
+
+/* Indicador visual de que es clickeable */
+.breadcrumb-item::before {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: width 0.3s ease;
+}
+
+.breadcrumb-item:hover::before {
+    width: 80%;
+}
+
+.breadcrumb-item.active::before {
+    width: 100%;
+    background: var(--white);
+}
+
+/* Animación suave para cambios de breadcrumb */
+.breadcrumb {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.breadcrumb-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tooltip para breadcrumb items */
+.breadcrumb-item[title] {
+    position: relative;
+}
+
+.breadcrumb-item[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.validation-section input[type="email"] {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    border: 2px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    font-size: 16px !important;
+    font-family: inherit !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: var(--white) !important;
+    color: var(--primary-gray) !important;
+}
+
+.validation-section input[type="email"]:focus {
+    outline: none !important;
+    border-color: var(--primary-green) !important;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1) !important;
+    transform: translateY(-2px) !important;
+}
+
+.validation-section input[type="email"]:hover {
+    border-color: var(--primary-green-light) !important;
+}/* E
+spaciado para labels de correo después de la nota */
+.validation-section .info-note + label {
+    margin-top: 16px;
+}

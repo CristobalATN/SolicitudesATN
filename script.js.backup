@@ -1,0 +1,1715 @@
+// Función para validar RUT chileno
+function validarRut(rut) {
+    // Eliminar puntos y guión
+    rut = rut.replace(/\./g, '').replace('-', '');
+    
+    // Obtener dígito verificador
+    const dv = rut.slice(-1);
+    const rutNumero = parseInt(rut.slice(0, -1), 10);
+    
+    // Calcular dígito verificador
+    let suma = 0;
+    let multiplicador = 2;
+    
+    // Convertir RUT a string para iterar sobre sus dígitos
+    let rutString = rutNumero.toString();
+    
+    // Iterar de derecha a izquierda
+    for (let i = rutString.length - 1; i >= 0; i--) {
+        suma += parseInt(rutString.charAt(i), 10) * multiplicador;
+        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+    
+    const dvEsperado = 11 - (suma % 11);
+    let dvCalculado;
+    
+    if (dvEsperado === 11) {
+        dvCalculado = '0';
+    } else if (dvEsperado === 10) {
+        dvCalculado = 'K';
+    } else {
+        dvCalculado = dvEsperado.toString();
+    }
+    
+    return dvCalculado.toLowerCase() === dv.toLowerCase();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listeners para los campos de ámbito y sociedad
+    const ambitoAudiovisual = document.getElementById('ambito-audiovisual');
+    const ambitoDramatico = document.getElementById('ambito-dramatico');
+    const claseAudiovisualOptions = document.querySelectorAll('.clase-audiovisual');
+    const claseDramaticoOptions = document.querySelectorAll('.clase-dramatico');
+    const sociedadSelect = document.getElementById('sociedad');
+    const otraSociedadField = document.getElementById('otra-sociedad-field');
+    
+    // Elementos para la sección de desafiliación
+    const validateRutDesafiliacionButton = document.getElementById('validate-rut-desafiliacion');
+    if (validateRutDesafiliacionButton) {
+        validateRutDesafiliacionButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-desafiliacion');
+            const rutValue = rutInput.value.trim();
+            const rutError = document.getElementById('rut-desafiliacion-error');
+            
+            if (!rutValue) {
+                rutError.textContent = 'Por favor, ingrese un RUT';
+                return;
+            }
+            
+            if (!validarRut(rutValue)) {
+                rutError.textContent = 'RUT inválido';
+            } else {
+                rutError.textContent = '';
+                // Mostrar el formulario de desafiliación
+                document.getElementById('desafiliacion-form').classList.remove('hidden');
+            }
+        });
+    }
+    
+    // Elementos para la sección de exhibición de obra
+    const addExhibicionBtn = document.getElementById('add-exhibicion');
+    const exhibicionForm = document.getElementById('exhibicion-form');
+    const saveExhibicionBtn = document.getElementById('save-exhibicion');
+    const cancelExhibicionBtn = document.getElementById('cancel-exhibicion');
+    const exhibicionesBody = document.getElementById('exhibiciones-body');
+    const exhibicionFechaInput = document.getElementById('exhibicion-fecha');
+    
+    // Elementos para la sección de conflicto en obra
+    const conflictoAudiovisual = document.getElementById('conflicto-audiovisual');
+    const conflictoDramatico = document.getElementById('conflicto-dramatico');
+    const conflictoAmbitoCheckboxes = document.querySelectorAll('.conflicto-ambito');
+    
+    // Función para mostrar/ocultar opciones de clase según el ámbito seleccionado
+    function toggleClaseOptions() {
+        // Mostrar/ocultar opciones de Audiovisual
+        if (ambitoAudiovisual && ambitoAudiovisual.checked) {
+            claseAudiovisualOptions.forEach(option => {
+                option.classList.remove('hidden');
+            });
+        } else {
+            claseAudiovisualOptions.forEach(option => {
+                option.classList.add('hidden');
+                // Desmarcar checkboxes cuando se octanhant
+                const checkbox = option.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.checked = false;
+            });
+        }
+        
+        // Mostrar/ocultar opciones de Dramático
+        if (ambitoDramatico && ambitoDramatico.checked) {
+            claseDramaticoOptions.forEach(option => {
+                option.classList.remove('hidden');
+            });
+        } else {
+            claseDramaticoOptions.forEach(option => {
+                option.classList.add('hidden');
+                // Desmarcar checkboxes cuando se octanhant
+                const checkbox = option.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.checked = false;
+            });
+        }
+    }
+    
+    // Agregar event listeners a los checkboxes de ámbito
+    if (ambitoAudiovisual) {
+        ambitoAudiovisual.addEventListener('change', toggleClaseOptions);
+    }
+    
+    if (ambitoDramatico) {
+        ambitoDramatico.addEventListener('change', toggleClaseOptions);
+    }
+    
+    if (sociedadSelect) {
+        sociedadSelect.addEventListener('change', function() {
+            if (this.value === 'otra') {
+                otraSociedadField.classList.remove('hidden');
+            } else {
+                otraSociedadField.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Función para manejar la selección única de checkboxes en la sección de conflicto
+    function handleConflictoAmbitoSelection(selectedCheckbox) {
+        // Desmarcar todos los otros checkboxes
+        conflictoAmbitoCheckboxes.forEach(checkbox => {
+            if (checkbox !== selectedCheckbox) {
+                checkbox.checked = false;
+            }
+        });
+    }
+    
+    // Agregar event listeners a los checkboxes de ámbito en la sección de conflicto
+    conflictoAmbitoCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                handleConflictoAmbitoSelection(this);
+            }
+        });
+    });
+    
+    // Funcionalidad para la sección de exhibición de obra
+    let exhibicionesData = [];
+    let editingIndex = -1;
+    
+    // Función para validar formato de fecha (dd-mm-yyyy)
+    function validarFormatoFecha(fecha) {
+        const regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$/;
+        return regex.test(fecha);
+    }
+    
+    // Función para mostrar el formulario de exhibición
+    function mostrarFormularioExhibicion() {
+        exhibicionForm.classList.remove('hidden');
+        // Limpiar el formulario
+        document.getElementById('exhibicion-ambito').value = '';
+        document.getElementById('exhibicion-obra').value = '';
+        document.getElementById('exhibicion-pais').value = '';
+        document.getElementById('exhibicion-fecha').value = '';
+        editingIndex = -1; // Indicar que estamos agregando, no editando
+    }
+    
+    // Función para ocultar el formulario de exhibición
+    function ocultarFormularioExhibicion() {
+        exhibicionForm.classList.add('hidden');
+    }
+    
+    // Función para renderizar la tabla de exhibiciones
+    function renderizarTablaExhibiciones() {
+        exhibicionesBody.innerHTML = '';
+        
+        if (exhibicionesData.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="5" style="text-align: center;">No hay exhibiciones registradas</td>`;
+            exhibicionesBody.appendChild(row);
+            return;
+        }
+        
+        exhibicionesData.forEach((exhibicion, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${exhibicion.ambito}</td>
+                <td>${exhibicion.obra}</td>
+                <td>${exhibicion.pais}</td>
+                <td>${exhibicion.fecha}</td>
+                <td class="action-buttons">
+                    <button type="button" class="action-button edit-button" data-index="${index}">Editar</button>
+                    <button type="button" class="action-button delete-button" data-index="${index}">Eliminar</button>
+                </td>
+            `;
+            exhibicionesBody.appendChild(row);
+        });
+        
+        // Agregar event listeners a los botones de acción
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                editarExhibicion(index);
+            });
+        });
+        
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                eliminarExhibicion(index);
+            });
+        });
+    }
+    
+    // Función para guardar una exhibición
+    function guardarExhibicion() {
+        const ambito = document.getElementById('exhibicion-ambito').value;
+        const obra = document.getElementById('exhibicion-obra').value;
+        const pais = document.getElementById('exhibicion-pais').value;
+        const fecha = document.getElementById('exhibicion-fecha').value;
+        
+        // Validar campos
+        if (!ambito || !obra || !pais || !fecha) {
+            alert('Por favor, complete todos los campos');
+            return;
+        }
+        
+        // Validar formato de fecha
+        if (!validarFormatoFecha(fecha)) {
+            alert('Por favor, ingrese la fecha en formato dd-mm-yyyy');
+            return;
+        }
+        
+        const exhibicion = {
+            ambito,
+            obra,
+            pais,
+            fecha
+        };
+        
+        if (editingIndex === -1) {
+            // Agregar nueva exhibición
+            exhibicionesData.push(exhibicion);
+        } else {
+            // Actualizar exhibición existente
+            exhibicionesData[editingIndex] = exhibicion;
+        }
+        
+        renderizarTablaExhibiciones();
+        ocultarFormularioExhibicion();
+    }
+    
+    // Función para editar una exhibición
+    function editarExhibicion(index) {
+        const exhibicion = exhibicionesData[index];
+        
+        document.getElementById('exhibicion-ambito').value = exhibicion.ambito;
+        document.getElementById('exhibicion-obra').value = exhibicion.obra;
+        document.getElementById('exhibicion-pais').value = exhibicion.pais;
+        document.getElementById('exhibicion-fecha').value = exhibicion.fecha;
+        
+        editingIndex = index;
+        exhibicionForm.classList.remove('hidden');
+    }
+    
+    // Función para eliminar una exhibición
+    function eliminarExhibicion(index) {
+        if (confirm('¿Está seguro de que desea eliminar esta exhibición?')) {
+            exhibicionesData.splice(index, 1);
+            renderizarTablaExhibiciones();
+        }
+    }
+    
+    // Event listeners para la sección de exhibición
+    if (addExhibicionBtn) {
+        addExhibicionBtn.addEventListener('click', mostrarFormularioExhibicion);
+    }
+    
+    if (saveExhibicionBtn) {
+        saveExhibicionBtn.addEventListener('click', guardarExhibicion);
+    }
+    
+    if (cancelExhibicionBtn) {
+        cancelExhibicionBtn.addEventListener('click', ocultarFormularioExhibicion);
+    }
+    
+    if (exhibicionFechaInput) {
+        // Agregar validación de formato mientras se escribe
+        exhibicionFechaInput.addEventListener('input', function() {
+            const valor = this.value;
+            
+            // Aplicar formato automáticamente
+            if (valor.length === 2 && !valor.includes('-')) {
+                this.value = valor + '-';
+            } else if (valor.length === 5 && valor.charAt(2) === '-' && !valor.includes('-', 3)) {
+                this.value = valor + '-';
+            }
+            
+            // Validar formato
+            if (valor.length === 10) {
+                if (!validarFormatoFecha(valor)) {
+                    this.classList.add('error');
+                } else {
+                    this.classList.remove('error');
+                }
+            }
+        });
+    }
+    
+    // Inicializar la tabla de exhibiciones
+    if (exhibicionesBody) {
+        renderizarTablaExhibiciones();
+    }
+    // Cargar países desde el archivo JSON
+    function cargarPaises() {
+        // Usar ruta absoluta para evitar problemas de resolución
+        const rutaAbsoluta = window.location.origin + '/assets/paises.json';
+        console.log('Intentando cargar países desde:', rutaAbsoluta);
+        
+        fetch(rutaAbsoluta, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-cache'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Cargar países en todos los selectores de países
+            const paisSelects = document.querySelectorAll('select[id$="-pais"], #exhibicion-pais, #pais');
+            
+            paisSelects.forEach(paisSelect => {
+                if (!paisSelect) {
+                    console.error('Elemento select de países no encontrado');
+                    return;
+                }
+                
+                // Limpiar opciones existentes excepto la primera
+                while (paisSelect.options.length > 1) {
+                    paisSelect.remove(1);
+                }
+                
+                // Agregar cada país como una opción
+                data.forEach(pais => {
+                    const option = document.createElement('option');
+                    option.value = pais['Nombre del país'];
+                    option.textContent = pais['Nombre del país'];
+                    paisSelect.appendChild(option);
+                });
+            });
+            
+            console.log('Países cargados correctamente:', data.length);
+        })
+        .catch(error => {
+            console.error('Error al cargar los países:', error);
+        });
+    }
+    
+    // Cargar países al iniciar la página
+    cargarPaises();
+    
+    // Llamar a la función cuando se selecciona 'extranjero' en tipo de banco
+    const tipoBancoSelect = document.getElementById('tipo-banco');
+    if (tipoBancoSelect) {
+        tipoBancoSelect.addEventListener('change', function() {
+            if (this.value === 'extranjero') {
+                cargarPaises();
+            }
+        });
+    }
+    
+    // La función addObservacionesField ha sido eliminada
+    
+    // Llamar a la función al cargar la página
+    // Se eliminó la llamada a addObservacionesField
+    
+    // Referencias a elementos del DOM
+const requestTypes = document.querySelectorAll('.request-type');
+const subsectionTypes = document.querySelectorAll('.subsection-type');
+const rutInput = document.getElementById('rut');
+const rutError = document.getElementById('rut-error');
+const validateRutButton = document.getElementById('validate-rut');
+const updateOptions = document.getElementById('update-options');
+const updateFields = document.querySelectorAll('input[name="update-fields"]');
+const nombreField = document.getElementById('nombre-field');
+const seudonimoField = document.getElementById('seudonimo-field');
+const generoField = document.getElementById('genero-field');
+const submitButton = document.getElementById('submit-button');
+const successModal = document.getElementById('success-modal');
+const closeModalButton = document.getElementById('close-modal');
+const okModalButton = document.getElementById('modal-ok');
+const breadcrumb = document.getElementById('breadcrumb');
+const prevStepButtons = document.querySelectorAll('.prev-step');
+const carouselSteps = document.querySelectorAll('.carousel-step');
+
+// Inicializar el primer paso como activo
+const inicioStep = document.getElementById('step-inicio');
+if (inicioStep) {
+    inicioStep.classList.remove('hidden');
+    inicioStep.classList.add('active');
+}
+
+    // Función para formatear RUT,
+    function formatearRut(rut) {
+        // Eliminar puntos y guión
+        rut = rut.replace(/\./g, '').replace('-', '');
+        
+        // Obtener dígito verificador
+        const dv = rut.slice(-1);
+        let rutNumero = rut.slice(0, -1);
+        
+        // Formatear con puntos
+        let rutFormateado = '';
+        for (let i = rutNumero.length; i > 0; i -= 3) {
+            const inicio = Math.max(0, i - 3);
+            rutFormateado = rutNumero.substring(inicio, i) + (rutFormateado ? '.' + rutFormateado : '');
+        }
+        
+        return rutFormateado + '-' + dv;
+    }
+
+    // Función para actualizar el breadcrumb,
+    function updateBreadcrumb(currentStep, addStep = true) {
+        // Si estamos agregando un nuevo paso al breadcrumb
+        if (addStep) {
+            // Remover la clase active de todos los items
+            const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Verificar si el paso ya existe en el breadcrumb
+            const existingItem = breadcrumb.querySelector(`[data-step="${currentStep}"]`);
+            
+            if (existingItem) {
+                // Si existe, solo activarlo
+                existingItem.classList.add('active');
+                
+                // Eliminar todos los elementos después de este
+                let nextSibling = existingItem.nextElementSibling;
+                while (nextSibling) {
+                    const temp = nextSibling.nextElementSibling;
+                    breadcrumb.removeChild(nextSibling);
+                    nextSibling = temp;
+                }
+            } else {
+                // Si no existe, crear un nuevo item
+                const newItem = document.createElement('li');
+                newItem.classList.add('breadcrumb-item', 'active');
+                newItem.setAttribute('data-step', currentStep);
+                
+                // Establecer el texto según el paso
+                switch(currentStep) {
+                    case 'inicio':
+                        newItem.textContent = 'Inicio';
+                        break;
+                    case 'actualizacion':
+                        newItem.textContent = 'Actualización de información';
+                        break;
+                    case 'datos-personales':
+                        newItem.textContent = 'Datos personales';
+                        break;
+                    case 'datos-contacto':
+                        newItem.textContent = 'Datos de contacto';
+                        break;
+                    case 'datos-bancarios':
+                        newItem.textContent = 'Datos bancarios';
+                        break;
+                    case 'datos-autor':
+                        newItem.textContent = 'Datos de autor';
+                        break;
+                    case 'ambito-clase':
+                        newItem.textContent = 'Ámbito o Clase';
+                        break;
+                    case 'sociedades':
+                        newItem.textContent = 'Sociedades';
+                        break;
+                    case 'exhibicion':
+                        newItem.textContent = 'Notificación de exhibición de obra en el extranjero';
+                        break;
+                    case 'conflicto':
+                        newItem.textContent = 'Declaración de conflicto en obra';
+                        break;
+                    case 'certificado':
+                        newItem.textContent = 'Solicitud de certificado';
+                        break;
+                    case 'afiliacion':
+                        newItem.textContent = 'Certificado de Afiliación';
+                        break;
+                    case 'derechos-recibidos':
+                        newItem.textContent = 'Certificado de Derechos Recibidos';
+                        break;
+                    case 'desafiliacion':
+                        newItem.textContent = 'Desafiliación';
+                        break;
+                    case 'otro':
+                        newItem.textContent = 'Otro tipo de solicitud';
+                        break;
+                    // Agregar más casos según sea necesario
+                    default:
+                        newItem.textContent = currentStep;
+                }
+                
+                // Agregar evento de clic para navegar
+                newItem.addEventListener('click', () => {
+                    navigateToStep(currentStep);
+                });
+                
+                // Agregar al breadcrumb
+                breadcrumb.appendChild(newItem);
+                
+                // Actualizar los event listeners
+                addBreadcrumbListeners();
+            }
+        } else {
+            // Si estamos retrocediendo, activar el paso actual
+            const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-step') === currentStep) {
+                    item.classList.add('active');
+                }
+            });
+        }
+    }
+
+// Función para ocultar todos los formularios y mostrar solo las secciones de validación
+function resetearValidaciones() {
+    // Ocultar todos los contenedores de formularios
+    const formContainers = document.querySelectorAll('.form-container');
+    formContainers.forEach(container => {
+        container.classList.add('hidden');
+    });
+    
+    // Limpiar mensajes de error de validación de RUT
+    const errorMessages = document.querySelectorAll('.error-message');
+    errorMessages.forEach(message => {
+        message.textContent = '';
+    });
+}
+
+// Función para navegar a un paso específico
+function navigateToStep(step) {
+    // Limpiar los campos del formulario al navegar entre pasos
+    limpiarCamposFormulario();
+    
+    // Ocultar todos los formularios y mostrar solo las secciones de validación
+    resetearValidaciones();
+    
+    // Si estamos navegando al inicio, resetear el breadcrumb
+    if (step === 'inicio') {
+        // Limpiar el breadcrumb
+        const breadcrumbContainer = document.getElementById('breadcrumb');
+        breadcrumbContainer.innerHTML = '';
+        
+        // Recrear solo el elemento de inicio
+        const inicioItem = document.createElement('li');
+        inicioItem.classList.add('breadcrumb-item', 'active');
+        inicioItem.setAttribute('data-step', 'inicio');
+        inicioItem.textContent = 'Inicio';
+        inicioItem.addEventListener('click', () => {
+            navigateToStep('inicio');
+        });
+        breadcrumbContainer.appendChild(inicioItem);
+        
+        // Actualizar los event listeners
+        addBreadcrumbListeners();
+    } else {
+        // Para otros pasos, actualizar el breadcrumb normalmente
+        updateBreadcrumb(step, false);
+    }
+    
+    // Primero, marcar el paso activo actual como saliente
+    const currentActiveStep = document.querySelector('.carousel-step.active');
+    if (currentActiveStep) {
+        currentActiveStep.classList.add('slide-out');
+        currentActiveStep.classList.remove('active');
+        
+        // Esperar a que termine la animación de salida antes de mostrar el nuevo paso
+        setTimeout(() => {
+            currentActiveStep.classList.add('hidden');
+            currentActiveStep.classList.remove('slide-out');
+            
+            // Mostrar el paso correspondiente
+            const targetStep = document.getElementById(`step-${step}`);
+            if (targetStep) {
+                targetStep.classList.remove('hidden');
+                // Pequeño retraso para asegurar que el DOM se actualice
+                setTimeout(() => {
+                    targetStep.classList.add('active');
+                    
+                    // Se eliminó la verificación y adición del campo de observaciones
+                    // if (targetStep.querySelector('.form-container') || targetStep.querySelector('#update-options')) {
+                    //     addObservacionesField();
+                    // }
+                }, 50);
+            }
+        }, 500); // Este tiempo debe coincidir con la duración de la transición CSS
+    } else {
+        // Si no hay paso activo, mostrar el nuevo paso directamente
+        const targetStep = document.getElementById(`step-${step}`);
+        if (targetStep) {
+            targetStep.classList.remove('hidden');
+            setTimeout(() => {
+                targetStep.classList.add('active');
+                
+                // Se eliminó la verificación y adición del campo de observaciones
+                // if (targetStep.querySelector('.form-container') || targetStep.querySelector('#update-options')) {
+                //     addObservacionesField();
+                // }
+            }, 50);
+        }
+    }
+}
+
+// Event Listeners para los tipos de solicitud
+requestTypes.forEach(type => {
+    type.addEventListener('click', function() {
+        const requestType = this.getAttribute('data-type');
+        
+        // Mostrar paso correspondiente según el tipo de solicitud
+        if (requestType === 'actualizacion') {
+            navigateToStep('actualizacion');
+            updateBreadcrumb('actualizacion');
+        } else if (requestType === 'exhibicion') {
+            navigateToStep('exhibicion');
+            updateBreadcrumb('exhibicion');
+        } else if (requestType === 'conflicto') {
+            navigateToStep('conflicto');
+            updateBreadcrumb('conflicto');
+        } else if (requestType === 'certificado') {
+            navigateToStep('certificado');
+            updateBreadcrumb('certificado');
+        } else if (requestType === 'desafiliacion') {
+            navigateToStep('desafiliacion');
+            updateBreadcrumb('desafiliacion');
+        } else if (requestType === 'otro') {
+            navigateToStep('otro');
+            updateBreadcrumb('otro');
+        } else {
+            // Para otros tipos de solicitud no implementados
+            alert('Esta funcionalidad estará disponible próximamente.');
+        }
+    });
+});
+
+// Event Listeners para las subsecciones
+subsectionTypes.forEach(subsection => {
+    subsection.addEventListener('click', function() {
+        const subsectionType = this.getAttribute('data-subsection');
+        
+        // Mostrar paso correspondiente según la subsección
+        if (subsectionType === 'datos-personales' || subsectionType === 'datos-contacto' || subsectionType === 'datos-bancarios' || subsectionType === 'datos-autor') {
+            // Primero, limpiar cualquier subsección anterior del breadcrumb
+            const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+            // Mantener solo 'Inicio' y 'Actualización de información'
+            if (items.length > 2) {
+                for (let i = items.length - 1; i >= 2; i--) {
+                    breadcrumb.removeChild(items[i]);
+                }
+            }
+            
+            // Actualizar el paso actual y navegar
+            currentStep = subsectionType;
+            navigateToStep(subsectionType);
+            updateBreadcrumb(subsectionType);
+        } else if (subsectionType === 'ambito-clase' || subsectionType === 'sociedades' || subsectionType === 'afiliacion' || subsectionType === 'derechos-recibidos') {
+            // Navegar a las subsecciones de Datos de autor
+            navigateToStep(subsectionType);
+            updateBreadcrumb(subsectionType);
+        } else {
+            // Para las otras subsecciones (a implementar en el futuro)
+            alert('Esta funcionalidad estará disponible próximamente.');
+            navigateToStep('actualizacion');
+            updateBreadcrumb('actualizacion');
+        }
+    });
+});
+
+// Función para limpiar todos los campos del formulario
+function limpiarCamposFormulario() {
+    // Limpiar todos los inputs de texto
+    document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"]').forEach(input => {
+        input.value = '';
+    });
+    
+    // Limpiar todos los textareas
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.value = '';
+    });
+    
+    // Desmarcar todos los checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Desmarcar todos los radio buttons
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.checked = false;
+    });
+    
+    // Resetear selects al primer valor
+    document.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    // Ocultar elementos condicionales
+    document.querySelectorAll('.field-container:not(.hidden)').forEach(container => {
+        container.classList.add('hidden');
+    });
+    
+    // Ocultar específicamente el campo "Nombre de la obra" en Certificado de Afiliación
+    const nombreObraField = document.getElementById('nombre-obra-field');
+    if (nombreObraField) {
+        nombreObraField.classList.add('hidden');
+    }
+}
+
+// Event listeners para los botones de navegación
+prevStepButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const prevStep = button.getAttribute('data-prev');
+        // Actualizar la variable global de paso actual
+        currentStep = prevStep;
+        
+        // Limpiar los campos del formulario
+        limpiarCamposFormulario();
+        
+        // Limpiar el breadcrumb adecuadamente
+        const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+        // Si estamos volviendo a 'actualizacion', eliminar cualquier subsección
+        if (prevStep === 'actualizacion' && items.length > 2) {
+            for (let i = items.length - 1; i >= 2; i--) {
+                breadcrumb.removeChild(items[i]);
+            }
+        }
+        
+        // Navegar al paso anterior
+        navigateToStep(prevStep);
+        
+        // Actualizar el breadcrumb solo si no estamos en 'actualizacion'
+        if (prevStep !== 'actualizacion') {
+            updateBreadcrumb(prevStep, false);
+        }
+    });
+});
+
+    // Validación de RUT para datos personales
+    validateRutButton.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut');
+        const rutError = document.getElementById('rut-error');
+        const rut = rutInput.value.trim();
+        
+        if (!rut) {
+            rutError.textContent = 'Por favor, ingrese su RUT.';
+            return;
+        }
+        
+        if (!validarRut(rut)) {
+            rutError.textContent = 'El RUT ingresado no es válido.';
+            return;
+        }
+        
+        // RUT válido, formatear y mostrar opciones de actualización
+        rutError.textContent = '';
+        rutInput.value = formatearRut(rut);
+        updateOptions.classList.remove('hidden');
+    });
+    
+    // Validación de RUT para certificado de afiliación
+    const validateRutAfiliacionButton = document.getElementById('validate-rut-afiliacion');
+    if (validateRutAfiliacionButton) {
+        validateRutAfiliacionButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-afiliacion');
+            const rutError = document.getElementById('rut-afiliacion-error');
+            const rut = rutInput.value.trim();
+            
+            if (!rut) {
+                rutError.textContent = 'Por favor, ingrese su RUT.';
+                return;
+            }
+            
+            if (!validarRut(rut)) {
+                rutError.textContent = 'El RUT ingresado no es válido.';
+                return;
+            }
+            
+            // RUT válido, formatear y mostrar opciones
+            rutError.textContent = '';
+            rutInput.value = formatearRut(rut);
+            document.getElementById('afiliacion-form').classList.remove('hidden');
+            
+            // Configurar eventos para los radio buttons de tipo de afiliación
+            const conObraRadio = document.getElementById('afiliacion-con-obra');
+            const sinObraRadio = document.getElementById('afiliacion-sin-obra');
+            const nombreObraContainer = document.getElementById('nombre-obra-container');
+            
+            conObraRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    nombreObraContainer.classList.remove('hidden');
+                }
+            });
+            
+            sinObraRadio.addEventListener('change', function() {
+                if (this.checked) {
+                    nombreObraContainer.classList.add('hidden');
+                }
+            });
+        });
+    }
+    
+    // Validación de RUT para certificado de derechos recibidos
+    const validateRutDerechosButton = document.getElementById('validate-rut-derechos');
+    if (validateRutDerechosButton) {
+        validateRutDerechosButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-derechos');
+            const rutError = document.getElementById('rut-derechos-error');
+            const rut = rutInput.value.trim();
+            
+            if (!rut) {
+                rutError.textContent = 'Por favor, ingrese su RUT.';
+                return;
+            }
+            
+            if (!validarRut(rut)) {
+                rutError.textContent = 'El RUT ingresado no es válido.';
+                return;
+            }
+            
+            // RUT válido, formatear y mostrar opciones
+            rutError.textContent = '';
+            rutInput.value = formatearRut(rut);
+            document.getElementById('derechos-form').classList.remove('hidden');
+        });
+    }
+    
+    // Validación de RUT para declaración de conflicto en obra
+    const validateRutConflictoButton = document.getElementById('validate-rut-conflicto');
+    if (validateRutConflictoButton) {
+        validateRutConflictoButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-conflicto');
+            const rutError = document.getElementById('rut-conflicto-error');
+            const rut = rutInput.value.trim();
+            
+            if (!rut) {
+                rutError.textContent = 'Por favor, ingrese su RUT.';
+                return;
+            }
+            
+            if (!validarRut(rut)) {
+                rutError.textContent = 'El RUT ingresado no es válido.';
+                return;
+            }
+            
+            // RUT válido, formatear y mostrar opciones
+            rutError.textContent = '';
+            rutInput.value = formatearRut(rut);
+            document.getElementById('conflicto-form').classList.remove('hidden');
+        });
+    }
+    
+    // Validación de RUT para notificación de exhibición de obra en el extranjero
+    const validateRutExhibicionButton = document.getElementById('validate-rut-exhibicion');
+    if (validateRutExhibicionButton) {
+        validateRutExhibicionButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-exhibicion');
+            const rutError = document.getElementById('rut-exhibicion-error');
+            const rut = rutInput.value.trim();
+            
+            if (!rut) {
+                rutError.textContent = 'Por favor, ingrese su RUT.';
+                return;
+            }
+            
+            if (!validarRut(rut)) {
+                rutError.textContent = 'El RUT ingresado no es válido.';
+                return;
+            }
+            
+            // RUT válido, formatear y mostrar opciones
+            rutError.textContent = '';
+            rutInput.value = formatearRut(rut);
+            document.getElementById('exhibicion-container').classList.remove('hidden');
+        });
+    }
+    
+    // Validación de RUT para datos de contacto
+    const validateRutContactoButton = document.getElementById('validate-rut-contacto');
+    validateRutContactoButton.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-contacto');
+        const rutError = document.getElementById('rut-contacto-error');
+        const rut = rutInput.value.trim();
+        
+        if (!rut) {
+            rutError.textContent = 'Por favor, ingrese su RUT.';
+            return;
+        }
+        
+        if (!validarRut(rut)) {
+            rutError.textContent = 'El RUT ingresado no es válido.';
+            return;
+        }
+        
+        // RUT válido, formatear y mostrar opciones de actualización
+        rutError.textContent = '';
+        rutInput.value = formatearRut(rut);
+        document.getElementById('update-options-contacto').classList.remove('hidden');
+    });
+    
+    // Validación de RUT para datos bancarios
+    const validateRutBancariosButton = document.getElementById('validate-rut-bancarios');
+    validateRutBancariosButton.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-bancarios');
+        const rutError = document.getElementById('rut-bancarios-error');
+        const rut = rutInput.value.trim();
+        
+        if (!rut) {
+            rutError.textContent = 'Por favor, ingrese su RUT.';
+            return;
+        }
+        
+        if (!validarRut(rut)) {
+            rutError.textContent = 'El RUT ingresado no es válido.';
+            return;
+        }
+        
+        // RUT válido, formatear y mostrar opciones de actualización
+        rutError.textContent = '';
+        rutInput.value = formatearRut(rut);
+        document.getElementById('update-options-bancarios').classList.remove('hidden');
+    });
+
+    // Event Listeners para los checkboxes de datos personales
+    updateFields.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const fieldId = this.value + '-field';
+            const fieldContainer = document.getElementById(fieldId);
+            
+            if (this.checked) {
+                fieldContainer.classList.remove('hidden');
+            } else {
+                fieldContainer.classList.add('hidden');
+            }
+        });
+    });
+    
+    // Event Listeners para los checkboxes de datos de contacto
+    const updateFieldsContacto = document.querySelectorAll('input[name="update-fields-contacto"]');
+    updateFieldsContacto.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const fieldId = this.value + '-field';
+            const fieldContainer = document.getElementById(fieldId);
+            
+            if (this.checked) {
+                fieldContainer.classList.remove('hidden');
+            } else {
+                fieldContainer.classList.add('hidden');
+            }
+        });
+    });
+    
+    // Event Listener para el tipo de banco
+    // Usar la variable tipoBancoSelect ya declarada anteriormente
+    tipoBancoSelect.addEventListener('change', function() {
+        const tipoBanco = this.value;
+        const tipoCuentaField = document.getElementById('tipo-cuenta-field');
+        const paisField = document.getElementById('pais-field');
+        const direccionBancoField = document.getElementById('direccion-banco-field');
+        const swiftIbanField = document.getElementById('swift-iban-field');
+        
+        // Ocultar todos los campos condicionales primero
+        tipoCuentaField.classList.add('hidden');
+        paisField.classList.add('hidden');
+        direccionBancoField.classList.add('hidden');
+        swiftIbanField.classList.add('hidden');
+        
+        // Mostrar campos según el tipo de banco seleccionado
+        if (tipoBanco === 'nacional') {
+            tipoCuentaField.classList.remove('hidden');
+        } else if (tipoBanco === 'extranjero') {
+            paisField.classList.remove('hidden');
+            direccionBancoField.classList.remove('hidden');
+            swiftIbanField.classList.remove('hidden');
+        }
+    });
+
+    // Función para validar formato de email
+    function validarEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+    
+    // Event listener para validar email cuando se escribe
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.addEventListener('blur', function() {
+            const emailError = document.getElementById('email-error');
+            if (this.value && !validarEmail(this.value)) {
+                emailError.textContent = 'Por favor, ingrese un correo electrónico válido.';
+            } else {
+                emailError.textContent = '';
+            }
+        });
+    }
+    
+    // Envío del formulario de datos personales
+    submitButton.addEventListener('click', function() {
+        // Validar que al menos un checkbox esté seleccionado
+        const selectedFields = document.querySelectorAll('input[name="update-fields"]:checked');
+        
+        if (selectedFields.length === 0) {
+            alert('Por favor, seleccione al menos un campo para actualizar.');
+            return;
+        }
+        
+        // Validar que los campos seleccionados tengan valores
+        let isValid = true;
+        let formData = {
+            rut: document.getElementById('rut').value,
+            campos: {},
+            observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+        };
+        
+        selectedFields.forEach(field => {
+            const fieldName = field.value;
+            const fieldValue = document.getElementById(fieldName).value;
+            
+            if (!fieldValue) {
+                isValid = false;
+                alert(`Por favor, complete el campo ${fieldName}.`);
+                return;
+            }
+            
+            formData.campos[fieldName] = fieldValue;
+        });
+        
+        if (!isValid) return;
+        
+        // Enviar datos (simulado)
+        enviarDatos(formData);
+    });
+    
+    // Event listeners para los botones de envío de ámbito y sociedad
+    const submitButtonAmbito = document.getElementById('submit-button-ambito');
+    const submitButtonSociedad = document.getElementById('submit-button-sociedad');
+    
+    if (submitButtonAmbito) {
+        submitButtonAmbito.addEventListener('click', function() {
+            // Validar campos del formulario de ámbito
+            const ambito = document.getElementById('ambito').value;
+            let otroAmbito = '';
+            
+            if (ambito === 'otro') {
+                otroAmbito = document.getElementById('otro-ambito').value;
+                if (!otroAmbito) {
+                    alert('Por favor, especifique el ámbito.');
+                    return;
+                }
+            } else if (!ambito) {
+                alert('Por favor, seleccione un ámbito.');
+                return;
+            }
+            
+            // Preparar datos para enviar
+            let formData = {
+                rut: document.getElementById('rut-ambito') ? document.getElementById('rut-ambito').value : '',
+                campos: {
+                    'ambito': ambito,
+                    'otro-ambito': otroAmbito
+                },
+                observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+            };
+            
+            // Enviar datos
+            enviarDatos(formData);
+        });
+    }
+    
+    if (submitButtonSociedad) {
+        submitButtonSociedad.addEventListener('click', function() {
+            // Validar campos del formulario de sociedad
+            const sociedad = document.getElementById('sociedad').value;
+            let otraSociedad = '';
+            
+            if (sociedad === 'otra') {
+                otraSociedad = document.getElementById('otra-sociedad').value;
+                if (!otraSociedad) {
+                    alert('Por favor, especifique la sociedad.');
+                    return;
+                }
+            } else if (!sociedad) {
+                alert('Por favor, seleccione una sociedad.');
+                return;
+            }
+            
+            // Preparar datos para enviar
+            let formData = {
+                rut: document.getElementById('rut-sociedad') ? document.getElementById('rut-sociedad').value : '',
+                campos: {
+                    'sociedad': sociedad,
+                    'otra-sociedad': otraSociedad
+                },
+                observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+            };
+            
+            // Enviar datos
+            enviarDatos(formData);
+        });
+    }
+    
+    // Envío del formulario de datos de contacto
+    const submitButtonContacto = document.getElementById('submit-button-contacto');
+    submitButtonContacto.addEventListener('click', function() {
+        // Validar que al menos un checkbox esté seleccionado
+        const selectedFields = document.querySelectorAll('input[name="update-fields-contacto"]:checked');
+        
+        if (selectedFields.length === 0) {
+            alert('Por favor, seleccione al menos un campo para actualizar.');
+            return;
+        }
+        
+        // Validar que los campos seleccionados tengan valores
+        let isValid = true;
+        let formData = {
+            rut: document.getElementById('rut-contacto').value,
+            campos: {},
+            observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+        };
+        
+        selectedFields.forEach(field => {
+            const fieldName = field.value;
+            const fieldValue = document.getElementById(fieldName).value;
+            
+            if (!fieldValue) {
+                isValid = false;
+                alert(`Por favor, complete el campo ${fieldName}.`);
+                return;
+            }
+            
+            // Validar formato de email si es el campo de email
+            if (fieldName === 'email' && !validarEmail(fieldValue)) {
+                isValid = false;
+                alert('Por favor, ingrese un correo electrónico válido.');
+                return;
+            }
+            
+            formData.campos[fieldName] = fieldValue;
+        });
+        
+        if (!isValid) return;
+        
+        // Enviar datos (simulado)
+        enviarDatos(formData);
+    });
+    
+    // Envío del formulario de datos bancarios
+    const submitButtonBancarios = document.getElementById('submit-button-bancarios');
+    submitButtonBancarios.addEventListener('click', function() {
+        // Validar que todos los campos requeridos tengan valores
+        const tipoBanco = document.getElementById('tipo-banco').value;
+        const banco = document.getElementById('banco').value;
+        const numeroCuenta = document.getElementById('numero-cuenta').value;
+        
+        if (!tipoBanco || !banco || !numeroCuenta) {
+            alert('Por favor, complete todos los campos obligatorios.');
+            return;
+        }
+        
+        // Validar campos adicionales según el tipo de banco
+        let isValid = true;
+        let formData = {
+            rut: document.getElementById('rut-bancarios').value,
+            campos: {
+                'tipo-banco': tipoBanco,
+                'banco': banco,
+                'numero-cuenta': numeroCuenta
+            },
+            observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+        };
+        
+        if (tipoBanco === 'nacional') {
+            const tipoCuenta = document.getElementById('tipo-cuenta').value;
+            if (!tipoCuenta) {
+                isValid = false;
+                alert('Por favor, seleccione un tipo de cuenta.');
+                return;
+            }
+            formData.campos['tipo-cuenta'] = tipoCuenta;
+        } else if (tipoBanco === 'extranjero') {
+            const pais = document.getElementById('pais').value;
+            const direccionBanco = document.getElementById('direccion-banco').value;
+            const swiftIban = document.getElementById('swift-iban').value;
+            
+            if (!pais || !direccionBanco || !swiftIban) {
+                isValid = false;
+                alert('Por favor, complete todos los campos para banco extranjero.');
+                return;
+            }
+            
+            formData.campos['pais'] = pais;
+            formData.campos['direccion-banco'] = direccionBanco;
+            formData.campos['swift-iban'] = swiftIban;
+        }
+        
+        if (!isValid) return;
+        
+        // Enviar datos (simulado)
+        enviarDatos(formData);
+    });
+
+    // Función para enviar datos
+    function enviarDatos(data) {
+        // URL genérica para el envío (a reemplazar posteriormente)
+        const url = 'https://ejemplo.com/api/solicitudes';
+        
+        // Mostrar datos en consola (para desarrollo)
+        console.log('Datos a enviar:', data);
+        
+        // Simulación de envío con fetch
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            // Simulamos una respuesta exitosa
+            // En producción, se debería verificar response.ok
+            return { success: true };
+        })
+        .then(data => {
+            if (data.success) {
+                // Mostrar modal de éxito
+                successModal.classList.remove('hidden');
+            } else {
+                alert('Hubo un error al procesar su solicitud. Por favor, intente nuevamente.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al procesar su solicitud. Por favor, intente nuevamente.');
+        });
+    }
+
+    // Inicializar el breadcrumb al cargar la página
+if (breadcrumb && breadcrumb.children.length === 0) {
+    const inicioItem = document.createElement('li');
+    inicioItem.classList.add('breadcrumb-item', 'active');
+    inicioItem.setAttribute('data-step', 'inicio');
+    inicioItem.textContent = 'Inicio';
+    inicioItem.addEventListener('click', () => {
+        navigateToStep('inicio');
+    });
+    breadcrumb.appendChild(inicioItem);
+    
+    // Actualizar los event listeners
+    addBreadcrumbListeners();
+    
+    // Asegurar que el primer paso esté activo con la animación correcta
+    setTimeout(() => {
+        const inicioStep = document.getElementById('step-inicio');
+        if (inicioStep) {
+            inicioStep.classList.remove('hidden');
+            inicioStep.classList.add('active');
+        }
+    }, 100);
+}
+
+// Función para agregar event listeners a los elementos del breadcrumb
+function addBreadcrumbListeners() {
+    document.querySelectorAll('.breadcrumb-item').forEach(item => {
+        // Verificar si ya tiene un event listener
+        if (!item.hasAttribute('data-has-listener')) {
+            item.setAttribute('data-has-listener', 'true');
+            
+            item.addEventListener('click', () => {
+                const step = item.getAttribute('data-step');
+                console.log('Breadcrumb click:', step);
+                
+                // Actualizar la variable global de paso actual
+                currentStep = step;
+                
+                // Limpiar el breadcrumb adecuadamente
+                const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+                const clickedItemIndex = Array.from(items).indexOf(item);
+                
+                // Eliminar todos los elementos después del elemento clickeado
+                if (clickedItemIndex >= 0 && clickedItemIndex < items.length - 1) {
+                    for (let i = items.length - 1; i > clickedItemIndex; i--) {
+                        breadcrumb.removeChild(items[i]);
+                    }
+                }
+                
+                // Si estamos navegando a 'actualizacion', eliminar cualquier subsección
+                if (step === 'actualizacion' && items.length > 2) {
+                    for (let i = items.length - 1; i >= 2; i--) {
+                        breadcrumb.removeChild(items[i]);
+                    }
+                }
+                
+                // Navegar al paso seleccionado
+                navigateToStep(step);
+                
+                // Actualizar el breadcrumb solo si es necesario
+                if (step !== 'actualizacion' && step !== 'inicio') {
+                    updateBreadcrumb(step, false);
+                }
+            });
+        }
+    });
+}
+
+// Agregar event listeners iniciales
+addBreadcrumbListeners();
+
+    // Cerrar modal
+    closeModalButton.addEventListener('click', function() {
+        successModal.classList.add('hidden');
+        resetForm();
+    });
+
+    okModalButton.addEventListener('click', function() {
+        successModal.classList.add('hidden');
+        resetForm();
+    });
+
+    // Función para ocultar todos los pasos del carrusel
+function hideAllSteps() {
+    carouselSteps.forEach(step => {
+        step.classList.remove('active');
+        step.classList.add('hidden');
+    });
+}
+
+    // Función para resetear el formulario
+function resetForm() {
+    // Obtener el paso activo actual
+    const currentActiveStep = document.querySelector('.carousel-step.active');
+    if (currentActiveStep) {
+        currentActiveStep.classList.add('slide-out');
+        currentActiveStep.classList.remove('active');
+        
+        setTimeout(() => {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.carousel-step').forEach(step => {
+                step.classList.add('hidden');
+                step.classList.remove('slide-out');
+                step.classList.remove('active');
+            });
+            
+            // Mostrar el paso inicial con animación
+            const inicioStep = document.getElementById('step-inicio');
+            inicioStep.classList.remove('hidden');
+            
+            setTimeout(() => {
+                inicioStep.classList.add('active');
+            }, 50);
+        }, 500);
+    } else {
+        // Si no hay paso activo, mostrar el inicial directamente
+        document.querySelectorAll('.carousel-step').forEach(step => {
+            step.classList.add('hidden');
+            step.classList.remove('active');
+        });
+        
+        const inicioStep = document.getElementById('step-inicio');
+        inicioStep.classList.remove('hidden');
+        setTimeout(() => {
+            inicioStep.classList.add('active');
+        }, 50);
+    }
+    
+    // Resetear breadcrumb
+    breadcrumb.innerHTML = '';
+    const inicioItem = document.createElement('li');
+    inicioItem.classList.add('breadcrumb-item', 'active');
+    inicioItem.setAttribute('data-step', 'inicio');
+    inicioItem.textContent = 'Inicio';
+    inicioItem.addEventListener('click', () => {
+        navigateToStep('inicio');
+    });
+    breadcrumb.appendChild(inicioItem);
+    
+    // Limpiar campos
+    rutInput.value = '';
+    rutError.textContent = '';
+    updateOptions.classList.add('hidden');
+    
+    // Desmarcar checkboxes
+    updateFields.forEach(field => {
+        field.checked = false;
+    });
+    
+    // Ocultar campos condicionales
+    nombreField.classList.add('hidden');
+    seudonimoField.classList.add('hidden');
+    generoField.classList.add('hidden');
+    
+    // Limpiar valores
+    document.getElementById('nombre').value = '';
+    document.getElementById('seudonimo').value = '';
+    document.getElementById('genero').value = '';
+    
+    // Limpiar el campo de observaciones si existe
+    const observacionesField = document.getElementById('observaciones');
+    if (observacionesField) {
+        observacionesField.value = '';
+    }
+}
+});
+
+// Evento para validar RUT en desafiliación sin más demoras
+const validateRutDesafiliacionButton = document.getElementById('validate-rut-desafiliacion');
+if (validateRutDesafiliacionButton) {
+    validateRutDesafiliacionButton.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-desafiliacion');
+        const rutValue = rutInput.value.trim();
+        const rutError = document.getElementById('rut-desafiliacion-error');
+        
+        if (!rutValue) {
+            rutError.textContent = 'Por favor, ingrese un RUT';
+            return;
+        }
+        
+        if (!validarRut(rutValue)) {
+            rutError.textContent = 'RUT inválido';
+        } else {
+            rutError.textContent = '';
+            // Mostrar el formulario de desafiliación
+            document.getElementById('desafiliacion-form').classList.remove('hidden');
+        }
+    });
+}
+
+// Event listeners para los botones de envío
+const submitButtonCertificado = document.getElementById('submit-button-afiliacion');
+if (submitButtonCertificado) {
+    submitButtonCertificado.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-afiliacion');
+        const motivoInput = document.getElementById('afiliacion-motivo');
+        const conObraRadio = document.getElementById('afiliacion-con-obra');
+        const nombreObraInput = document.getElementById('nombre-obra');
+        
+        // Validar campos requeridos
+        if (!motivoInput.value.trim()) {
+            alert('Por favor, complete el motivo de su solicitud');
+            return;
+        }
+        
+        // Preparar datos para enviar
+        const datos = {
+            rut: rutInput.value.trim(),
+            motivo: motivoInput.value.trim(),
+            conObra: conObraRadio && conObraRadio.checked,
+            nombreObra: (conObraRadio && conObraRadio.checked && nombreObraInput) ? nombreObraInput.value.trim() : ''
+        };
+        
+        // Enviar datos a Power Automate
+        enviarDatosAPowerAutomate(datos, 'certificado-afiliacion');
+    });
+}
+
+const submitButtonDerechos = document.getElementById('submit-button-derechos');
+if (submitButtonDerechos) {
+    submitButtonDerechos.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-derechos');
+        const fechaInicioInput = document.getElementById('derechos-fecha-inicio');
+        const fechaFinInput = document.getElementById('derechos-fecha-fin');
+        
+        // Validar campos requeridos
+        if (!fechaInicioInput.value.trim() || !fechaFinInput.value.trim()) {
+            alert('Por favor, complete las fechas del período');
+            return;
+        }
+        
+        // Preparar datos para enviar
+        const datos = {
+            rut: rutInput.value.trim(),
+            fechaInicio: fechaInicioInput.value.trim(),
+            fechaFin: fechaFinInput.value.trim()
+        };
+        
+        // Enviar datos a Power Automate
+        enviarDatosAPowerAutomate(datos, 'certificado-derechos');
+    });
+}
+
+const submitButtonDesafiliacion = document.getElementById('submit-button-desafiliacion');
+if (submitButtonDesafiliacion) {
+    submitButtonDesafiliacion.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-desafiliacion');
+        const motivoInput = document.getElementById('desafiliacion-motivo');
+        
+        // Validar campos requeridos
+        if (!motivoInput.value.trim()) {
+            alert('Por favor, complete el motivo de su solicitud de desafiliación');
+            return;
+        }
+        
+        // Preparar datos para enviar
+        const datos = {
+            rut: rutInput.value.trim(),
+            motivo: motivoInput.value.trim()
+        };
+        
+        // Enviar datos a Power Automate
+        enviarDatosAPowerAutomate(datos, 'desafiliacion');
+    });
+}
+
+// Función genérica para enviar datos a Power Automate
+function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
+    // URL del flujo de Power Automate
+    const powerAutomateUrl = 'https://default0c13096209bc40fc8db89d043ff625.1a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/971fb86a29204a7aaaa83de432406db9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=09izjqz5nu4vqRe_PDvYq9iyx2r2WWSUrZqhwWTARSc';
+    
+    // Mostrar indicador de carga
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'loading-indicator';
+    loadingIndicator.innerHTML = '<div class="spinner"></div><p>Enviando solicitud...</p>';
+    document.body.appendChild(loadingIndicator);
+    
+    // Configuración de la petición
+    fetch(powerAutomateUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tipoSolicitud: tipoSolicitud,
+            datos: datos,
+            fechaEnvio: new Date().toISOString()
+        })
+    })
+    .then(response => {
+        // Eliminar indicador de carga
+        document.body.removeChild(loadingIndicator);
+        
+        if (response.ok) {
+            // Mostrar mensaje de éxito
+            alert('Su solicitud ha sido enviada con éxito. Nos pondremos en contacto con usted a la brevedad.');
+            navigateToStep('inicio');
+            resetForm();
+        } else {
+            // Mostrar mensaje de error
+            alert('Ha ocurrido un error al enviar su solicitud. Por favor, inténtelo nuevamente más tarde.');
+            console.error('Error al enviar datos:', response.status);
+        }
+    })
+    .catch(error => {
+        // Eliminar indicador de carga
+        document.body.removeChild(loadingIndicator);
+        
+        // Mostrar mensaje de error
+        alert('Ha ocurrido un error al enviar su solicitud. Por favor, inténtelo nuevamente más tarde.');
+        console.error('Error al enviar datos:', error);
+    });
+}
+
+// Evento para el botón de envío de la sección "Otro"
+const submitButtonOtro = document.getElementById('submit-button-otro');
+if (submitButtonOtro) {
+    submitButtonOtro.addEventListener('click', function() {
+        // Verificar que el detalle no esté vacío
+        const detalleOtro = document.getElementById('otro-detalle');
+        if (!detalleOtro.value.trim()) {
+            alert('Por favor, complete el detalle de su solicitud');
+            return;
+        }
+        
+        // Preparar datos para enviar
+        const datos = {
+            detalleSolicitud: detalleOtro.value.trim()
+        };
+        
+        // Enviar datos a Power Automate
+        enviarDatosAPowerAutomate(datos, 'otro');
+    });
+}
+
+// Handler para envío de exhibición de obra en el extranjero
+const submitButtonExhibicion = document.getElementById('submit-button-exhibicion');
+if (submitButtonExhibicion) {
+    submitButtonExhibicion.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-exhibicion');
+        
+        if (!rutInput || !rutInput.value.trim()) {
+            alert('Por favor, valide su RUT antes de enviar la solicitud.');
+            return;
+        }
+        
+        if (exhibicionesData.length === 0) {
+            alert('Por favor, agregue al menos una exhibición antes de enviar la solicitud.');
+            return;
+        }
+        
+        // Preparar datos para enviar
+        const datos = {
+            rut: rutInput.value.trim(),
+            exhibiciones: exhibicionesData
+        };
+        
+        // Enviar datos a Power Automate
+        enviarDatosAPowerAutomate(datos, 'exhibicion-obra-extranjero');
+    });
+}
+
+// Handler para envío de declaración de conflicto en obra
+const submitButtonConflicto = document.getElementById('submit-button-conflicto');
+if (submitButtonConflicto) {
+    submitButtonConflicto.addEventListener('click', function() {
+        const rutInput = document.getElementById('rut-conflicto');
+        const obraInput = document.getElementById('conflicto-obra');
+        const descripcionInput = document.getElementById('conflicto-descripcion');
+        const ambitoCheckboxes = document.querySelectorAll('.conflicto-ambito:checked');
+        
+        if (!rutInput || !rutInput.value.trim()) {
+            alert('Por favor, valide su RUT antes de enviar la solicitud.');
+            return;
+        }
+        
+        if (!obraInput || !obraInput.value.trim()) {
+            alert('Por favor, ingrese el nombre de la obra en conflicto.');
+            return;
+        }
+        
+        if (!descripcionInput || !descripcionInput.value.trim()) {
+            alert('Por favor, describa el conflicto.');
+            return;
+        }
+        
+        if (ambitoCheckboxes.length === 0) {
+            alert('Por favor, seleccione un ámbito.');
+            return;
+        }
+        
+        // Preparar datos para enviar
+        const datos = {
+            rut: rutInput.value.trim(),
+            ambito: ambitoCheckboxes[0].value,
+            obra: obraInput.value.trim(),
+            descripcion: descripcionInput.value.trim()
+        };
+        
+        // Enviar datos a Power Automate
+        enviarDatosAPowerAutomate(datos, 'conflicto-obra');
+    });
+}
+
+// Actualizar las funciones de envío existentes para usar Power Automate
+function enviarDatos(formData) {
+    // Determinar el tipo de solicitud basado en los campos presentes
+    let tipoSolicitud = 'actualizacion-datos-personales';
+    
+    if (formData.campos) {
+        if (formData.campos.hasOwnProperty('direccion') || formData.campos.hasOwnProperty('email') || formData.campos.hasOwnProperty('telefono')) {
+            tipoSolicitud = 'actualizacion-datos-contacto';
+        } else if (formData.campos.hasOwnProperty('tipo-banco')) {
+            tipoSolicitud = 'actualizacion-datos-bancarios';
+        } else if (formData.campos.hasOwnProperty('ambito')) {
+            tipoSolicitud = 'actualizacion-datos-autor-ambito';
+        } else if (formData.campos.hasOwnProperty('sociedad')) {
+            tipoSolicitud = 'actualizacion-datos-autor-sociedades';
+        }
+    }
+    
+    // Enviar a Power Automate
+    enviarDatosAPowerAutomate(formData, tipoSolicitud);
+}
+
+// Función para resetear el formulario después del envío exitoso
+function resetForm() {
+    // Limpiar todos los campos de texto
+    document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea').forEach(input => {
+        input.value = '';
+    });
+    
+    // Desmarcar todos los checkboxes y radio buttons
+    document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+        input.checked = false;
+    });
+    
+    // Resetear selects
+    document.querySelectorAll('select').forEach(select => {
+        select.selectedIndex = 0;
+    });
+    
+    // Limpiar datos de exhibiciones
+    if (typeof exhibicionesData !== 'undefined') {
+        exhibicionesData = [];
+        if (typeof renderizarTablaExhibiciones === 'function') {
+            renderizarTablaExhibiciones();
+        }
+    }
+    
+    // Ocultar formularios condicionales
+    document.querySelectorAll('.form-container, #update-options, #update-options-contacto, #update-options-bancarios').forEach(container => {
+        container.classList.add('hidden');
+    });
+    
+    // Ocultar campos condicionales
+    document.querySelectorAll('.field-container').forEach(field => {
+        field.classList.add('hidden');
+    });
+}

@@ -1,0 +1,259 @@
+{
+    "type": "object",
+    "properties": {
+        "tipoSolicitud": {
+            "type": "string",
+            "enum": [
+                "actualizacion-datos-personales",
+                "actualizacion-datos-contacto",
+                "actualizacion-datos-bancarios",
+                "actualizacion-datos-autor-ambito",
+                "actualizacion-datos-autor-sociedades",
+                "exhibicion-obra-extranjero",
+                "conflicto-obra",
+                "certificado-afiliacion",
+                "certificado-derechos-recibidos",
+                "desafiliacion",
+                "otro"
+            ]
+        },
+        "fechaEnvio": {
+            "type": "string"
+        },
+        "datos": {
+            "type": "object",
+            "properties": {
+                "rut": {
+                    "type": "string"
+                },
+                "tipoUsuario": {
+                    "type": "string",
+                    "enum": [
+                        "socio-vigente",
+                        "representante-legal"
+                    ]
+                },
+                "emailValidacion": {
+                    "type": "string"
+                },
+                "campos": {
+                    "type": "object",
+                    "properties": {
+                        "nombre": {
+                            "type": "string"
+                        },
+                        "seudonimo": {
+                            "type": "string"
+                        },
+                        "genero": {
+                            "type": "string",
+                            "enum": [
+                                "masculino",
+                                "femenino",
+                                "no-binario",
+                                "otro",
+                                "prefiero-no-decir"
+                            ]
+                        },
+                        "direccion": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "telefono": {
+                            "type": "string"
+                        },
+                        "tipo-banco": {
+                            "type": "string",
+                            "enum": [
+                                "nacional",
+                                "extranjero"
+                            ]
+                        },
+                        "banco": {
+                            "type": "string"
+                        },
+                        "numero-cuenta": {
+                            "type": "string"
+                        },
+                        "tipo-cuenta": {
+                            "type": "string",
+                            "enum": [
+                                "corriente",
+                                "ahorro"
+                            ]
+                        },
+                        "pais": {
+                            "type": "string"
+                        },
+                        "direccion-banco": {
+                            "type": "string"
+                        },
+                        "swift-iban": {
+                            "type": "string"
+                        },
+                        "ambito": {
+                            "type": "string",
+                            "enum": [
+                                "audiovisual",
+                                "dramatico",
+                                "otro"
+                            ]
+                        },
+                        "otro-ambito": {
+                            "type": "string"
+                        },
+                        "clases-audiovisual": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "clases-dramatico": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "ambitos": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "Audiovisual",
+                                    "Dramático"
+                                ]
+                            }
+                        },
+                        "clases": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "Director",
+                                    "Guionista",
+                                    "Dramaturgo",
+                                    "Coreógrafo",
+                                    "Compositor",
+                                    "Traductor"
+                                ]
+                            }
+                        },
+                        "sociedad": {
+                            "type": "string",
+                            "enum": [
+                                "scd",
+                                "sayco",
+                                "sgae",
+                                "otra"
+                            ]
+                        },
+                        "otra-sociedad": {
+                            "type": "string"
+                        },
+                        "sociedades": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "sociedad": {
+                                        "type": "string"
+                                    },
+                                    "pais": {
+                                        "type": "string"
+                                    },
+                                    "ambito": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Audiovisual",
+                                            "Dramático"
+                                        ]
+                                    },
+                                    "clase": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Director",
+                                            "Guionista",
+                                            "Dramaturgo",
+                                            "Coreógrafo",
+                                            "Compositor",
+                                            "Traductor"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "observaciones": {
+                    "type": "string"
+                },
+                "exhibiciones": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "ambito": {
+                                "type": "string",
+                                "enum": [
+                                    "Audiovisual",
+                                    "Dramático"
+                                ]
+                            },
+                            "obra": {
+                                "type": "string"
+                            },
+                            "pais": {
+                                "type": "string"
+                            },
+                            "fecha": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "ambito": {
+                    "type": "string",
+                    "enum": [
+                        "Audiovisual",
+                        "Dramático"
+                    ]
+                },
+                "obra": {
+                    "type": "string"
+                },
+                "descripcion": {
+                    "type": "string"
+                },
+                "tipoAfiliacion": {
+                    "type": "string",
+                    "enum": [
+                        "con-obra",
+                        "sin-obra"
+                    ]
+                },
+                "nombreObra": {
+                    "type": "string"
+                },
+                "motivo": {
+                    "type": "string"
+                },
+                "fechaInicio": {
+                    "type": "string"
+                },
+                "fechaFin": {
+                    "type": "string"
+                },
+                "detalleSolicitud": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "required": [
+        "tipoSolicitud",
+        "fechaEnvio",
+        "datos"
+    ]
+}
