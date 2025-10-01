@@ -1,56 +1,41 @@
 [
-  {
-    "nombre": "SCD - Sociedad Chilena del Derecho de Autor"
-  },
-  {
-    "nombre": "SADAIC - Sociedad Argentina de Autores y Compositores de Música"
-  },
-  {
-    "nombre": "SGAE - Sociedad General de Autores y Editores"
-  },
-  {
-    "nombre": "ASCAP - American Society of Composers, Authors and Publishers"
-  },
-  {
-    "nombre": "BMI - Broadcast Music, Inc."
-  },
-  {
-    "nombre": "SACEM - Société des Auteurs, Compositeurs et Éditeurs de Musique"
-  },
-  {
-    "nombre": "GEMA - Gesellschaft für musikalische Aufführungs- und mechanische Vervielfältigungsrechte"
-  },
-  {
-    "nombre": "PRS - Performing Right Society"
-  },
-  {
-    "nombre": "SOCAN - Society of Composers, Authors and Music Publishers of Canada"
-  },
-  {
-    "nombre": "JASRAC - Japanese Society for Rights of Authors, Composers and Publishers"
-  },
-  {
-    "nombre": "SIAE - Società Italiana degli Autori ed Editori"
-  },
-  {
-    "nombre": "ABRAMUS - Associação Brasileira de Música e Artes"
-  },
-  {
-    "nombre": "UBC - União Brasileira de Compositores"
-  },
-  {
-    "nombre": "ECAD - Escritório Central de Arrecadação e Distribuição"
-  },
-  {
-    "nombre": "ACAM - Asociación Colombiana de Autores y Compositores"
-  },
-  {
-    "nombre": "APDAYC - Asociación Peruana de Autores y Compositores"
-  },
-  {
-    "nombre": "AEI - Asociación de Editores Independientes"
-  },
-  {
-    "nombre": "Otra"
-  }
+  { "nombre": "DYGA" },
+  { "nombre": "SCD" },
+  { "nombre": "ALBAUTOR" },
+  { "nombre": "ARGENTORES" },
+  { "nombre": "DAC" },
+  { "nombre": "ASDACS" },
+  { "nombre": "AWGACS" },
+  { "nombre": "VdFS" },
+  { "nombre": "SABAM" },
+  { "nombre": "SOBODAYCOM" },
+  { "nombre": "ABRAMUS" },
+  { "nombre": "DBCA" },
+  { "nombre": "GEDAR" },
+  { "nombre": "CSCS" },
+  { "nombre": "DRCC" },
+  { "nombre": "DASC" },
+  { "nombre": "REDES" },
+  { "nombre": "SAYCO" },
+  { "nombre": "DGK" },
+  { "nombre": "DHFR" },
+  { "nombre": "DAMA" },
+  { "nombre": "SGAE" },
+  { "nombre": "SACD" },
+  { "nombre": "SCAM" },
+  { "nombre": "SIAE" },
+  { "nombre": "DIRECTORES" },
+  { "nombre": "SOGEM" },
+  { "nombre": "VEVAM" },
+  { "nombre": "GEDAR" },
+  { "nombre": "APA" },
+  { "nombre": "SPA" },
+  { "nombre": "ALCS" },
+  { "nombre": "DIRECTORES UK" },
+  { "nombre": "DILIA" },
+  { "nombre": "RAO" },
+  { "nombre": "SSA" },
+  { "nombre": "SUISSIMAGE" },
+  { "nombre": "AGADU" },
+  { "nombre": "SACVEN" }
 ]
