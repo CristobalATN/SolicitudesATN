@@ -1,1202 +1,1963 @@
-/* Variables de colores institucionales */
-:root {
-    --primary-gray: #575656;
-    --primary-green: #097137;
-    --white: #FFFFFF;
-    --light-gray: #f5f5f5;
-    --border-color: #ddd;
-    --error-color: #d9534f;
-    --success-color: #5cb85c;
-    --breadcrumb-bg: #f8f9fa;
-    --breadcrumb-active: #097137;
-}
-
-/* Estilos generales */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    color: var(--primary-gray);
-    background-color: var(--light-gray);
-}
-
-/* Asegurar que inputs, textareas y sus placeholders usen la misma fuente */
-input,
-textarea,
-select,
-button {
-    font-family: 'Roboto', sans-serif;
-    color: var(--primary-gray);
-}
-
-::placeholder {
-    font-family: 'Roboto', sans-serif;
-    color: #999;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: var(--white);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Estilos del encabezado */
-.header {
-    text-align: center;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 30px;
-}
-
-.logo {
-    max-width: 300px;
-    height: auto;
-}
-
-/* Contenido principal */
-.main-content {
-    flex: 1;
-    padding: 0 20px;
-}
-
-h1 {
-    color: var(--primary-green);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-h2 {
-    color: var(--primary-green);
-    margin-bottom: 15px;
-}
-
-h3 {
-    color: var(--primary-gray);
-    margin-bottom: 10px;
-}
-
-.description {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 18px;
-}
-
-/* Estilos para el breadcrumb */
-.breadcrumb-container {
-    margin-bottom: 30px;
-}
-
-.breadcrumb {
-    display: flex;
-    list-style: none;
-    padding: 10px 15px;
-    background-color: var(--breadcrumb-bg);
-    border-radius: 4px;
-    margin: 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.3s ease;
-}
-
-.breadcrumb:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.breadcrumb-item {
-    position: relative;
-    padding: 0 10px;
-    cursor: pointer;
-    color: var(--primary-gray);
-    transition: all 0.3s ease;
-}
-
-.breadcrumb-item:not(:last-child)::after {
-    content: '>';
-    margin-left: 10px;
-    color: #ccc;
-    transition: transform 0.3s ease;
-}
-
-.breadcrumb-item.active {
-    color: var(--breadcrumb-active);
-    font-weight: 600;
-    transform: scale(1.05);
-}
-
-.breadcrumb-item:hover {
-    text-decoration: underline;
-    color: var(--primary-green);
-}
-
-.breadcrumb-item:hover:not(:last-child)::after {
-    transform: translateX(3px);
-}
-
-/* Estilos para el carrusel */
-.carousel-container {
-    position: relative;
-    width: 100%;
-    overflow: visible;
-    margin: 20px 0;
-    padding: 10px 0;
-}
-
-.carousel-step {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    transform: translateX(50px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    pointer-events: none;
-    height: 0;
-}
-
-.carousel-step.active {
-    opacity: 1;
-    transform: translateX(0);
-    position: relative;
-    pointer-events: all;
-    height: auto;
-}
-
-.carousel-step.slide-out {
-    opacity: 0;
-    transform: translateX(-50px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.carousel-step.hidden {
-    display: none;
-}
-
-/* Estilos para los tipos de solicitud */
-.request-types,
-.subsection-types {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-    margin: 20px 0 40px;
-    padding: 10px;
-}
-
-.request-type,
-.subsection-type {
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-    margin: 5px;
-}
-
-.request-type:before,
-.subsection-type:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(9, 113, 55, 0.05) 0%, rgba(9, 113, 55, 0.1) 100%);
-    transform: translateY(100%);
-    transition: transform 0.4s ease;
-    z-index: -1;
-}
-
-.request-type:hover,
-.subsection-type:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    border-color: var(--primary-green);
-    z-index: 2;
-}
-
-.request-type:hover:before,
-.subsection-type:hover:before {
-    transform: translateY(0);
-}
-
-.request-type h3,
-.subsection-type h3 {
-    color: var(--primary-green);
-    margin-bottom: 10px;
-    transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.request-type:hover h3,
-.subsection-type:hover h3 {
-    transform: translateY(-2px);
-    color: #065d2d;
-}
-
-.request-type p,
-.subsection-type p {
-    color: var(--primary-gray);
-    font-size: 14px;
-    transition: opacity 0.3s ease;
-}
-
-.request-type:hover p,
-.subsection-type:hover p {
-    opacity: 0.9;
-}
-
-/* Estilos para el formulario */
-.form-container {
-    background-color: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--primary-gray);
-}
-
-input[type="text"],
-select,
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-input[type="text"]:focus,
-select:focus,
-textarea:focus {
-    outline: none;
-    border-color: var(--primary-green);
-    box-shadow: 0 0 0 2px rgba(9, 113, 55, 0.2);
-}
-
-.error-message {
-    color: var(--error-color);
-    font-size: 14px;
-    margin-top: 5px;
-    display: block;
-}
-
-/* Estilos para los checkboxes */
-.checkbox-group {
-    margin-bottom: 20px;
-}
-
-.checkbox-item {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.checkbox-item input[type="checkbox"] {
-    margin-right: 10px;
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-}
-
-.checkbox-item label {
-    display: inline;
-    cursor: pointer;
-}
-
-/* Estilos específicos para la sección Ámbito o Clase */
-#step-ambito-clase .form-group h3 {
-    margin-bottom: 15px;
-    color: var(--primary-green);
-    font-size: 18px;
-}
-
-#step-ambito-clase .checkbox-group {
-    padding-left: 10px;
-    border-left: 3px solid var(--light-gray);
-}
-
-#step-ambito-clase .checkbox-item {
-    transition: all 0.3s ease;
-}
-
-#step-ambito-clase .checkbox-item:hover {
-    transform: translateX(5px);
-}
-
-/* Estilos para las opciones de clase según ámbito */
-.clase-audiovisual,
-.clase-dramatico {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.clase-audiovisual:not(.hidden),
-.clase-dramatico:not(.hidden) {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.hidden {
-    display: none;
-}
-
-/* Estilos para la tabla de exhibiciones */
-.table-container {
-    margin-bottom: 20px;
-    overflow-x: auto;
-}
-
-.exhibiciones-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0;
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: var(--shadow-light);
-    margin-bottom: 20px;
-}
-
-.exhibiciones-table th,
-.exhibiciones-table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.exhibiciones-table th {
-    background: var(--gradient-primary);
-    color: var(--white);
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-    position: relative;
-    background-color: #097137;
-}
-
-.exhibiciones-table th::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.exhibiciones-table tr:nth-child(even) {
-    background-color: var(--lighter-gray);
-}
-
-.exhibiciones-table tr:hover {
-    background-color: rgba(39, 174, 96, 0.05);
-    transform: scale(1.01);
-    transition: all 0.2s ease;
-}
-
-.exhibiciones-table .action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.exhibiciones-table .action-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--primary-green);
-    font-size: 14px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.exhibiciones-table .action-button:hover {
-    background-color: rgba(39, 174, 96, 0.1);
-    transform: translateY(-1px);
-}
-
-.exhibiciones-table .delete-button {
-    color: var(--error-color);
-}
-
-.exhibiciones-table .delete-button:hover {
-    background-color: rgba(231, 76, 60, 0.1);
-}
-
-/* Estilos para el formulario de exhibición */
-.exhibicion-form {
-    background-color: var(--light-gray);
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.exhibicion-form h3 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: var(--primary-green);
-}
-
-.form-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-/* Estilos para los botones */
-.btn {
-    background-color: var(--primary-green);
-    color: var(--white);
-    border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.btn:before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease, height 0.6s ease;
-}
-
-.btn:hover {
-    background-color: #065d2d;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.btn:hover:before {
-    width: 300px;
-    height: 300px;
-}
-
-.btn:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-}
-
-.btn-secondary {
-    background-color: var(--primary-gray);
-}
-
-.btn-secondary:hover {
-    background-color: #444444;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
-.navigation-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
-/* Estilos mejorados para radio buttons */
-.styled-radio {
-    margin: 15px 0;
-}
-
-.styled-radio .radio-option {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.styled-radio input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--primary-green);
-    border-radius: 50%;
-    margin-right: 10px;
-    position: relative;
-    cursor: pointer;
-}
-
-.styled-radio input[type="radio"]:checked {
-    background-color: var(--primary-green);
-    border: 2px solid var(--primary-green);
-}
-
-.styled-radio input[type="radio"]:checked::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: white;
-}
-
-.styled-radio label {
-    font-size: 16px;
-    cursor: pointer;
-}
-
-/* Estilos mejorados para inputs y textareas */
-.styled-input,
-.styled-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-.styled-input:focus,
-.styled-textarea:focus {
-    border-color: var(--primary-green);
-    outline: none;
-    box-shadow: 0 0 5px rgba(9, 113, 55, 0.2);
-}
-
-.styled-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-/* Estilos para la validación */
-.validation-section {
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-/* Estilos para el campo de observaciones */
-.observaciones-container {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-}
-
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* Estilos para el indicador de carga */
-.loading-indicator {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    font-family: 'Roboto', sans-serif;
-}
-
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: var(--primary-green);
-    animation: spin 1s ease-in-out infinite;
-    margin-bottom: 20px;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+// Función para validar RUT chileno
+function validarRut(rut) {
+    // Eliminar puntos y guión
+    rut = rut.replace(/\./g, '').replace('-', '');
+    
+    // Obtener dígito verificador
+    const dv = rut.slice(-1);
+    const rutNumero = parseInt(rut.slice(0, -1), 10);
+    
+    // Calcular dígito verificador
+    let suma = 0;
+    let multiplicador = 2;
+    
+    // Convertir RUT a string para iterar sobre sus dígitos
+    let rutString = rutNumero.toString();
+    
+    // Iterar de derecha a izquierda
+    for (let i = rutString.length - 1; i >= 0; i--) {
+        suma += parseInt(rutString.charAt(i), 10) * multiplicador;
+        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
     }
-}
-
-.loading-indicator p {
-    color: white;
-    font-size: 18px;
-    margin-top: 10px;
-}
-
-/* Estilos para el modal */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: var(--white);
-    padding: 30px;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.close-modal {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--primary-gray);
-}
-
-.close-modal:hover {
-    color: var(--error-color);
-}
-
-.modal h2 {
-    color: var(--primary-green);
-    margin-bottom: 15px;
-}
-
-.modal p {
-    margin-bottom: 20px;
-}
-
-/* Utilidades */
-.hidden {
-    display: none;
-}
-
-/* Estilos para el pie de página */
-.footer {
-    text-align: center;
-    padding: 20px 0;
-    margin-top: 30px;
-    border-top: 1px solid var(--border-color);
-    color: var(--primary-gray);
-    font-size: 14px;
-}
-
-/* Estilos para el datepicker */
-.flatpickr-calendar {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--primary-green);
-}
-
-.flatpickr-day.selected, 
-.flatpickr-day.startRange, 
-.flatpickr-day.endRange, 
-.flatpickr-day.selected.inRange, 
-.flatpickr-day.startRange.inRange, 
-.flatpickr-day.endRange.inRange, 
-.flatpickr-day.selected:focus, 
-.flatpickr-day.startRange:focus, 
-.flatpickr-day.endRange:focus, 
-.flatpickr-day.selected:hover, 
-.flatpickr-day.startRange:hover, 
-.flatpickr-day.endRange:hover, 
-.flatpickr-day.selected.prevMonthDay, 
-.flatpickr-day.startRange.prevMonthDay, 
-.flatpickr-day.endRange.prevMonthDay, 
-.flatpickr-day.selected.nextMonthDay, 
-.flatpickr-day.startRange.nextMonthDay, 
-.flatpickr-day.endRange.nextMonthDay {
-    background: var(--primary-green);
-    border-color: var(--primary-green);
-}
-
-.flatpickr-current-month .flatpickr-monthDropdown-months,
-.flatpickr-current-month input.cur-year {
-    font-weight: 500;
-    color: var(--primary-gray);
-}
-
-.flatpickr-day.today {
-    border-color: var(--primary-green);
-}
-
-.flatpickr-day.today:hover,
-.flatpickr-day.today:focus {
-    background: rgba(9, 113, 55, 0.2);
-    border-color: var(--primary-green);
-    color: var(--primary-gray);
-}
-
-/* Estilos responsivos */
-@media (max-width: 768px) {
-
-    .request-types,
-    .subsection-types {
-        grid-template-columns: 1fr;
+    
+    const dvEsperado = 11 - (suma % 11);
+    let dvCalculado;
+    
+    if (dvEsperado === 11) {
+        dvCalculado = '0';
+    } else if (dvEsperado === 10) {
+        dvCalculado = 'K';
+    } else {
+        dvCalculado = dvEsperado.toString();
     }
+    
+    return dvCalculado.toLowerCase() === dv.toLowerCase();
+}
 
-    .form-actions {
-        flex-direction: column;
-        gap: 10px;
+// Función para formatear automáticamente RUT mientras se escribe
+function formatRutInput(input) {
+    // Guardar la posición del cursor y la longitud anterior para restaurarla correctamente
+    let cursorPosition = 0;
+    let previousLength = 0;
+    
+    // Función auxiliar para formatear el RUT correctamente
+    function formatRut(value) {
+        // Eliminar puntos y guión
+        value = value.replace(/\./g, '').replace('-', '');
+        
+        // Obtener solo números y la letra K (mayúscula o minúscula)
+        value = value.replace(/[^\dkK]/g, '');
+        
+        // Separar el dígito verificador
+        let dv = '';
+        if (value.length > 0) {
+            dv = value.slice(-1);
+            value = value.slice(0, -1);
+        }
+        
+        // Formatear con puntos
+        let formattedValue = '';
+        let i = value.length;
+        
+        while (i > 0) {
+            const chunk = i >= 3 ? value.slice(i - 3, i) : value.slice(0, i);
+            formattedValue = chunk + (formattedValue ? '.' + formattedValue : '');
+            i -= 3;
+        }
+        
+        // Añadir el guión y el dígito verificador
+        if (dv) {
+            formattedValue += '-' + dv;
+        }
+        
+        return formattedValue;
     }
+    
+    input.addEventListener('input', function(e) {
+        try {
+            // Guardar la posición del cursor antes de modificar el valor
+            cursorPosition = this.selectionStart;
+            previousLength = this.value.length;
+            
+            // Obtener el valor formateado
+            const formattedValue = formatRut(this.value);
+            
+            // Actualizar el valor del input
+            this.value = formattedValue;
+            
+            // Calcular la nueva posición del cursor
+            let newPosition = cursorPosition;
+            
+            // Ajustar la posición si se añadieron caracteres (puntos o guión)
+            if (formattedValue.length > previousLength) {
+                const addedChars = formattedValue.length - previousLength;
+                newPosition = Math.min(cursorPosition + addedChars, formattedValue.length);
+            }
+            
+            // Establecer la nueva posición del cursor
+            if (typeof this.setSelectionRange === 'function') {
+                this.setSelectionRange(newPosition, newPosition);
+            }
+        } catch (error) {
+            console.warn('Error al formatear RUT:', error);
+        }
+    });
+    
+    // También manejar el pegado para formatear inmediatamente
+    input.addEventListener('paste', function(e) {
+        // Pequeño retraso para permitir que el evento de pegado complete
+        setTimeout(() => {
+            try {
+                // Formatear el valor pegado
+                this.value = formatRut(this.value);
+            } catch (error) {
+                console.warn('Error al formatear RUT pegado:', error);
+            }
+        }, 0);
+    });
+}
 
-    .navigation-buttons {
-        flex-direction: column;
-        gap: 10px;
+// Función para validar formato de email
+function validarEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+}
+
+// Función para formatear fecha en formato DD-MM-YYYY
+function formatearFechaEnvio() {
+    const fecha = new Date();
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    return `${dia}-${mes}-${año}`;
+}
+
+// Función para validar campos de observaciones obligatorios
+function validarObservacionesObligatorias(inputId, nombreCampo = 'observaciones') {
+    const input = document.getElementById(inputId);
+    if (!input || !input.value.trim()) {
+        alert(`Por favor, complete el campo de ${nombreCampo}.`);
+        return false;
     }
+    return true;
+}
 
-    .navigation-buttons button {
+// Variables globales
+let exhibicionesData = [];
+let editingIndex = -1;
+let currentStep = 'validacion-inicial';
+
+// Variables globales para almacenar datos de validación inicial
+let validacionInicialData = {
+    rut: '',
+    tipoUsuario: '',
+    emailValidacion: ''
+};
+
+// Variables globales para funciones
+let navigateToStepGlobal = null;
+let resetFormGlobal = null;
+
+// Función para enviar datos a Power Automate
+function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
+    const powerAutomateUrl = 'https://default0c13096209bc40fc8db89d043ff625.1a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/971fb86a29204a7aaaa83de432406db9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=09izjqz5nu4vqRe_PDvYq9iyx2r2WWSUrZqhwWTARSc';
+    
+    // Agregar logging para debug
+    console.log('Enviando datos:', JSON.stringify({
+        tipoSolicitud: tipoSolicitud,
+        datos: datos,
+        fechaEnvio: formatearFechaEnvio()
+    }, null, 2));
+    
+    // Mostrar indicador de carga
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.className = 'loading-indicator';
+    loadingIndicator.innerHTML = '<div class="spinner"></div><p>Enviando solicitud...</p>';
+    loadingIndicator.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-    }
-
-    .btn {
-        width: 100%;
-    }
-
-    .logo {
-        max-width: 200px;
-    }
-
-    .breadcrumb {
-        flex-wrap: wrap;
-        font-size: 0.9rem;
-    }
-}
-
-/* Est
-ilos específicos para la sección Ámbito o Clase */
-#step-ambito-clase .form-description {
-    color: #64748b;
-    font-size: 0.9rem;
-    margin-bottom: 16px;
-    font-style: italic;
-}
-
-#step-ambito-clase .form-group h3 {
-    margin-bottom: 8px;
-    color: var(--primary-green);
-    font-size: 1.2rem;
-    position: relative;
-    padding-left: 0;
-}
-
-#step-ambito-clase .form-group h3::before {
-    display: none;
-}
-
-#step-ambito-clase .checkbox-group {
-    border-left: 3px solid var(--primary-green-light);
-    padding-left: 20px;
-    margin-left: 10px;
-}
-
-#step-ambito-clase .checkbox-item {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateX(0);
-}
-
-#step-ambito-clase .checkbox-item:hover {
-    transform: translateX(8px);
-    border-color: var(--primary-green);
-}
-
-#step-ambito-clase .clase-audiovisual,
-#step-ambito-clase .clase-dramatico {
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    max-height: 0;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
-#step-ambito-clase .clase-audiovisual:not(.hidden),
-#step-ambito-clase .clase-dramatico:not(.hidden) {
-    opacity: 1;
-    transform: translateY(0);
-    max-height: 80px;
-    margin-bottom: 16px;
-    padding: 16px;
-}
-
-#step-ambito-clase .clase-audiovisual:not(.hidden):nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-#step-ambito-clase .clase-audiovisual:not(.hidden):nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-#step-ambito-clase .clase-dramatico:not(.hidden):nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.info-note {
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-    border: 1px solid #2196f3;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 16px 0;
-    color: #1565c0;
-    font-size: 0.9rem;
-    text-align: center;
-}
-
-.info-note p {
-    margin: 0;
-    font-weight: 500;
-}
-
-/* Animación para mostrar clases */
-@keyframes slideInClass {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-        max-height: 0;
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-        max-height: 80px;
-    }
-}
-
-#step-ambito-clase .clase-audiovisual.show,
-#step-ambito-clase .clase-dramatico.show {
-    animation: slideInClass 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Esti
-los para campos requeridos */
-.required {
-    color: var(--error-color);
-    font-weight: bold;
-    margin-left: 4px;
-}
-
-/* Estilos mejorados para textareas requeridas */
-textarea[required] {
-    border-left: 4px solid var(--primary-green-light);
-}
-
-textarea[required]:invalid {
-    border-left: 4px solid var(--error-color);
-}
-
-textarea[required]:valid {
-    border-left: 4px solid var(--success-color);
-}
-
-/* Mensaje de ayuda para campos requeridos */
-.form-group:has(textarea[required]) {
-    position: relative;
-}
-
-.form-group:has(textarea[required])::after {
-    content: "Este campo es obligatorio";
-    position: absolute;
-    bottom: -20px;
-    left: 0;
-    font-size: 0.8rem;
-    color: var(--primary-gray);
-    opacity: 0.7;
-    font-style: italic;
-}
-
-.sociedades-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 0;
-    background: var(--white);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: var(--shadow-light);
-}
-
-.sociedades-table th,
-.sociedades-table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.sociedades-table th {
-    background: var(--gradient-primary);
-    color: var(--white);
-    font-weight: 600;
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-    position: relative;
-    background-color: #097137;
-}
-
-.sociedades-table th::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.3);
-}
-
-.sociedades-table tr:nth-child(even) {
-    background-color: var(--lighter-gray);
-}
-
-.sociedades-table tr:hover {
-    background-color: rgba(39, 174, 96, 0.05);
-    transform: scale(1.01);
-    transition: all 0.2s ease;
-}
-
-.sociedades-table .action-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.sociedades-table .action-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--primary-green);
-    font-size: 14px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.sociedades-table .action-button:hover {
-    background-color: rgba(39, 174, 96, 0.1);
-    transform: translateY(-1px);
-}
-
-.sociedades-table .delete-button {
-    color: var(--error-color);
-}
-
-.sociedades-table .delete-button:hover {
-    background-color: rgba(231, 76, 60, 0.1);
-}
-
-/* Estilos para el formulario de sociedad */
-.sociedad-form {
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    padding: 24px;
-    border-radius: 16px;
-    margin: 24px 0;
-    box-shadow: var(--shadow-light);
-    border: 2px solid var(--border-color);
-    position: relative;
-    overflow: hidden;
-}
-
-.sociedad-form::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--gradient-secondary);
-}
-
-.sociedad-form h3 {
-    margin-top: 0;
-    margin-bottom: 24px;
-    color: var(--primary-green);
-    font-size: 1.3rem;
-}
-
-.sociedad-form .form-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-    justify-content: flex-end;
-}
-
-/* Animaciones para la tabla de sociedades */
-@keyframes fadeInSociedad {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.sociedades-table tbody tr {
-    animation: fadeInSociedad 0.3s ease-out;
-}
-
-/* Estilos responsivos para sociedades */
-@media (max-width: 768px) {
-    .sociedades-table {
-        font-size: 0.9rem;
-    }
-
-    .sociedades-table th,
-    .sociedades-table td {
-        padding: 12px 8px;
-    }
-
-    .sociedad-form {
-        padding: 16px;
-    }
-
-    .sociedad-form .form-actions {
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: flex;
         flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        color: white;
+    `;
+    document.body.appendChild(loadingIndicator);
+    
+    fetch(powerAutomateUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            tipoSolicitud: tipoSolicitud,
+            datos: datos,
+            fechaEnvio: formatearFechaEnvio()
+        })
+    })
+    .then(response => {
+        document.body.removeChild(loadingIndicator);
+        
+        // Agregar logging para debug
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (response.ok) {
+            alert('Su solicitud ha sido enviada con éxito. Nos pondremos en contacto con usted a la brevedad.');
+            // Usar las funciones globales si están disponibles
+            if (navigateToStepGlobal) {
+                navigateToStepGlobal('inicio');
+            }
+            if (resetFormGlobal) {
+                resetFormGlobal();
+            }
+        } else {
+            // Intentar obtener más información del error
+            response.text().then(errorText => {
+                console.error('Error response body:', errorText);
+                alert('Ha ocurrido un error al enviar su solicitud. Por favor, inténtelo nuevamente más tarde.');
+            });
+            console.error('Error al enviar datos:', response.status);
+        }
+    })
+    .catch(error => {
+        document.body.removeChild(loadingIndicator);
+        alert('Ha ocurrido un error al enviar su solicitud. Por favor, inténtelo nuevamente más tarde.');
+        console.error('Error al enviar datos:', error);
+    });
+}
+
+// Función para formatear automáticamente fechas mientras se escribe
+function formatDateInput(input) {
+    // Guardar la posición del cursor y la longitud anterior para restaurarla correctamente
+    let cursorPosition = 0;
+    let previousLength = 0;
+    
+    // Función auxiliar para formatear la fecha correctamente
+    function formatDate(value) {
+        // Asegurarse de que solo tenemos dígitos
+        value = value.replace(/\D/g, '');
+        
+        // Limitar a 8 dígitos (ddmmyyyy)
+        if (value.length > 8) {
+            value = value.slice(0, 8);
+        }
+        
+        // Formatear con guiones
+        let formattedValue = value;
+        
+        if (value.length >= 5) {
+            // Formato completo dd-mm-yyyy o parcial dd-mm-y...
+            formattedValue = value.substring(0, 2) + '-' + value.substring(2, 4) + '-' + value.substring(4);
+        } else if (value.length >= 3) {
+            // Formato parcial dd-m...
+            formattedValue = value.substring(0, 2) + '-' + value.substring(2);
+        }
+        
+        return formattedValue;
+    }
+    
+    input.addEventListener('input', function(e) {
+        // Verificar que el input no sea de tipo hidden antes de continuar
+        if (this.type === 'hidden') return;
+        
+        try {
+            // Guardar la posición del cursor antes de modificar el valor
+            cursorPosition = this.selectionStart;
+            previousLength = this.value.length;
+            
+            // Obtener el valor formateado
+            const formattedValue = formatDate(this.value);
+            
+            // Actualizar el valor del input
+            this.value = formattedValue;
+            
+            // Solo intentar establecer la selección si el elemento no es de tipo hidden
+            if (this.type !== 'hidden' && typeof this.setSelectionRange === 'function') {
+                // Calcular la nueva posición del cursor
+                let newPosition = cursorPosition;
+                
+                // Ajustar la posición si se añadieron guiones
+                if (cursorPosition === 2 && formattedValue.charAt(2) === '-') {
+                    // Si el cursor está después del día y hay un guión, moverlo después del guión
+                    newPosition = 3;
+                } else if (cursorPosition === 5 && formattedValue.charAt(5) === '-') {
+                    // Si el cursor está después del mes y hay un guión, moverlo después del guión
+                    newPosition = 6;
+                } else if (formattedValue.length > previousLength) {
+                    // Si se añadieron caracteres (guiones), ajustar la posición
+                    const addedChars = formattedValue.length - previousLength;
+                    newPosition = Math.min(cursorPosition + addedChars, formattedValue.length);
+                }
+                
+                // Establecer la nueva posición del cursor
+                this.setSelectionRange(newPosition, newPosition);
+            }
+        } catch (error) {
+            console.warn('Error al formatear fecha:', error);
+        }
+    });
+    
+    // También manejar el pegado para formatear inmediatamente
+    input.addEventListener('paste', function(e) {
+        // Verificar que el input no sea de tipo hidden antes de continuar
+        if (this.type === 'hidden') return;
+        
+        // Pequeño retraso para permitir que el evento de pegado complete
+        setTimeout(() => {
+            try {
+                // Formatear el valor pegado
+                this.value = formatDate(this.value);
+            } catch (error) {
+                console.warn('Error al formatear fecha pegada:', error);
+            }
+        }, 0);
+    });
+}
+
+// Función para inicializar el formateo de RUT en campos correspondientes
+function initializeRutFormatting() {
+    // Seleccionar todos los inputs que tengan placeholder con formato de RUT o contengan "rut" en su id o name
+    const rutInputs = document.querySelectorAll('input[placeholder*="RUT"], input[id*="rut"], input[name*="rut"], input[id*="Rut"], input[name*="Rut"]');
+    
+    if (rutInputs.length > 0) {
+        console.log('Inicializando formateo de RUT en', rutInputs.length, 'campos');
+        
+        rutInputs.forEach(input => {
+            // Aplicar formateo automático mientras se escribe
+            formatRutInput(input);
+        });
+    } else {
+        console.warn('No se encontraron campos de RUT para inicializar formateo');
     }
 }
 
-/* Mejora
-s adicionales para el breadcrumb */
-.breadcrumb-item {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
+// Función para inicializar datepickers en campos de fecha
+function initializeDatepickers() {
+    // Seleccionar todos los inputs que tengan placeholder con formato de fecha o sean de tipo date
+    const dateInputs = document.querySelectorAll('input[placeholder*="dd-mm-yyyy"], input[placeholder*="dd/mm/yyyy"], input[type="date"], input[id*="fecha"]');
+    
+    if (dateInputs.length > 0) {
+        console.log('Inicializando datepickers en', dateInputs.length, 'campos');
+        
+        dateInputs.forEach(input => {
+            // Aplicar formateo automático mientras se escribe
+            formatDateInput(input);
+            
+            // Asegurarse de que flatpickr esté disponible
+            if (typeof flatpickr === 'function') {
+                try {
+                    // Configurar flatpickr en español
+                    if (flatpickr.l10ns && flatpickr.l10ns.es) {
+                        flatpickr.localize(flatpickr.l10ns.es);
+                    }
+                    
+                    // Configuración para que flatpickr no interfiera con el formateo manual
+                    flatpickr(input, {
+                        dateFormat: "d-m-Y",
+                        allowInput: true,
+                        // Desactivar altInput para evitar que cree un campo oculto
+                        altInput: false,
+                        disableMobile: true,
+                        // Función personalizada para analizar fechas en formato dd-mm-yyyy
+                        parseDate: (datestr) => {
+                            if (!datestr) return undefined;
+                            
+                            // Verificar si la fecha tiene el formato dd-mm-yyyy
+                            const match = datestr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+                            if (match) {
+                                const day = parseInt(match[1], 10);
+                                const month = parseInt(match[2], 10) - 1; // Meses en JS son 0-11
+                                const year = parseInt(match[3], 10);
+                                return new Date(year, month, day);
+                            }
+                            
+                            // Si no coincide con el formato, intentar con Date.parse
+                            return new Date(datestr);
+                        },
+                        onReady: function(selectedDates, dateStr, instance) {
+                            // Añadir clase para estilos personalizados
+                            instance.calendarContainer.classList.add('custom-datepicker');
+                            console.log('Datepicker inicializado en', input.id || 'campo sin id');
+                        },
+                        onChange: function(selectedDates, dateStr, instance) {
+                            // Asegurarse de que el formato sea dd-mm-yyyy
+                            if (selectedDates.length > 0) {
+                                const date = selectedDates[0];
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = date.getFullYear();
+                                
+                                // Actualizar el valor del input manualmente
+                                input.value = `${day}-${month}-${year}`;
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error al inicializar datepicker en', input.id || 'campo sin id', error);
+                }
+            } else {
+                console.warn('Flatpickr no está disponible. Solo se aplicará el formateo manual.');
+            }
+        });
+    } else {
+        console.warn('No se encontraron campos de fecha para inicializar datepickers');
+    }
 }
 
-.breadcrumb-item:hover {
-    color: var(--white) !important;
-    transform: scale(1.05);
-}
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencias a elementos del DOM
+    const requestTypes = document.querySelectorAll('.request-type');
+    const subsectionTypes = document.querySelectorAll('.subsection-type');
+    const breadcrumb = document.getElementById('breadcrumb');
+    const prevStepButtons = document.querySelectorAll('.prev-step');
+    
+    // Inicializar datepickers
+    initializeDatepickers();
+    
+    // Inicializar formateo de RUT
+    initializeRutFormatting();
 
-.breadcrumb-item:active {
-    transform: scale(0.98);
-}
+    // Función para inicializar el breadcrumb
+    function initializeBreadcrumb() {
+        const breadcrumbContainer = document.getElementById('breadcrumb');
+        if (breadcrumbContainer) {
+            breadcrumbContainer.innerHTML = '';
+            
+            const inicioItem = document.createElement('li');
+            inicioItem.classList.add('breadcrumb-item', 'active');
+            inicioItem.setAttribute('data-step', 'inicio');
+            inicioItem.textContent = 'Inicio';
+            inicioItem.addEventListener('click', () => {
+                if (navigateToStepGlobal) {
+                    navigateToStepGlobal('inicio');
+                }
+            });
+            breadcrumbContainer.appendChild(inicioItem);
+        }
+    }
 
-/* Indicador visual de que es clickeable */
-.breadcrumb-item::before {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.8);
-    transition: width 0.3s ease;
-}
+    // Inicializar el primer paso como activo
+    const validacionInicialStep = document.getElementById('step-validacion-inicial');
+    if (validacionInicialStep) {
+        validacionInicialStep.classList.remove('hidden');
+        validacionInicialStep.classList.add('active');
+    }
 
-.breadcrumb-item:hover::before {
-    width: 80%;
-}
+    // Inicializar el breadcrumb
+    initializeBreadcrumb();
 
-.breadcrumb-item.active::before {
-    width: 100%;
-    background: var(--white);
-}
+    // Cargar países desde el archivo JSON
+    function cargarPaises() {
+        const rutaAbsoluta = window.location.origin + '/assets/paises.json';
+        
+        fetch(rutaAbsoluta, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-cache'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const paisSelects = document.querySelectorAll('select[id$="-pais"], #exhibicion-pais, #pais');
+            
+            paisSelects.forEach(paisSelect => {
+                if (!paisSelect) return;
+                
+                // Limpiar opciones existentes excepto la primera
+                while (paisSelect.options.length > 1) {
+                    paisSelect.remove(1);
+                }
+                
+                // Agregar cada país como una opción
+                data.forEach(pais => {
+                    const option = document.createElement('option');
+                    option.value = pais['Nombre del país'];
+                    option.textContent = pais['Nombre del país'];
+                    paisSelect.appendChild(option);
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar los países:', error);
+        });
+    }
 
-/* Animación suave para cambios de breadcrumb */
-.breadcrumb {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    // Cargar países al iniciar la página
+    cargarPaises();
+ 
+   // Función para actualizar el breadcrumb
+    function updateBreadcrumb(currentStep, addStep = true) {
+        if (addStep) {
+            const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const existingItem = breadcrumb.querySelector(`[data-step="${currentStep}"]`);
+            
+            if (existingItem) {
+                existingItem.classList.add('active');
+                
+                let nextSibling = existingItem.nextElementSibling;
+                while (nextSibling) {
+                    const temp = nextSibling.nextElementSibling;
+                    breadcrumb.removeChild(nextSibling);
+                    nextSibling = temp;
+                }
+            } else {
+                const newItem = document.createElement('li');
+                newItem.classList.add('breadcrumb-item', 'active');
+                newItem.setAttribute('data-step', currentStep);
+                
+                // Establecer el texto según el paso
+                const stepNames = {
+                    'inicio': 'Inicio',
+                    'actualizacion': 'Actualización de información',
+                    'datos-personales': 'Datos personales',
+                    'datos-contacto': 'Datos de contacto',
+                    'datos-bancarios': 'Datos bancarios',
+                    'datos-autor': 'Datos de autor',
+                    'ambito-clase': 'Ámbito o Clase',
+                    'sociedades': 'Sociedades',
+                    'exhibicion': 'Notificación de exhibición de obra en el extranjero',
+                    'conflicto': 'Declaración de conflicto en obra',
+                    'certificado': 'Solicitud de certificado',
+                    'afiliacion': 'Certificado de Afiliación',
+                    'derechos-recibidos': 'Certificado de Derechos Recibidos',
+                    'desafiliacion': 'Desafiliación'
+                };
+                
+                newItem.textContent = stepNames[currentStep] || currentStep;
+                
+                breadcrumb.appendChild(newItem);
+            }
+            
+            // Siempre agregar event listeners después de cualquier cambio
+            addBreadcrumbListeners();
+        } else {
+            const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+            items.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-step') === currentStep) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Asegurar que los event listeners estén presentes
+            addBreadcrumbListeners();
+        }
+    }
 
-.breadcrumb-item {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+    // Función para navegar a un paso específico
+    function navigateToStep(step) {
+        limpiarCamposFormulario();
+        
+        if (step === 'inicio') {
+            const breadcrumbContainer = document.getElementById('breadcrumb');
+            breadcrumbContainer.innerHTML = '';
+            
+            const inicioItem = document.createElement('li');
+            inicioItem.classList.add('breadcrumb-item', 'active');
+            inicioItem.setAttribute('data-step', 'inicio');
+            inicioItem.textContent = 'Inicio';
+            inicioItem.addEventListener('click', () => {
+                if (navigateToStepGlobal) {
+                    navigateToStepGlobal('inicio');
+                }
+            });
+            breadcrumbContainer.appendChild(inicioItem);
+        } else {
+            updateBreadcrumb(step, false);
+        }
+        
+        const currentActiveStep = document.querySelector('.carousel-step.active');
+        if (currentActiveStep) {
+            currentActiveStep.classList.add('slide-out');
+            currentActiveStep.classList.remove('active');
+            
+            setTimeout(() => {
+                currentActiveStep.classList.add('hidden');
+                currentActiveStep.classList.remove('slide-out');
+                
+                const targetStep = document.getElementById(`step-${step}`);
+                if (targetStep) {
+                    targetStep.classList.remove('hidden');
+                    setTimeout(() => {
+                        targetStep.classList.add('active');
+                        
+                        // Mostrar formularios automáticamente para ciertas secciones
+                        if (step === 'datos-contacto') {
+                            const updateOptionsContacto = document.getElementById('update-options-contacto');
+                            if (updateOptionsContacto) {
+                                updateOptionsContacto.classList.remove('hidden');
+                            }
+                        } else if (step === 'datos-bancarios') {
+                            const updateOptionsBancarios = document.getElementById('update-options-bancarios');
+                            if (updateOptionsBancarios) {
+                                updateOptionsBancarios.classList.remove('hidden');
+                            }
+                        } else if (step === 'ambito-clase') {
+                            const ambitoClaseForm = document.getElementById('ambito-clase-form');
+                            if (ambitoClaseForm) {
+                                ambitoClaseForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'sociedades') {
+                            const sociedadesContainer = document.getElementById('sociedades-container');
+                            if (sociedadesContainer) {
+                                sociedadesContainer.classList.remove('hidden');
+                            }
+                        }
+                    }, 50);
+                }
+            }, 500);
+        } else {
+            const targetStep = document.getElementById(`step-${step}`);
+            if (targetStep) {
+                targetStep.classList.remove('hidden');
+                setTimeout(() => {
+                    targetStep.classList.add('active');
+                    
+                    // Mostrar formularios automáticamente para ciertas secciones
+                    if (step === 'datos-contacto') {
+                        const updateOptionsContacto = document.getElementById('update-options-contacto');
+                        if (updateOptionsContacto) {
+                            updateOptionsContacto.classList.remove('hidden');
+                        }
+                    } else if (step === 'datos-bancarios') {
+                        const updateOptionsBancarios = document.getElementById('update-options-bancarios');
+                        if (updateOptionsBancarios) {
+                            updateOptionsBancarios.classList.remove('hidden');
+                        }
+                    } else if (step === 'ambito-clase') {
+                        const ambitoClaseForm = document.getElementById('ambito-clase-form');
+                        if (ambitoClaseForm) {
+                            ambitoClaseForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'sociedades') {
+                        const sociedadesContainer = document.getElementById('sociedades-container');
+                        if (sociedadesContainer) {
+                            sociedadesContainer.classList.remove('hidden');
+                        }
+                    }
+                }, 50);
+            }
+        }
+    }
 
-/* Tooltip para breadcrumb items */
-.breadcrumb-item[title] {
-    position: relative;
-}
+    // Función para limpiar todos los campos del formulario
+    function limpiarCamposFormulario() {
+        document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"]').forEach(input => {
+            input.value = '';
+        });
+        
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.value = '';
+        });
+        
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.checked = false;
+        });
+        
+        document.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        document.querySelectorAll('.field-container:not(.hidden)').forEach(container => {
+            container.classList.add('hidden');
+        });
+        
+        const nombreObraField = document.getElementById('nombre-obra-field');
+        if (nombreObraField) {
+            nombreObraField.classList.add('hidden');
+        }
+    }
 
-.breadcrumb-item[title]:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: -35px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    white-space: nowrap;
-    z-index: 1000;
-}
+    // Función para agregar event listeners al breadcrumb
+    function addBreadcrumbListeners() {
+        const breadcrumbItems = breadcrumb.querySelectorAll('.breadcrumb-item');
+        breadcrumbItems.forEach(item => {
+            // Remover listeners existentes clonando el elemento
+            const newItem = item.cloneNode(true);
+            item.parentNode.replaceChild(newItem, item);
+            
+            // Agregar nuevo listener
+            newItem.addEventListener('click', () => {
+                const step = newItem.getAttribute('data-step');
+                if (step && navigateToStepGlobal) {
+                    // Eliminar todos los elementos posteriores al clickeado
+                    let nextSibling = newItem.nextElementSibling;
+                    while (nextSibling) {
+                        const temp = nextSibling.nextElementSibling;
+                        breadcrumb.removeChild(nextSibling);
+                        nextSibling = temp;
+                    }
+                    
+                    // Activar el elemento clickeado
+                    breadcrumbItems.forEach(breadcrumbItem => breadcrumbItem.classList.remove('active'));
+                    newItem.classList.add('active');
+                    
+                    navigateToStepGlobal(step);
+                }
+            });
+        });
+    }
 
-.validation-section input[type="email"] {
-    width: 100% !important;
-    padding: 16px 20px !important;
-    border: 2px solid var(--border-color) !important;
-    border-radius: 12px !important;
-    font-size: 16px !important;
-    font-family: inherit !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    background: var(--white) !important;
-    color: var(--primary-gray) !important;
-}
+    // Asignar funciones a variables globales para acceso desde enviarDatosAPowerAutomate
+    navigateToStepGlobal = navigateToStep;
 
-.validation-section input[type="email"]:focus {
-    outline: none !important;
-    border-color: var(--primary-green) !important;
-    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1) !important;
-    transform: translateY(-2px) !important;
-}
+    // Event Listeners para los tipos de solicitud
+    requestTypes.forEach(type => {
+        type.addEventListener('click', function() {
+            const requestType = this.getAttribute('data-type');
+            
+            if (requestType === 'actualizacion') {
+                navigateToStep('actualizacion');
+                updateBreadcrumb('actualizacion');
+            } else if (requestType === 'exhibicion') {
+                navigateToStep('exhibicion');
+                updateBreadcrumb('exhibicion');
+            } else if (requestType === 'conflicto') {
+                navigateToStep('conflicto');
+                updateBreadcrumb('conflicto');
+            } else if (requestType === 'certificado') {
+                navigateToStep('certificado');
+                updateBreadcrumb('certificado');
+            } else if (requestType === 'desafiliacion') {
+                navigateToStep('desafiliacion');
+                updateBreadcrumb('desafiliacion');
+            } else {
+                alert('Esta funcionalidad estará disponible próximamente.');
+            }
+        });
+    });
 
-.validation-section input[type="email"]:hover {
-    border-color: var(--primary-green-light) !important;
-}/* E
-spaciado para labels de correo después de la nota */
-.validation-section .info-note + label {
-    margin-top: 16px;
-}
+    // Event Listeners para las subsecciones
+    subsectionTypes.forEach(subsection => {
+        subsection.addEventListener('click', function() {
+            const subsectionType = this.getAttribute('data-subsection');
+            
+            if (['datos-personales', 'datos-contacto', 'datos-bancarios', 'datos-autor'].includes(subsectionType)) {
+                const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+                if (items.length > 2) {
+                    for (let i = items.length - 1; i >= 2; i--) {
+                        breadcrumb.removeChild(items[i]);
+                    }
+                }
+                
+                currentStep = subsectionType;
+                navigateToStep(subsectionType);
+                updateBreadcrumb(subsectionType);
+            } else if (['ambito-clase', 'sociedades', 'afiliacion', 'derechos-recibidos'].includes(subsectionType)) {
+                navigateToStep(subsectionType);
+                updateBreadcrumb(subsectionType);
+            } else {
+                alert('Esta funcionalidad estará disponible próximamente.');
+                navigateToStep('actualizacion');
+                updateBreadcrumb('actualizacion');
+            }
+        });
+    });
+
+    // Event listeners para los botones de navegación
+    prevStepButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const prevStep = button.getAttribute('data-prev');
+            currentStep = prevStep;
+            
+            limpiarCamposFormulario();
+            
+            const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+            if (prevStep === 'actualizacion' && items.length > 2) {
+                for (let i = items.length - 1; i >= 2; i--) {
+                    breadcrumb.removeChild(items[i]);
+                }
+            }
+            
+            navigateToStep(prevStep);
+            
+            if (prevStep !== 'actualizacion') {
+                updateBreadcrumb(prevStep, false);
+            }
+        });
+    });  
+  // Validadores de RUT para cada sección
+    const rutValidators = [
+        { buttonId: 'validate-rut-inicial', inputId: 'rut-inicial', errorId: 'rut-inicial-error', formId: 'step-inicio' },
+        { buttonId: 'validate-rut', inputId: 'rut', errorId: 'rut-error', formId: 'update-options' },
+        { buttonId: 'validate-rut-contacto', inputId: 'rut-contacto', errorId: 'rut-contacto-error', formId: 'update-options-contacto' },
+        { buttonId: 'validate-rut-bancarios', inputId: 'rut-bancarios', errorId: 'rut-bancarios-error', formId: 'update-options-bancarios' },
+        { buttonId: 'validate-rut-afiliacion', inputId: 'rut-afiliacion', errorId: 'rut-afiliacion-error', formId: 'afiliacion-form' },
+        { buttonId: 'validate-rut-derechos', inputId: 'rut-derechos', errorId: 'rut-derechos-error', formId: 'derechos-form' },
+        { buttonId: 'validate-rut-desafiliacion', inputId: 'rut-desafiliacion', errorId: 'rut-desafiliacion-error', formId: 'desafiliacion-form' },
+        { buttonId: 'validate-rut-exhibicion', inputId: 'rut-exhibicion', errorId: 'rut-exhibicion-error', formId: 'exhibicion-container' },
+        { buttonId: 'validate-rut-conflicto', inputId: 'rut-conflicto', errorId: 'rut-conflicto-error', formId: 'conflicto-form' }
+    ];
+
+    rutValidators.forEach(validator => {
+        const button = document.getElementById(validator.buttonId);
+        if (button) {
+            button.addEventListener('click', function() {
+                const rutInput = document.getElementById(validator.inputId);
+                const rutError = document.getElementById(validator.errorId);
+                const form = document.getElementById(validator.formId);
+                
+                if (!rutInput || !rutError) return;
+                
+                const rutValue = rutInput.value.trim();
+                
+                if (!rutValue) {
+                    rutError.textContent = 'Por favor, ingrese un RUT del autor';
+                    return;
+                }
+                
+                // Validación de tipo de usuario para todas las secciones
+                const sectionMap = {
+                    'validate-rut-inicial': 'tipo-usuario-inicial',
+                    'validate-rut': 'tipo-usuario',
+                    'validate-rut-contacto': 'tipo-usuario-contacto',
+                    'validate-rut-bancarios': 'tipo-usuario-bancarios',
+                    'validate-rut-ambito': 'tipo-usuario-ambito',
+                    'validate-rut-sociedades': 'tipo-usuario-sociedades',
+                    'validate-rut-exhibicion': 'tipo-usuario-exhibicion',
+                    'validate-rut-conflicto': 'tipo-usuario-conflicto',
+                    'validate-rut-afiliacion': 'tipo-usuario-afiliacion',
+                    'validate-rut-derechos': 'tipo-usuario-derechos',
+                    'validate-rut-desafiliacion': 'tipo-usuario-desafiliacion'
+                };
+                
+                const tipoUsuarioName = sectionMap[validator.buttonId];
+                if (tipoUsuarioName) {
+                    const tipoUsuario = document.querySelector(`input[name="${tipoUsuarioName}"]:checked`);
+                    if (!tipoUsuario) {
+                        rutError.textContent = 'Por favor, seleccione si es socio vigente o representante legal';
+                        return;
+                    }
+                }
+                
+                // Validar correo electrónico
+                const emailMap = {
+                    'validate-rut': 'email-validacion',
+                    'validate-rut-contacto': 'email-validacion-contacto',
+                    'validate-rut-bancarios': 'email-validacion-bancarios',
+                    'validate-rut-ambito': 'email-validacion-ambito',
+                    'validate-rut-sociedades': 'email-validacion-sociedades',
+                    'validate-rut-exhibicion': 'email-validacion-exhibicion',
+                    'validate-rut-conflicto': 'email-validacion-conflicto',
+                    'validate-rut-afiliacion': 'email-validacion-afiliacion',
+                    'validate-rut-derechos': 'email-validacion-derechos',
+                    'validate-rut-desafiliacion': 'email-validacion-desafiliacion'
+                };
+                
+                const emailInputId = emailMap[validator.buttonId];
+                if (emailInputId) {
+                    const emailInput = document.getElementById(emailInputId);
+                    if (!emailInput || !emailInput.value.trim()) {
+                        rutError.textContent = 'Por favor, ingrese su correo electrónico';
+                        return;
+                    }
+                    if (!validarEmail(emailInput.value.trim())) {
+                        rutError.textContent = 'Por favor, ingrese un correo electrónico válido';
+                        return;
+                    }
+                }
+                
+                if (!validarRut(rutValue)) {
+                    rutError.textContent = 'RUT del autor inválido';
+                } else {
+                    rutError.textContent = '';
+                    if (validator.buttonId === 'validate-rut-inicial') {
+                        // Guardar datos de validación inicial
+                        validacionInicialData.rut = rutValue;
+                        const tipoUsuarioElement = document.querySelector('input[name="tipo-usuario-inicial"]:checked');
+                        const emailElement = document.getElementById('email-validacion-inicial');
+                        
+                        if (tipoUsuarioElement) {
+                            validacionInicialData.tipoUsuario = tipoUsuarioElement.value;
+                        }
+                        if (emailElement) {
+                            validacionInicialData.emailValidacion = emailElement.value;
+                        }
+                        
+                        // Para la validación inicial, ir al home (inicio)
+                        navigateToStepGlobal('inicio');
+                    } else if (form) {
+                        form.classList.remove('hidden');
+                    }
+                }
+            });
+        }
+    });
+
+    // Handlers para checkboxes de actualización de datos
+    const updateFieldsHandlers = [
+        { checkboxName: 'update-fields', fields: ['nombre', 'seudonimo', 'genero'] },
+        { checkboxName: 'update-fields-contacto', fields: ['direccion', 'email', 'telefono'] }
+    ];
+
+    updateFieldsHandlers.forEach(handler => {
+        const checkboxes = document.querySelectorAll(`input[name="${handler.checkboxName}"]`);
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const fieldName = this.value;
+                const fieldContainer = document.getElementById(`${fieldName}-field`);
+                
+                if (fieldContainer) {
+                    if (this.checked) {
+                        fieldContainer.classList.remove('hidden');
+                    } else {
+                        fieldContainer.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+
+    // Handler para tipo de afiliación
+    const tipoAfiliacionRadios = document.querySelectorAll('input[name="tipo-afiliacion"]');
+    tipoAfiliacionRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const nombreObraContainer = document.getElementById('nombre-obra-container');
+            if (nombreObraContainer) {
+                if (this.value === 'con-obra') {
+                    nombreObraContainer.classList.remove('hidden');
+                } else {
+                    nombreObraContainer.classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    // Handler para tipo de banco
+    const tipoBancoSelect = document.getElementById('tipo-banco');
+    if (tipoBancoSelect) {
+        tipoBancoSelect.addEventListener('change', function() {
+            const tipoCuentaField = document.getElementById('tipo-cuenta-field');
+            const paisField = document.getElementById('pais-field');
+            const direccionBancoField = document.getElementById('direccion-banco-field');
+            const swiftIbanField = document.getElementById('swift-iban-field');
+            
+            if (this.value === 'nacional') {
+                if (tipoCuentaField) tipoCuentaField.classList.remove('hidden');
+                if (paisField) paisField.classList.add('hidden');
+                if (direccionBancoField) direccionBancoField.classList.add('hidden');
+                if (swiftIbanField) swiftIbanField.classList.add('hidden');
+            } else if (this.value === 'extranjero') {
+                if (tipoCuentaField) tipoCuentaField.classList.add('hidden');
+                if (paisField) paisField.classList.remove('hidden');
+                if (direccionBancoField) direccionBancoField.classList.remove('hidden');
+                if (swiftIbanField) swiftIbanField.classList.remove('hidden');
+                cargarPaises();
+            }
+        });
+    }
+
+    // Funciones para la gestión de exhibiciones
+    function validarFormatoFecha(fecha) {
+        const regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$/;
+        return regex.test(fecha);
+    }
+
+    function renderizarTablaExhibiciones() {
+        const exhibicionesBody = document.getElementById('exhibiciones-body');
+        if (!exhibicionesBody) return;
+        
+        exhibicionesBody.innerHTML = '';
+        
+        if (exhibicionesData.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="5" style="text-align: center;">No hay exhibiciones registradas</td>`;
+            exhibicionesBody.appendChild(row);
+            return;
+        }
+        
+        exhibicionesData.forEach((exhibicion, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${exhibicion.ambito}</td>
+                <td>${exhibicion.obra}</td>
+                <td>${exhibicion.pais}</td>
+                <td>${exhibicion.fecha}</td>
+                <td class="action-buttons">
+                    <button type="button" class="action-button edit-button" data-index="${index}">Editar</button>
+                    <button type="button" class="action-button delete-button" data-index="${index}">Eliminar</button>
+                </td>
+            `;
+            exhibicionesBody.appendChild(row);
+        });
+        
+        // Agregar event listeners a los botones de acción
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                editarExhibicion(index);
+            });
+        });
+        
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                eliminarExhibicion(index);
+            });
+        });
+    }
+
+    function mostrarFormularioExhibicion() {
+        const exhibicionForm = document.getElementById('exhibicion-form');
+        if (exhibicionForm) {
+            exhibicionForm.classList.remove('hidden');
+            document.getElementById('exhibicion-ambito').value = '';
+            document.getElementById('exhibicion-obra').value = '';
+            document.getElementById('exhibicion-pais').value = '';
+            document.getElementById('exhibicion-fecha').value = '';
+            editingIndex = -1;
+        }
+    }
+
+    function ocultarFormularioExhibicion() {
+        const exhibicionForm = document.getElementById('exhibicion-form');
+        if (exhibicionForm) {
+            exhibicionForm.classList.add('hidden');
+        }
+    }
+
+    function guardarExhibicion() {
+        const ambito = document.getElementById('exhibicion-ambito').value;
+        const obra = document.getElementById('exhibicion-obra').value;
+        const pais = document.getElementById('exhibicion-pais').value;
+        const fecha = document.getElementById('exhibicion-fecha').value;
+        
+        if (!ambito || !obra || !pais || !fecha) {
+            alert('Por favor, complete todos los campos');
+            return;
+        }
+        
+        if (!validarFormatoFecha(fecha)) {
+            alert('Por favor, ingrese la fecha en formato dd-mm-yyyy');
+            return;
+        }
+        
+        const exhibicion = { ambito, obra, pais, fecha };
+        
+        if (editingIndex === -1) {
+            exhibicionesData.push(exhibicion);
+        } else {
+            exhibicionesData[editingIndex] = exhibicion;
+        }
+        
+        renderizarTablaExhibiciones();
+        ocultarFormularioExhibicion();
+    }
+
+    function editarExhibicion(index) {
+        const exhibicion = exhibicionesData[index];
+        
+        document.getElementById('exhibicion-ambito').value = exhibicion.ambito;
+        document.getElementById('exhibicion-obra').value = exhibicion.obra;
+        document.getElementById('exhibicion-pais').value = exhibicion.pais;
+        document.getElementById('exhibicion-fecha').value = exhibicion.fecha;
+        
+        editingIndex = index;
+        const exhibicionForm = document.getElementById('exhibicion-form');
+        if (exhibicionForm) {
+            exhibicionForm.classList.remove('hidden');
+        }
+    }
+
+    function eliminarExhibicion(index) {
+        if (confirm('¿Está seguro de que desea eliminar esta exhibición?')) {
+            exhibicionesData.splice(index, 1);
+            renderizarTablaExhibiciones();
+        }
+    }
+
+    // Event listeners para exhibiciones
+    const addExhibicionBtn = document.getElementById('add-exhibicion');
+    if (addExhibicionBtn) {
+        addExhibicionBtn.addEventListener('click', mostrarFormularioExhibicion);
+    }
+
+    const saveExhibicionBtn = document.getElementById('save-exhibicion');
+    if (saveExhibicionBtn) {
+        saveExhibicionBtn.addEventListener('click', guardarExhibicion);
+    }
+
+    const cancelExhibicionBtn = document.getElementById('cancel-exhibicion');
+    if (cancelExhibicionBtn) {
+        cancelExhibicionBtn.addEventListener('click', ocultarFormularioExhibicion);
+    }
+
+    // Inicializar la tabla de exhibiciones
+    renderizarTablaExhibiciones();  
+
+
+    // Función para determinar el tipo de solicitud y enviar datos
+    function enviarDatos(formData) {
+        let tipoSolicitud = 'actualizacion-datos-personales';
+        
+        if (formData.campos) {
+            if (formData.campos.hasOwnProperty('direccion') || formData.campos.hasOwnProperty('email') || formData.campos.hasOwnProperty('telefono')) {
+                tipoSolicitud = 'actualizacion-datos-contacto';
+            } else if (formData.campos.hasOwnProperty('tipo-banco')) {
+                tipoSolicitud = 'actualizacion-datos-bancarios';
+            }
+        }
+        
+        // Validar que los campos requeridos no estén vacíos
+        if (!formData.rut || formData.rut.trim() === '') {
+            alert('Error: No se pudo obtener el RUT del autor de validación. Por favor, recargue la página e intente nuevamente.');
+            return;
+        }
+        
+        if (!formData.tipoUsuario || formData.tipoUsuario.trim() === '') {
+            alert('Error: No se pudo obtener el tipo de usuario. Por favor, recargue la página e intente nuevamente.');
+            return;
+        }
+        
+        if (!formData.emailValidacion || formData.emailValidacion.trim() === '') {
+            alert('Error: No se pudo obtener el email de validación. Por favor, recargue la página e intente nuevamente.');
+            return;
+        }
+        
+        enviarDatosAPowerAutomate(formData, tipoSolicitud);
+    }
+
+    // Función para resetear el breadcrumb al inicio
+    function resetBreadcrumbToStart() {
+        const breadcrumbContainer = document.getElementById('breadcrumb');
+        if (breadcrumbContainer) {
+            breadcrumbContainer.innerHTML = '';
+            
+            const inicioItem = document.createElement('li');
+            inicioItem.classList.add('breadcrumb-item', 'active');
+            inicioItem.setAttribute('data-step', 'inicio');
+            inicioItem.textContent = 'Inicio';
+            breadcrumbContainer.appendChild(inicioItem);
+            
+            addBreadcrumbListeners();
+        }
+    }
+
+    // Función para resetear el formulario
+    function resetForm() {
+        document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea').forEach(input => {
+            input.value = '';
+        });
+        
+        document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+            input.checked = false;
+        });
+        
+        document.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        exhibicionesData = [];
+        renderizarTablaExhibiciones();
+        
+        document.querySelectorAll('.form-container, #update-options, #update-options-contacto, #update-options-bancarios').forEach(container => {
+            container.classList.add('hidden');
+        });
+        
+        document.querySelectorAll('.field-container').forEach(field => {
+            field.classList.add('hidden');
+        });
+        
+        // Resetear el breadcrumb al inicio
+        resetBreadcrumbToStart();
+    }
+
+    // Asignar función resetForm a variable global
+    resetFormGlobal = resetForm;
+
+    // Handlers de envío para todos los formularios
+    
+    // Datos personales
+    const submitButton = document.getElementById('submit-button');
+    if (submitButton) {
+        submitButton.addEventListener('click', function() {
+            const selectedFields = document.querySelectorAll('input[name="update-fields"]:checked');
+            
+            if (selectedFields.length === 0) {
+                alert('Por favor, seleccione al menos un campo para actualizar.');
+                return;
+            }
+            
+            // Verificar si "Nombre" está seleccionado
+            const nombreSelected = document.getElementById('update-nombre').checked;
+            
+            // Validar campo "Detalle de la solicitud" solo si "Nombre" está seleccionado
+            if (nombreSelected) {
+                const observacionesField = document.getElementById('observaciones');
+                if (!observacionesField.value.trim()) {
+                    alert('Por favor, complete el campo "Detalle de la solicitud" cuando seleccione actualizar el nombre.');
+                    observacionesField.focus();
+                    return;
+                }
+            }
+            
+            let isValid = true;
+            
+            let formData = {
+                rut: validacionInicialData.rut || '',
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
+                campos: {},
+                observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+            };
+            
+            selectedFields.forEach(field => {
+                const fieldName = field.value;
+                const fieldValue = document.getElementById(fieldName).value;
+                
+                if (!fieldValue) {
+                    isValid = false;
+                    alert(`Por favor, complete el campo ${fieldName}.`);
+                    return;
+                }
+                
+                formData.campos[fieldName] = fieldValue;
+            });
+            
+            if (!isValid) return;
+            
+            enviarDatos(formData);
+        });
+    }
+
+    // Datos de contacto
+    const submitButtonContacto = document.getElementById('submit-button-contacto');
+    if (submitButtonContacto) {
+        submitButtonContacto.addEventListener('click', function() {
+            const selectedFields = document.querySelectorAll('input[name="update-fields-contacto"]:checked');
+            
+            if (selectedFields.length === 0) {
+                alert('Por favor, seleccione al menos un campo para actualizar.');
+                return;
+            }
+            
+            let isValid = true;
+            let formData = {
+                rut: validacionInicialData.rut || '',
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
+                campos: {},
+                observaciones: document.getElementById('observaciones-contacto') ? document.getElementById('observaciones-contacto').value : ''
+            };
+            
+            selectedFields.forEach(field => {
+                const fieldName = field.value;
+                const fieldValue = document.getElementById(fieldName).value;
+                
+                if (!fieldValue) {
+                    isValid = false;
+                    alert(`Por favor, complete el campo ${fieldName}.`);
+                    return;
+                }
+                
+                if (fieldName === 'email' && !validarEmail(fieldValue)) {
+                    isValid = false;
+                    alert('Por favor, ingrese un correo electrónico válido.');
+                    return;
+                }
+                
+                formData.campos[fieldName] = fieldValue;
+            });
+            
+            if (!isValid) return;
+            
+            enviarDatos(formData);
+        });
+    }
+
+    // Datos bancarios
+    const submitButtonBancarios = document.getElementById('submit-button-bancarios');
+    if (submitButtonBancarios) {
+        submitButtonBancarios.addEventListener('click', function() {
+            const tipoBanco = document.getElementById('tipo-banco').value;
+            const banco = document.getElementById('banco').value;
+            const numeroCuenta = document.getElementById('numero-cuenta').value;
+            
+            if (!tipoBanco || !banco || !numeroCuenta) {
+                alert('Por favor, complete todos los campos obligatorios.');
+                return;
+            }
+            
+            let isValid = true;
+            let formData = {
+                rut: validacionInicialData.rut || '',
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
+                campos: {
+                    'tipo-banco': tipoBanco,
+                    'banco': banco,
+                    'numero-cuenta': numeroCuenta
+                },
+                observaciones: document.getElementById('observaciones-bancarios') ? document.getElementById('observaciones-bancarios').value : ''
+            };
+            
+            if (tipoBanco === 'nacional') {
+                const tipoCuenta = document.getElementById('tipo-cuenta').value;
+                if (!tipoCuenta) {
+                    isValid = false;
+                    alert('Por favor, seleccione un tipo de cuenta.');
+                    return;
+                }
+                formData.campos['tipo-cuenta'] = tipoCuenta;
+            } else if (tipoBanco === 'extranjero') {
+                const pais = document.getElementById('pais').value;
+                const direccionBanco = document.getElementById('direccion-banco').value;
+                const swiftIban = document.getElementById('swift-iban').value;
+                
+                if (!pais || !direccionBanco || !swiftIban) {
+                    isValid = false;
+                    alert('Por favor, complete todos los campos para banco extranjero.');
+                    return;
+                }
+                
+                formData.campos['pais'] = pais;
+                formData.campos['direccion-banco'] = direccionBanco;
+                formData.campos['swift-iban'] = swiftIban;
+            }
+            
+            if (!isValid) return;
+            
+            enviarDatos(formData);
+        });
+    }
+
+    // Exhibición de obra
+    const submitButtonExhibicion = document.getElementById('submit-button-exhibicion');
+    if (submitButtonExhibicion) {
+        submitButtonExhibicion.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-exhibicion');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            if (exhibicionesData.length === 0) {
+                alert('Por favor, agregue al menos una exhibición antes de enviar la solicitud.');
+                return;
+            }
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                tipoUsuario: document.querySelector('input[name="tipo-usuario-exhibicion"]:checked')?.value || '',
+                emailValidacion: document.getElementById('email-validacion-exhibicion').value,
+                exhibiciones: exhibicionesData
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'exhibicion-obra-extranjero');
+        });
+    }
+
+    // Conflicto en obra
+    const submitButtonConflicto = document.getElementById('submit-button-conflicto');
+    if (submitButtonConflicto) {
+        submitButtonConflicto.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-conflicto');
+            const obraInput = document.getElementById('conflicto-obra');
+            const descripcionInput = document.getElementById('conflicto-descripcion');
+            const ambitoRadio = document.querySelector('input[name="conflicto-ambito"]:checked');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            if (!obraInput || !obraInput.value.trim()) {
+                alert('Por favor, ingrese el nombre de la obra en conflicto.');
+                return;
+            }
+            
+            if (!descripcionInput || !descripcionInput.value.trim()) {
+                alert('Por favor, describa el conflicto.');
+                return;
+            }
+            
+            if (!ambitoRadio) {
+                alert('Por favor, seleccione un ámbito.');
+                return;
+            }
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                tipoUsuario: document.querySelector('input[name="tipo-usuario-conflicto"]:checked')?.value || '',
+                emailValidacion: document.getElementById('email-validacion-conflicto').value,
+                ambito: ambitoRadio.value,
+                obra: obraInput.value.trim(),
+                descripcion: descripcionInput.value.trim()
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'conflicto-obra');
+        });
+    }
+
+    // Certificado de afiliación
+    const submitButtonAfiliacion = document.getElementById('submit-button-afiliacion');
+    if (submitButtonAfiliacion) {
+        submitButtonAfiliacion.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-afiliacion');
+            const motivoInput = document.getElementById('afiliacion-motivo');
+            const tipoAfiliacion = document.querySelector('input[name="tipo-afiliacion"]:checked');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            if (!tipoAfiliacion) {
+                alert('Por favor, seleccione un tipo de afiliación.');
+                return;
+            }
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                tipoAfiliacion: tipoAfiliacion.value,
+                motivo: motivoInput.value.trim()
+            };
+            
+            if (tipoAfiliacion.value === 'con-obra') {
+                const nombreObraInput = document.getElementById('nombre-obra');
+                if (nombreObraInput && nombreObraInput.value.trim()) {
+                    datos.nombreObra = nombreObraInput.value.trim();
+                }
+            }
+            
+            enviarDatosAPowerAutomate(datos, 'certificado-afiliacion');
+        });
+    }
+
+    // Certificado de derechos recibidos
+    const submitButtonDerechos = document.getElementById('submit-button-derechos');
+    if (submitButtonDerechos) {
+        submitButtonDerechos.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-derechos');
+            const fechaInicioInput = document.getElementById('derechos-fecha-inicio');
+            const fechaFinInput = document.getElementById('derechos-fecha-fin');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            if (!fechaInicioInput || !fechaInicioInput.value.trim()) {
+                alert('Por favor, ingrese la fecha de inicio.');
+                return;
+            }
+            
+            if (!fechaFinInput || !fechaFinInput.value.trim()) {
+                alert('Por favor, ingrese la fecha de fin.');
+                return;
+            }
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                fechaInicio: fechaInicioInput.value.trim(),
+                fechaFin: fechaFinInput.value.trim()
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'certificado-derechos-recibidos');
+        });
+    }
+
+    // Desafiliación
+    const submitButtonDesafiliacion = document.getElementById('submit-button-desafiliacion');
+    if (submitButtonDesafiliacion) {
+        submitButtonDesafiliacion.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-desafiliacion');
+            const motivoInput = document.getElementById('desafiliacion-motivo');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                motivo: motivoInput.value.trim()
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'desafiliacion');
+        });
+    }
+
+});  // Fin del DOMContentLoaded    
+// Funcionalidad específica para Ámbito o Clase
+    function initAmbitoClaseSection() {
+        const ambitoAudiovisual = document.getElementById('ambito-audiovisual');
+        const ambitoDramatico = document.getElementById('ambito-dramatico');
+        const claseAudiovisualOptions = document.querySelectorAll('.clase-audiovisual');
+        const claseDramaticoOptions = document.querySelectorAll('.clase-dramatico');
+        const noClaseMessage = document.getElementById('no-clase-message');
+
+        // Función para mostrar/ocultar opciones de clase según el ámbito seleccionado
+        function toggleClaseOptions() {
+            let hasAnyAmbitoSelected = false;
+
+            // Mostrar/ocultar opciones de Audiovisual
+            if (ambitoAudiovisual && ambitoAudiovisual.checked) {
+                hasAnyAmbitoSelected = true;
+                claseAudiovisualOptions.forEach((option, index) => {
+                    setTimeout(() => {
+                        option.classList.remove('hidden');
+                        option.classList.add('show');
+                    }, index * 100);
+                });
+            } else {
+                claseAudiovisualOptions.forEach(option => {
+                    option.classList.add('hidden');
+                    option.classList.remove('show');
+                    // Desmarcar checkboxes cuando se ocultan
+                    const checkbox = option.querySelector('input[type="checkbox"]');
+                    if (checkbox) checkbox.checked = false;
+                });
+            }
+
+            // Mostrar/ocultar opciones de Dramático
+            if (ambitoDramatico && ambitoDramatico.checked) {
+                hasAnyAmbitoSelected = true;
+                claseDramaticoOptions.forEach((option, index) => {
+                    setTimeout(() => {
+                        option.classList.remove('hidden');
+                        option.classList.add('show');
+                    }, index * 100);
+                });
+            } else {
+                claseDramaticoOptions.forEach(option => {
+                    option.classList.add('hidden');
+                    option.classList.remove('show');
+                    // Desmarcar checkboxes cuando se ocultan
+                    const checkbox = option.querySelector('input[type="checkbox"]');
+                    if (checkbox) checkbox.checked = false;
+                });
+            }
+
+            // Mostrar/ocultar mensaje informativo
+            if (noClaseMessage) {
+                if (hasAnyAmbitoSelected) {
+                    noClaseMessage.classList.add('hidden');
+                } else {
+                    noClaseMessage.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Agregar event listeners a los checkboxes de ámbito
+        if (ambitoAudiovisual) {
+            ambitoAudiovisual.addEventListener('change', toggleClaseOptions);
+        }
+
+        if (ambitoDramatico) {
+            ambitoDramatico.addEventListener('change', toggleClaseOptions);
+        }
+
+        // Inicializar el estado
+        toggleClaseOptions();
+    }
+
+    // Validador de RUT para ámbito
+    const validateRutAmbitoButton = document.getElementById('validate-rut-ambito');
+    if (validateRutAmbitoButton) {
+        validateRutAmbitoButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-ambito');
+            const rutError = document.getElementById('rut-ambito-error');
+            const form = document.getElementById('ambito-clase-form');
+            
+            if (!rutInput || !rutError) return;
+            
+            const rutValue = rutInput.value.trim();
+            
+            if (!rutValue) {
+                rutError.textContent = 'Por favor, ingrese un RUT del autor';
+                return;
+            }
+            
+            if (!validarRut(rutValue)) {
+                rutError.textContent = 'RUT del autor inválido';
+            } else {
+                rutError.textContent = '';
+                if (form) {
+                    form.classList.remove('hidden');
+                    // Inicializar la funcionalidad después de mostrar el formulario
+                    setTimeout(initAmbitoClaseSection, 100);
+                }
+            }
+        });
+    }
+
+    // Handler de envío para ámbito y clase
+    const submitButtonAmbito = document.getElementById('submit-button-ambito');
+    if (submitButtonAmbito) {
+        submitButtonAmbito.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-ambito');
+            const ambitoCheckboxes = document.querySelectorAll('input[name="ambito"]:checked');
+            const claseCheckboxes = document.querySelectorAll('input[name="clase"]:checked');
+            const observacionesInput = document.getElementById('observaciones-ambito');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            if (ambitoCheckboxes.length === 0) {
+                alert('Por favor, seleccione al menos un ámbito.');
+                return;
+            }
+            
+            if (claseCheckboxes.length === 0) {
+                alert('Por favor, seleccione al menos una clase.');
+                return;
+            }
+            
+            // Validar observaciones obligatorias
+            
+            // Preparar datos para enviar
+            const ambitos = Array.from(ambitoCheckboxes).map(cb => cb.value);
+            const clases = Array.from(claseCheckboxes).map(cb => cb.value);
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                tipoUsuario: document.querySelector('input[name="tipo-usuario-ambito"]:checked')?.value || '',
+                emailValidacion: document.getElementById('email-validacion-ambito').value,
+                campos: {
+                    ambitos: ambitos,
+                    clases: clases
+                },
+                observaciones: observacionesInput ? observacionesInput.value.trim() : ''
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'actualizacion-datos-autor-ambito');
+        });
+    }
+
+    // Inicializar la sección si ya está visible
+    if (document.getElementById('ambito-clase-form') && !document.getElementById('ambito-clase-form').classList.contains('hidden')) {
+        initAmbitoClaseSection();
+    } 
+   // Funcionalidad para la gestión de sociedades
+    let sociedadesData = [];
+    let editingSociedadIndex = -1;
+
+    function cargarSociedades() {
+        const rutaAbsoluta = window.location.origin + '/assets/sociedades.json';
+        
+        fetch(rutaAbsoluta, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            cache: 'no-cache'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const sociedadSelect = document.getElementById('sociedad-nombre');
+            
+            if (!sociedadSelect) return;
+            
+            // Limpiar opciones existentes excepto la primera
+            while (sociedadSelect.options.length > 1) {
+                sociedadSelect.remove(1);
+            }
+            
+            // Agregar cada sociedad como una opción
+            data.forEach(sociedad => {
+                const option = document.createElement('option');
+                option.value = sociedad.nombre;
+                option.textContent = sociedad.nombre;
+                sociedadSelect.appendChild(option);
+            });
+            
+            console.log('Sociedades cargadas correctamente:', data.length);
+        })
+        .catch(error => {
+            console.error('Error al cargar las sociedades:', error);
+        });
+    }
+
+    function renderizarTablaSociedades() {
+        const sociedadesBody = document.getElementById('sociedades-body');
+        if (!sociedadesBody) return;
+        
+        sociedadesBody.innerHTML = '';
+        
+        if (sociedadesData.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="5" style="text-align: center;">No hay sociedades registradas</td>`;
+            sociedadesBody.appendChild(row);
+            return;
+        }
+        
+        sociedadesData.forEach((sociedad, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${sociedad.sociedad}</td>
+                <td>${sociedad.pais}</td>
+                <td>${sociedad.ambito}</td>
+                <td>${sociedad.clase}</td>
+                <td class="action-buttons">
+                    <button type="button" class="action-button edit-button" data-index="${index}">Editar</button>
+                    <button type="button" class="action-button delete-button" data-index="${index}">Eliminar</button>
+                </td>
+            `;
+            sociedadesBody.appendChild(row);
+        });
+        
+        // Agregar event listeners a los botones de acción
+        document.querySelectorAll('.edit-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                editarSociedad(index);
+            });
+        });
+        
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const index = parseInt(this.getAttribute('data-index'));
+                eliminarSociedad(index);
+            });
+        });
+    }
+
+    function mostrarFormularioSociedad() {
+        const sociedadForm = document.getElementById('sociedad-form');
+        if (sociedadForm) {
+            sociedadForm.classList.remove('hidden');
+            // Limpiar el formulario
+            document.getElementById('sociedad-nombre').value = '';
+            document.getElementById('otra-sociedad-nombre').value = '';
+            document.getElementById('sociedad-pais').value = '';
+            document.getElementById('sociedad-ambito').value = '';
+            document.getElementById('sociedad-clase').value = '';
+            
+            // Ocultar campo "otra sociedad"
+            document.getElementById('otra-sociedad-field').classList.add('hidden');
+            
+            editingSociedadIndex = -1;
+        }
+    }
+
+    function ocultarFormularioSociedad() {
+        const sociedadForm = document.getElementById('sociedad-form');
+        if (sociedadForm) {
+            sociedadForm.classList.add('hidden');
+        }
+    }
+
+    function actualizarClasesSociedad() {
+        const ambitoSelect = document.getElementById('sociedad-ambito');
+        const claseSelect = document.getElementById('sociedad-clase');
+        
+        if (!ambitoSelect || !claseSelect) return;
+        
+        const ambito = ambitoSelect.value;
+        
+        // Limpiar opciones de clase
+        claseSelect.innerHTML = '<option value="">Seleccione una clase</option>';
+        
+        if (ambito === 'Audiovisual') {
+            const clases = ['Director', 'Guionista'];
+            clases.forEach(clase => {
+                const option = document.createElement('option');
+                option.value = clase;
+                option.textContent = clase;
+                claseSelect.appendChild(option);
+            });
+        } else if (ambito === 'Dramático') {
+            const clases = ['Dramaturgo', 'Coreógrafo', 'Compositor', 'Traductor'];
+            clases.forEach(clase => {
+                const option = document.createElement('option');
+                option.value = clase;
+                option.textContent = clase;
+                claseSelect.appendChild(option);
+            });
+        }
+    }
+
+    function guardarSociedad() {
+        const sociedadNombre = document.getElementById('sociedad-nombre').value;
+        const otraSociedad = document.getElementById('otra-sociedad-nombre').value;
+        const pais = document.getElementById('sociedad-pais').value;
+        const ambito = document.getElementById('sociedad-ambito').value;
+        const clase = document.getElementById('sociedad-clase').value;
+        
+        // Validar campos
+        if (!sociedadNombre || !pais || !ambito || !clase) {
+            alert('Por favor, complete todos los campos');
+            return;
+        }
+        
+        // Si seleccionó "Otra", validar que haya especificado el nombre
+        if (sociedadNombre === 'Otra' && !otraSociedad.trim()) {
+            alert('Por favor, especifique el nombre de la sociedad');
+            return;
+        }
+        
+        const sociedad = {
+            sociedad: sociedadNombre === 'Otra' ? otraSociedad.trim() : sociedadNombre,
+            pais,
+            ambito,
+            clase
+        };
+        
+        if (editingSociedadIndex === -1) {
+            // Agregar nueva sociedad
+            sociedadesData.push(sociedad);
+        } else {
+            // Actualizar sociedad existente
+            sociedadesData[editingSociedadIndex] = sociedad;
+        }
+        
+        renderizarTablaSociedades();
+        ocultarFormularioSociedad();
+    }
+
+    function editarSociedad(index) {
+        const sociedad = sociedadesData[index];
+        
+        document.getElementById('sociedad-nombre').value = sociedad.sociedad;
+        document.getElementById('sociedad-pais').value = sociedad.pais;
+        document.getElementById('sociedad-ambito').value = sociedad.ambito;
+        
+        // Actualizar clases según el ámbito
+        actualizarClasesSociedad();
+        
+        // Establecer la clase después de actualizar las opciones
+        setTimeout(() => {
+            document.getElementById('sociedad-clase').value = sociedad.clase;
+        }, 100);
+        
+        editingSociedadIndex = index;
+        const sociedadForm = document.getElementById('sociedad-form');
+        if (sociedadForm) {
+            sociedadForm.classList.remove('hidden');
+        }
+    }
+
+    function eliminarSociedad(index) {
+        if (confirm('¿Está seguro de que desea eliminar esta sociedad?')) {
+            sociedadesData.splice(index, 1);
+            renderizarTablaSociedades();
+        }
+    }
+
+    // Event listeners para sociedades
+    const addSociedadBtn = document.getElementById('add-sociedad');
+    if (addSociedadBtn) {
+        addSociedadBtn.addEventListener('click', mostrarFormularioSociedad);
+    }
+
+    const saveSociedadBtn = document.getElementById('save-sociedad');
+    if (saveSociedadBtn) {
+        saveSociedadBtn.addEventListener('click', guardarSociedad);
+    }
+
+    const cancelSociedadBtn = document.getElementById('cancel-sociedad');
+    if (cancelSociedadBtn) {
+        cancelSociedadBtn.addEventListener('click', ocultarFormularioSociedad);
+    }
+
+    // Event listener para cambio de ámbito
+    const sociedadAmbitoSelect = document.getElementById('sociedad-ambito');
+    if (sociedadAmbitoSelect) {
+        sociedadAmbitoSelect.addEventListener('change', actualizarClasesSociedad);
+    }
+
+    // Event listener para cambio de sociedad (mostrar/ocultar campo "otra")
+    const sociedadNombreSelect = document.getElementById('sociedad-nombre');
+    if (sociedadNombreSelect) {
+        sociedadNombreSelect.addEventListener('change', function() {
+            const otraSociedadField = document.getElementById('otra-sociedad-field');
+            if (this.value === 'Otra') {
+                otraSociedadField.classList.remove('hidden');
+            } else {
+                otraSociedadField.classList.add('hidden');
+            }
+        });
+    }
+
+    // Validador de RUT para sociedades
+    const validateRutSociedadesButton = document.getElementById('validate-rut-sociedades');
+    if (validateRutSociedadesButton) {
+        validateRutSociedadesButton.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-sociedades');
+            const rutError = document.getElementById('rut-sociedades-error');
+            const form = document.getElementById('sociedades-container');
+            
+            if (!rutInput || !rutError) return;
+            
+            const rutValue = rutInput.value.trim();
+            
+            if (!rutValue) {
+                rutError.textContent = 'Por favor, ingrese un RUT del autor';
+                return;
+            }
+            
+            if (!validarRut(rutValue)) {
+                rutError.textContent = 'RUT del autor inválido';
+            } else {
+                rutError.textContent = '';
+                if (form) {
+                    form.classList.remove('hidden');
+                    // Cargar datos después de mostrar el formulario
+                    cargarSociedades();
+                    renderizarTablaSociedades();
+                }
+            }
+        });
+    }
+
+    // Handler de envío para sociedades
+    const submitButtonSociedades = document.getElementById('submit-button-sociedades');
+    if (submitButtonSociedades) {
+        submitButtonSociedades.addEventListener('click', function() {
+            const rutInput = document.getElementById('rut-sociedades');
+            const observacionesInput = document.getElementById('observaciones-sociedades');
+            
+            if (!rutInput || !rutInput.value.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            if (sociedadesData.length === 0) {
+                alert('Por favor, agregue al menos una sociedad antes de enviar la solicitud.');
+                return;
+            }
+            
+            // Validar observaciones obligatorias
+            
+            const datos = {
+                rut: rutInput.value.trim(),
+                tipoUsuario: document.querySelector('input[name="tipo-usuario-sociedades"]:checked')?.value || '',
+                emailValidacion: document.getElementById('email-validacion-sociedades').value,
+                sociedades: sociedadesData,
+                observaciones: observacionesInput ? observacionesInput.value.trim() : ''
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'actualizacion-datos-autor-sociedades');
+        });
+    }
