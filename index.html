@@ -2,461 +2,821 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Declaración de Obras Audiovisuales</title>
-  <link rel="stylesheet" href="styles.css">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="icon" type="image/png" href="assets/solologo.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Solicitudes</title>
+    <link rel="icon" href="./assets/solologo-1.png" type="image/png">
+    <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
 </head>
 
 <body>
-  <header class="header">
-    <a href="https://atn.cl" target="_blank"><img src="assets/Logo-Fondo-Transparente@3x(1).png" alt="Logo organización"
-        class="logo"></a>
-    <h1>Declaración de Obras Audiovisuales</h1>
-  </header>
-  <main>
-    <div class="progress-container">
-      <div class="progress-container-inner">
-        <button class="nav-arrow prev" aria-label="Anterior">
-          <i class="fas fa-chevron-left"></i>
-        </button>
-        <div class="progress-slider">
-          <div class="progress-track">
-            <div class="progress-slide" data-step="1">
-              <div class="progress-step">1</div>
-              <span class="step-label">Datos Generales</span>
-            </div>
-            <div class="progress-slide" data-step="2">
-              <div class="progress-step">2</div>
-              <span class="step-label">Exhibición Internacional</span>
-            </div>
-            <div class="progress-slide" data-step="3">
-              <div class="progress-step">3</div>
-              <span class="step-label">Datos Técnicos</span>
-            </div>
-            <div class="progress-slide" data-step="4">
-              <div class="progress-step">4</div>
-              <span class="step-label">Participaciones</span>
-            </div>
-            <div class="progress-slide" data-step="5">
-              <div class="progress-step">5</div>
-              <span class="step-label">Episodios</span>
-            </div>
-            <div class="progress-slide" data-step="6">
-              <div class="progress-step">6</div>
-              <span class="step-label">Firma</span>
-            </div>
-          </div>
-        </div>
-        <button class="nav-arrow next" aria-label="Siguiente">
-          <i class="fas fa-chevron-right"></i>
-        </button>
-      </div>
-    </div>
-    <form id="wizard-form" autocomplete="off">
-      <div class="wizard-container">
-        <section id="step-1" class="wizard-step"></section>
-        <section id="step-2" class="wizard-step"></section>
-        <section id="step-3" class="wizard-step"></section>
-        <section id="step-4" class="wizard-step">
-          <div id="participaciones-bloqueada" class="subbloque" style="display:none;">
-            <div class="subbloque-header-collapsible">
-              <h4>Participaciones</h4>
-            </div>
-            <div class="subbloque-content">
-              <div class="bloqueado-mensaje"
-                style="background:#f8d7da;color:#721c24;padding:20px;border-radius:8px;border:1px solid #f5c6cb;margin-bottom:20px;">
-                <i class="fas fa-lock" style="margin-right:8px;"></i>
-                La sección de participaciones está bloqueada porque la participación se gestiona por episodio. En la
-                siguiente sección puedes gestionar las participaciones por episodio.
-              </div>
-            </div>
-          </div>
-          <!-- Aquí va el contenido normal de participaciones, que debe ocultarse si la obra es serializada -->
-        </section>
-        <section id="step-5" class="wizard-step">
-          <!-- Subbloque 2: Títulos de episodios -->
-          <div class="subbloque">
-            <div class="subbloque-header-collapsible">
-              <h4>Títulos de episodios</h4>
-              <button type="button" class="btn-toggle-subbloque">
-                <i class="fas fa-chevron-down"></i>
-              </button>
-            </div>
-            <div class="subbloque-content">
-              <div class="episodios-titulos"></div>
-              <button type="button" class="btn btn-outline-success btn-gestionar-titulos" style="margin-top:10px;">
-                <i class="fas fa-table"></i> Gestionar Otros Títulos
-              </button>
-            </div>
-          </div>
-        </section>
-        <section id="step-6" class="wizard-step">
-          <div class="subbloque">
-            <div class="subbloque-header-collapsible">
-              <h4>Firma Digital</h4>
-              <button type="button" class="btn-toggle-subbloque">
-                <i class="fas fa-chevron-down"></i>
-              </button>
-            </div>
-            <div class="subbloque-content">
-              <!-- Instrucciones sobre la generación automática -->
-              <div class="firma-instrucciones">
-                <div class="info-box">
-                  <i class="fas fa-info-circle"></i>
-                  <div class="info-content">
-                    <h5>Generación Automática de Documento</h5>
-                    <p>Una vez completado el formulario y adjuntada tu firma, se generará automáticamente un
-                      documento oficial con todos los datos ingresados. Este proceso se realizará mediante
-                      automatizaciones y el documento final incluirá tu firma digital.
-                    </p>
-                  </div>
-                </div>
-              </div>
+    <div class="container">
+        <header class="header">
+            <img src="./assets/Logo-Fondo-Transparente@3x(1).png" alt="Logo de la organización" class="logo">
+        </header>
 
-              <!-- Vista previa de la plantilla -->
-              <div class="plantilla-preview">
-                <h5><i class="fas fa-eye"></i> Vista Previa de la Plantilla</h5>
-                <div class="preview-container">
-                  <div class="preview-notice">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Esta es solo una vista previa de la plantilla. El documento final se generará y enviará a tu
-                      correo automáticamente con sus datos.</span>
-                  </div>
-                  <div class="preview-document">
-                    <iframe src="assets/docs/DeclaracionAV.pdf" width="100%" height="600px"
-                      style="border: 1px solid #ddd; border-radius: 8px;">
-                      <p>Su navegador no soporta la visualización de PDFs.
-                        <a href="assets/docs/DeclaracionAV.pdf" target="_blank">Haga clic aquí para descargar el
-                          documento</a>
-                      </p>
-                    </iframe>
-                    <small style="display: block; margin-top: 10px; color: #666;">Documento de prueba - El documento
-                      final contendrá todos los datos del formulario junto con su firma digital</small>
-                  </div>
-                </div>
-              </div>
+        <main class="main-content">
+            <h1>Formulario de Solicitudes</h1>
 
-              <!-- Sección de identificación y firma -->
-              <div class="firma-upload">
-                <h5><i class="fas fa-user-check"></i> Identificación del Declarante</h5>
+            <!-- Breadcrumb para navegación -->
+            <div class="breadcrumb-container">
+                <ul class="breadcrumb" id="breadcrumb">
+                    <li class="breadcrumb-item active" data-step="validacion-inicial">Validación de Identidad</li>
+                </ul>
+            </div>
 
-                <!-- Instrucciones -->
-                <div class="firma-instructions">
-                  <div class="instruction-box">
-                    <i class="fas fa-info-circle"></i>
-                    <div class="instruction-content">
-                      <p><strong>Información requerida:</strong></p>
-                      <ul>
-                        <li>Completa tus datos personales (Nombre completo y RUT)</li>
-                        <li>Adjunta tu firma digital en formato PNG o JPG</li>
-                        <li>Esta información será incluida en el documento oficial de declaración</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+            <!-- Carrusel de pasos del formulario -->
+            <div class="carousel-container">
+                <!-- Paso 1: Validación de identidad inicial -->
+                <div class="carousel-step" id="step-validacion-inicial">
+                    <h2>Validación de Identidad</h2>
+                    <p>Para acceder al sistema de solicitudes, primero debe validar su identidad:</p>
 
-                <!-- Campos de identificación -->
-                <div class="identification-fields">
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label for="declarante-nombre">
-                        <i class="fas fa-user"></i> Nombre Completo *
-                      </label>
-                      <input type="text" id="declarante-nombre" name="declarante-nombre" class="form-control"
-                        placeholder="Ingresa tu nombre completo" required>
-                      <div class="input-hint">Nombre y apellidos como aparecen en tu cédula de identidad</div>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="declarante-rut">
-                        <i class="fas fa-id-card"></i> RUT *
-                      </label>
-                      <input type="text" id="declarante-rut" name="declarante-rut" class="form-control"
-                        placeholder="12.345.678-9" maxlength="12" required>
-                      <div class="input-hint">Formato: 12.345.678-9 (con puntos y guión)</div>
-                      <div class="input-error" id="rut-error" style="display: none;">RUT inválido. Verifique el formato
-                        y dígito verificador.</div>
-                    </div>
-                  </div>
-
-                  <!-- Nueva fila para el correo electrónico -->
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label for="declarante-correo">
-                        <i class="fas fa-envelope"></i> Correo Electrónico *
-                      </label>
-                      <input type="email" id="declarante-correo" name="declarante-correo" class="form-control"
-                        placeholder="ejemplo@correo.com" required>
-                      <div class="input-hint">Se enviará confirmación a este correo</div>
-                      <div class="input-error" id="correo-error" style="display: none;">Correo electrónico inválido.
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Campo de subida de firma -->
-                <div class="signature-section">
-                  <h6><i class="fas fa-signature"></i> Firma Digital *</h6>
-                  
-                  <!-- Nota informativa sobre la firma -->
-                  <div class="firma-info-grid">
-                    <div class="firma-info-item">
-                      <div class="firma-info-header">
-                        <i class="fas fa-info-circle"></i>
-                        <strong>Importante</strong>
-                      </div>
-                      <p>Tu firma solo será utilizada para incluirla en la ficha de declaración de obra audiovisual y <strong>no se almacenará ni usará para ningún otro fin</strong>. Esto permitirá simplificar y finalizar el proceso de declaración ya que no se requerirá ninguna otra acción por parte tuya.</p>
-                    </div>
-                    
-                    <div class="firma-info-item">
-                      <div class="firma-info-header">
-                        <i class="fas fa-question-circle"></i>
-                        <strong>¿Qué ocurre si no sube su firma?</strong>
-                      </div>
-                      <p>Si decides <strong>no subir tu firma</strong>, igualmente se generará automáticamente la ficha de declaración de obra audiovisual con todos los datos ingresados en el formulario <strong>excepto la firma</strong>. Lo recibirás por correo electrónico una vez finalizada la declaración pero para hacerla efectiva <strong>deberás firmarlo manualmente</strong> y responder al correo adjuntando el documento firmado.</p>
-                    </div>
-                  </div>
-                  
-                  <div class="upload-container">
-                    <div class="file-input-wrapper">
-                      <input type="file" id="firma-file" name="firma" accept=".png,.jpg,.jpeg" class="file-input">
-                      <label for="firma-file" class="file-input-label">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span class="file-text">Seleccionar archivo de firma</span>
-                        <span class="file-formats">Formatos permitidos: PNG, JPG</span>
-                      </label>
-                    </div>
-                    <div class="file-preview" id="firma-preview" style="display:none;">
-                      <div class="preview-image-container">
-                        <img id="firma-image" src="" alt="Vista previa de la firma">
-                        <button type="button" class="btn-remove-file" onclick="removeSignatureFile()">
-                          <i class="fas fa-times"></i>
-                        </button>
-                      </div>
-                      <div class="file-info">
-                        <span class="file-name" id="firma-filename"></span>
-                        <span class="file-size" id="firma-filesize"></span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Checkbox de declaración de veracidad -->
-                  <div class="declaration-checkbox-section">
-                    <div class="form-group">
-                      <div class="checkbox-container">
-                        <input type="checkbox" id="declaracion-veracidad" name="declaracion-veracidad" required>
-                        <label for="declaracion-veracidad">
-                          El(los) firmante(s) declara(n) que los datos consignados en este formulario son ciertos y
-                          correctos y se responsabiliza(n) ante terceros de la exactitud de lo aquí declarado.
-                        </label>
-                      </div>
-                      <div class="input-error" id="declaracion-error" style="display: none;">Debe aceptar la declaración
-                        de veracidad.</div>
-                    </div>
-
-                    <!-- Sección de notificación a participantes -->
-                    <div class="form-group mt-4">
-                      <div id="seccion-notificacion-participantes" class="seccion-notificacion">
-                        <!-- Esta sección se llenará dinámicamente con JavaScript -->
-                        <div class="notificacion-header">
-                          <h4>Notificación a participantes</h4>
-                          <p>Al enviar este formulario, se notificará automáticamente a los siguientes participantes:
-                          </p>
-                          <div class="alerta-correos">Puede haber autores sin correo electrónico actualizado. Se
-                            recomienda notificarlos manualmente mientras se actualizan los datos en ATN.</div>
+                    <div class="validation-section">
+                        <div class="form-group">
+                            <label for="rut-inicial">RUT:</label>
+                            <input type="text" id="rut-inicial" name="rut"
+                                placeholder="Ingrese su RUT del autor (ej: 12345678-9)" required>
+                            <small class="error-message" id="rut-inicial-error"></small>
                         </div>
-                        <ul class="lista-participantes-notificacion">
-                          <li>No hay participantes para notificar</li>
-                        </ul>
-                      </div>
+
+                        <div class="form-group">
+                            <p>Usted es:</p>
+                            <div class="styled-radio">
+                                <div class="radio-option">
+                                    <input type="radio" id="tipo-socio-inicial" name="tipo-usuario-inicial"
+                                        value="socio-vigente" required>
+                                    <label for="tipo-socio-inicial">Socio vigente</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="tipo-representante-inicial"
+                                        name="tipo-usuario-inicial" value="representante-legal" required>
+                                    <label for="tipo-representante-inicial">Representante legal del RUT del autor
+                                        ingresado</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <small class="info-note">
+                                <strong>Nota:</strong> Si es representante legal, ingrese su correo personal, no el de
+                                quien está representando.
+                            </small>
+                            <label for="email-validacion-inicial">Correo electrónico:</label>
+                            <input type="text" id="email-validacion-inicial" name="email"
+                                placeholder="Ingrese su correo electrónico" required>
+                        </div>
+
+                        <button id="validate-rut-inicial" class="btn">Validar</button>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </div>
-        </section>
-      </div>
-      <div class="wizard-buttons">
-        <button type="button" id="cancel-btn" class="btn btn-secondary">Cancelar</button>
-        <button type="button" id="prev-btn" class="btn" disabled>Atrás</button>
-        <button type="button" id="next-btn" class="btn btn-primary">Siguiente</button>
-        <button type="submit" id="submit-btn" class="btn btn-success" style="display:none">Enviar Declaración</button>
-      </div>
-    </form>
-    <div id="form-message" class="form-message"></div>
 
-    <!-- Modal para gestionar participaciones (único) -->
-    <div id="modalParticipaciones" class="modal-atn" style="display:none;">
-      <div class="modal-atn-content" style="max-width:900px;">
-        <div class="modal-atn-header-green">
-          <h3>Gestionar participaciones</h3>
-        </div>
-        <div class="modal-atn-body">
-          <div class="tabla-participaciones-container">
-            <table class="tabla-participaciones">
-              <thead>
-                <tr>
-                  <th>Rol</th>
-                  <th>Autor</th>
-                  <th>Porcentaje</th>
-                  <th>Eliminar</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Filas dinámicas -->
-              </tbody>
-            </table>
-          </div>
-          <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-            <button type="button" class="btn btn-outline-success btn-agregar-participacion">
-              <i class="fas fa-plus"></i> Agregar participación
-            </button>
-          </div>
-          <div id="participacion-resumen-modal" class="participacion-resumen"></div>
-          <div id="participaciones-modal-error" class="form-message" style="color:#dc3545;margin-top:10px;"></div>
-          <div class="modal-atn-buttons"
-            style="display: flex; justify-content: flex-end; gap: 16px; padding: 0 36px; margin-top: 24px;">
-            <button type="button" class="btn btn-success btn-guardar-participaciones">Guardar cambios</button>
-            <button type="button" class="btn btn-secondary btn-cerrar-participaciones">Cerrar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Fin modalParticipaciones único -->
-  </main>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-  <script src="form-wizard.js"></script>
-  <!-- Modal de confirmación para cancelar -->
-  <div id="modalCancelar" class="modal-atn">
-    <div class="modal-atn-content">
-      <div class="modal-atn-header-green">
-        <h3>Confirmar Cancelación</h3>
-      </div>
-      <div class="modal-atn-message">
-        <p>¿Está seguro que desea cancelar la declaración? Todos los datos ingresados se perderán.</p>
-      </div>
-      <div class="modal-atn-buttons">
-        <button type="button" id="modalCancelarSi" class="modal-btn-lg btn-secondary">Sí, Cancelar</button>
-        <button type="button" id="modalCancelarNo" class="modal-btn-lg btn-primary">No, Continuar</button>
-      </div>
-    </div>
-  </div>
+                <!-- Paso 2: Selección de tipo de solicitud -->
+                <div class="carousel-step hidden" id="step-inicio">
+                    <h2>Formulario de Solicitudes</h2>
+                    <p class="description">Seleccione el tipo de solicitud que desea realizar:</p>
+                    <div class="request-types">
+                        <div class="request-type" data-type="actualizacion">
+                            <h3>Solicitud de actualización de información</h3>
+                            <p>Actualice sus datos personales, de contacto, bancarios y más.</p>
+                        </div>
+                        <div class="request-type" data-type="exhibicion">
+                            <h3>Notificación de exhibición de obra en el extranjero</h3>
+                            <p>Informe sobre exhibiciones de su obra fuera del país.</p>
+                        </div>
+                        <div class="request-type" data-type="conflicto">
+                            <h3>Declaración de conflicto en obra</h3>
+                            <p>Reporte conflictos relacionados con sus obras.</p>
+                        </div>
+                        <div class="request-type" data-type="certificado">
+                            <h3>Solicitud de certificado</h3>
+                            <p>Solicite certificados relacionados con su afiliación.</p>
+                        </div>
+                        <div class="request-type" data-type="desafiliacion">
+                            <h3>Solicitud de desafiliación</h3>
+                            <p>Inicie el proceso de desafiliación en ATN.</p>
+                        </div>
+                        <div class="request-type" data-type="otro">
+                            <h3>Otro</h3>
+                            <p>Realice otro tipo de solicitud no contemplada en las categorías anteriores.</p>
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Loading overlay -->
-  <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-    <div class="loading-content">
-      <div class="spinner-institucional">
-        <svg width="50" height="50" viewBox="0 0 50 50">
-          <circle cx="25" cy="25" r="20" fill="none" stroke="#097137" stroke-width="4" stroke-linecap="round"
-            stroke-dasharray="31.416" stroke-dashoffset="31.416">
-            <animate attributeName="stroke-dashoffset" dur="1.5s" values="31.416;0;31.416" repeatCount="indefinite" />
-          </circle>
-        </svg>
-      </div>
-      <p>Cancelando y limpiando datos...</p>
+                <!-- Paso 2: Subsecciones de Actualización de Información -->
+                <div class="carousel-step hidden" id="step-actualizacion">
+                    <h2>Solicitud de actualización de información</h2>
+                    <p>Seleccione la información que desea actualizar:</p>
+
+                    <div class="subsection-types">
+                        <div class="subsection-type" data-subsection="datos-personales">
+                            <h3>Datos personales</h3>
+                            <p>Actualice su nombre, seudónimo o género.</p>
+                        </div>
+                        <div class="subsection-type" data-subsection="datos-contacto">
+                            <h3>Datos de contacto</h3>
+                            <p>Actualice su información de contacto.</p>
+                        </div>
+                        <div class="subsection-type" data-subsection="datos-bancarios">
+                            <h3>Datos bancarios</h3>
+                            <p>Actualice su información bancaria.</p>
+                        </div>
+                        <div class="subsection-type" data-subsection="representante-legal">
+                            <h3>Representante legal</h3>
+                            <p>Actualice la información de su representante legal.</p>
+                        </div>
+
+                        <div class="subsection-type" data-subsection="datos-autor">
+                            <h3>Datos de autor</h3>
+                            <p>Actualice sus datos como autor.</p>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step" data-prev="inicio">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Notificación de exhibición de obra en el extranjero -->
+                <div class="carousel-step hidden" id="step-exhibicion">
+                    <h2>Notificación de exhibición de obra en el extranjero</h2>
+                    <p>Ingrese la información sobre las exhibiciones de su obra en el extranjero:</p>
+
+                    <div id="exhibicion-container" class="form-container">
+                        <div class="table-container">
+                            <table id="exhibiciones-table" class="exhibiciones-table">
+                                <thead>
+                                    <tr>
+                                        <th>Ámbito</th>
+                                        <th>Obra</th>
+                                        <th>País</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="exhibiciones-body">
+                                    <!-- Las filas se agregarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="add-exhibicion" class="btn btn-secondary">Agregar
+                                exhibición</button>
+                        </div>
+
+                        <!-- Formulario para agregar/editar exhibición -->
+                        <div id="exhibicion-form" class="exhibicion-form hidden">
+                            <h3>Detalles de la exhibición</h3>
+
+                            <div class="form-group">
+                                <label for="exhibicion-ambito">Ámbito:</label>
+                                <select id="exhibicion-ambito" name="ambito" required>
+                                    <option value="">Seleccione un ámbito</option>
+                                    <option value="Audiovisual">Audiovisual</option>
+                                    <option value="Dramático">Dramático</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exhibicion-obra">Obra:</label>
+                                <input type="text" id="exhibicion-obra" name="obra"
+                                    placeholder="Ingrese el nombre de la obra" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exhibicion-pais">País:</label>
+                                <select id="exhibicion-pais" name="pais" required>
+                                    <option value="">Seleccione un país</option>
+                                    <!-- Los países se cargarán desde el archivo JSON -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exhibicion-fecha">Fecha:</label>
+                                <input type="text" id="exhibicion-fecha" name="fecha" placeholder="dd-mm-yyyy" required>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" id="save-exhibicion" class="btn">Guardar</button>
+                                <button type="button" id="cancel-exhibicion" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-exhibicion" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step" data-prev="inicio">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Declaración de conflicto en obra -->
+                <div class="carousel-step hidden" id="step-conflicto">
+                    <h2>Declaración de conflicto en obra</h2>
+                    <p>Ingrese la información sobre el conflicto en su obra:</p>
+
+                    <div id="conflicto-form" class="form-container">
+                        <div class="form-group">
+                            <label>Ámbito:</label>
+                            <div class="styled-radio">
+                                <div class="radio-option">
+                                    <input type="radio" id="conflicto-audiovisual" name="conflicto-ambito"
+                                        value="Audiovisual" class="conflicto-ambito">
+                                    <label for="conflicto-audiovisual">Audiovisual</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="conflicto-dramatico" name="conflicto-ambito"
+                                        value="Dramático" class="conflicto-ambito">
+                                    <label for="conflicto-dramatico">Dramático</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="conflicto-obra">Obra en conflicto:</label>
+                            <input type="text" id="conflicto-obra" name="conflicto-obra"
+                                placeholder="Ingrese el nombre de la obra en conflicto" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="conflicto-descripcion">Descripción del conflicto: <span
+                                    class="required">*</span></label>
+                            <textarea id="conflicto-descripcion" name="conflicto-descripcion" rows="6"
+                                placeholder="Describa detalladamente el conflicto relacionado con su obra"
+                                required></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-conflicto" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step" data-prev="inicio">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Solicitud de certificado -->
+                <div class="carousel-step hidden" id="step-certificado">
+                    <h2>Solicitud de certificado</h2>
+                    <p>Seleccione el tipo de certificado que desea solicitar:</p>
+
+                    <div class="subsection-types">
+                        <div class="subsection-type" data-subsection="afiliacion">
+                            <h3>Afiliación</h3>
+                            <p>Solicite un certificado de afiliación a ATN.</p>
+                        </div>
+                        <div class="subsection-type" data-subsection="derechos-recibidos">
+                            <h3>Derechos recibidos</h3>
+                            <p>Solicite un certificado de derechos recibidos.</p>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step" data-prev="inicio">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Certificado de Afiliación -->
+                <div class="carousel-step hidden" id="step-afiliacion">
+                    <h2>Certificado de Afiliación</h2>
+                    <p>Complete la información para solicitar su certificado de afiliación:</p>
+
+                    <div id="afiliacion-form" class="form-container">
+                        <div class="form-group">
+                            <label>Tipo de afiliación:</label>
+                            <div class="radio-group styled-radio">
+                                <div class="radio-option">
+                                    <input type="radio" id="afiliacion-con-obra" name="tipo-afiliacion"
+                                        value="con-obra">
+                                    <label for="afiliacion-con-obra">Con obra declarada</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="afiliacion-sin-obra" name="tipo-afiliacion"
+                                        value="sin-obra">
+                                    <label for="afiliacion-sin-obra">Sin obra declarada</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group hidden" id="nombre-obra-container">
+                            <label for="nombre-obra">Nombre de la obra:</label>
+                            <input type="text" id="nombre-obra" class="styled-input"
+                                placeholder="Ingrese el nombre de la obra">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="afiliacion-motivo">Motivo de la solicitud:</label>
+                            <textarea id="afiliacion-motivo" class="styled-textarea"
+                                placeholder="Indique el motivo por el cual solicita este certificado"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-afiliacion" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="certificado">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Certificado de Derechos Recibidos -->
+                <div class="carousel-step hidden" id="step-derechos-recibidos">
+                    <h2>Certificado de Derechos Recibidos</h2>
+                    <p>Complete la información para solicitar su certificado de derechos recibidos:</p>
+
+                    <div id="derechos-form" class="form-container">
+                        <div class="form-group">
+                            <label for="derechos-periodo">Desde:</label>
+                            <div class="date-range">
+                                <input type="text" id="derechos-fecha-inicio" placeholder="Fecha inicio (DD/MM/AAAA)"
+                                    class="date-input">
+                                <label for="derechos-periodo">Hasta:</label>
+                                <input type="text" id="derechos-fecha-fin" placeholder="Fecha fin (DD/MM/AAAA)"
+                                    class="date-input">
+                            </div>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-derechos" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="certificado">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Solicitud de desafiliación -->
+                <div class="carousel-step hidden" id="step-desafiliacion">
+                    <h2>Solicitud de desafiliación</h2>
+                    <p>Complete la información para solicitar su desafiliación:</p>
+
+                    <div id="desafiliacion-form" class="form-container">
+                        <div class="form-group">
+                            <label for="desafiliacion-motivo">Motivo de la solicitud:</label>
+                            <div class="info-note">
+                                <p>Por favor, registre detalladamente el motivo de su solicitud de desafiliación. Una
+                                    vez enviada, toda la gestión de firma de documentos relacionados se realizará a
+                                    través del correo electrónico registrado.</p>
+                            </div>
+                            <textarea id="desafiliacion-motivo" class="styled-textarea"
+                                placeholder="Indique el motivo por el cual solicita la desafiliación"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-desafiliacion" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step" data-prev="inicio">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Formulario Otro tipo de solicitud -->
+                <div class="carousel-step hidden" id="step-otro">
+                    <h2>Otro tipo de solicitud</h2>
+
+                    <div class="form-container">
+                        <div class="form-group">
+                            <label for="otro-detalle">Detalle de la solicitud:</label>
+                            <textarea id="otro-detalle" class="styled-textarea"
+                                placeholder="Describa detalladamente su solicitud"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" class="btn btn-secondary prev-step" data-prev="inicio">Volver</button>
+                            <button type="button" id="submit-button-otro" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Paso 3: Formulario de Datos Personales -->
+                <div class="carousel-step hidden" id="step-datos-personales">
+                    <h2>Actualización de Datos Personales</h2>
+
+                    <div id="update-options">
+                        <h3>Seleccione los datos que desea actualizar:</h3>
+
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="update-nombre" name="update-fields" value="nombre">
+                                <label for="update-nombre">Nombre</label>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="update-seudonimo" name="update-fields" value="seudonimo">
+                                <label for="update-seudonimo">Seudónimo</label>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="update-genero" name="update-fields" value="genero">
+                                <label for="update-genero">Género</label>
+                            </div>
+                        </div>
+
+                        <div id="nombre-field" class="form-group field-container hidden">
+                            <label for="nombre">Nombre completo:</label>
+                            <input type="text" id="nombre" name="nombre" placeholder="Ingrese su nombre completo">
+                        </div>
+
+                        <div id="seudonimo-field" class="form-group field-container hidden">
+                            <label for="seudonimo">Seudónimo:</label>
+                            <input type="text" id="seudonimo" name="seudonimo" placeholder="Ingrese su seudónimo">
+                        </div>
+
+                        <div id="genero-field" class="form-group field-container hidden">
+                            <label for="genero">Género:</label>
+                            <select id="genero" name="genero">
+                                <option value="">Seleccione una opción</option>
+                                <option value="masculino">Masculino</option>
+                                <option value="femenino">Femenino</option>
+                                <option value="no-binario">No binario</option>
+                                <option value="otro">Otro</option>
+                                <option value="prefiero-no-decir">Prefiero no decir</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group observaciones-container">
+                            <label for="observaciones">Detalle de la solicitud:</label>
+                            <textarea id="observaciones" name="observaciones"
+                                placeholder="Indíquenos el o los motivos de la solicitud o cualquier observación adicional que considere relevante" rows="4"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="actualizacion">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso 4: Formulario de Datos de Contacto -->
+                <div class="carousel-step hidden" id="step-datos-contacto">
+                    <h2>Actualización de Datos de Contacto</h2>
+
+
+
+                    <div id="update-options-contacto" class="hidden form-container">
+                        <h3>Seleccione los datos que desea actualizar:</h3>
+
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="update-direccion" name="update-fields-contacto"
+                                    value="direccion">
+                                <label for="update-direccion">Dirección</label>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="update-email" name="update-fields-contacto" value="email">
+                                <label for="update-email">Email</label>
+                            </div>
+
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="update-telefono" name="update-fields-contacto"
+                                    value="telefono">
+                                <label for="update-telefono">Teléfono</label>
+                            </div>
+                        </div>
+
+                        <div id="direccion-field" class="form-group field-container hidden">
+                            <label for="direccion">Dirección:</label>
+                            <input type="text" id="direccion" name="direccion"
+                                placeholder="Ingrese su dirección completa">
+                        </div>
+
+                        <div id="email-field" class="form-group field-container hidden">
+                            <label for="email">Email:</label>
+                            <input type="text" id="email" name="email" placeholder="Ingrese su correo electrónico">
+                            <small class="error-message" id="email-error"></small>
+                        </div>
+
+                        <div id="telefono-field" class="form-group field-container hidden">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="text" id="telefono" name="telefono"
+                                placeholder="Ingrese código de país + número (ej: +56 912345678)">
+                        </div>
+
+                        <div class="form-group observaciones-container">
+                            <label for="observaciones-contacto">Observaciones:</label>
+                            <textarea id="observaciones-contacto" name="observaciones-contacto" rows="4"
+                                placeholder="Indíquenos el o los motivos de la solicitud o cualquier observación adicional que considere relevante"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-contacto" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="actualizacion">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso 5: Formulario de Datos Bancarios -->
+                <div class="carousel-step hidden" id="step-datos-bancarios">
+                    <h2>Actualización de Datos Bancarios</h2>
+
+
+
+                    <div id="update-options-bancarios" class="hidden form-container">
+                        <h3>Complete los siguientes datos bancarios:</h3>
+
+                        <div class="form-group">
+                            <label for="tipo-banco">Tipo de banco:</label>
+                            <select id="tipo-banco" name="tipo-banco" required>
+                                <option value="">Seleccione una opción</option>
+                                <option value="nacional">Nacional</option>
+                                <option value="extranjero">Extranjero</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="banco">Banco:</label>
+                            <input type="text" id="banco" name="banco" placeholder="Ej: Banco Estado, Santander, etc."
+                                required>
+                        </div>
+
+                        <div id="tipo-cuenta-field" class="form-group hidden">
+                            <label for="tipo-cuenta">Tipo de cuenta:</label>
+                            <select id="tipo-cuenta" name="tipo-cuenta">
+                                <option value="">Seleccione una opción</option>
+                                <option value="corriente">Corriente</option>
+                                <option value="vista">Vista</option>
+                                <option value="ahorro">Ahorro</option>
+                                <option value="rut">RUT</option>
+                                <option value="chequera-electronica">Chequera electrónica</option>
+                            </select>
+                        </div>
+
+                        <div id="pais-field" class="form-group hidden">
+                            <label for="pais">País:</label>
+                            <select id="pais" name="pais">
+                                <option value="">Seleccione un país</option>
+                                <!-- Las opciones se cargarán desde países.json -->
+                            </select>
+                        </div>
+
+                        <div id="direccion-banco-field" class="form-group hidden">
+                            <label for="direccion-banco">Dirección del banco (Sucursal):</label>
+                            <input type="text" id="direccion-banco" name="direccion-banco"
+                                placeholder="Ingrese la dirección de la sucursal">
+                        </div>
+
+                        <div id="swift-iban-field" class="form-group hidden">
+                            <label for="swift-iban">Swift / IBAN:</label>
+                            <input type="text" id="swift-iban" name="swift-iban"
+                                placeholder="Ingrese el código Swift o IBAN">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="numero-cuenta">N° de cuenta:</label>
+                            <input type="text" id="numero-cuenta" name="numero-cuenta"
+                                placeholder="Ingrese su número de cuenta" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observaciones-bancarios">Observaciones:</label>
+                            <textarea id="observaciones-bancarios" name="observaciones-bancarios" rows="4"
+                                placeholder="Indíquenos el o los motivos de la solicitud o cualquier observación adicional que considere relevante"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-bancarios" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="actualizacion">Volver</button>
+                    </div>
+                </div>
+                <!-- Paso: Datos de autor -->
+                <div class="carousel-step hidden" id="step-datos-autor">
+                    <h2>Actualización de Datos de Autor</h2>
+
+                    <div class="subsection-types">
+                        <div class="subsection-type" data-subsection="ambito-clase">
+                            <h3>Ámbito o Clase</h3>
+                            <p>Actualice información sobre su ámbito o clase de autor.</p>
+                        </div>
+                        <div class="subsection-type" data-subsection="sociedades">
+                            <h3>Sociedades</h3>
+                            <p>Actualice información sobre sus sociedades.</p>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="actualizacion">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Ámbito o Clase -->
+                <div class="carousel-step hidden" id="step-ambito-clase">
+                    <h2>Actualización de Ámbito o Clase</h2>
+                    <p>Seleccione su ámbito de trabajo y las clases correspondientes:</p>
+
+
+
+                    <div id="ambito-clase-form" class="hidden form-container">
+                        <div class="form-group">
+                            <h3>Ámbito</h3>
+                            <p class="form-description">Seleccione uno o más ámbitos de su trabajo:</p>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="ambito-audiovisual" name="ambito" value="Audiovisual">
+                                    <label for="ambito-audiovisual">Audiovisual</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="ambito-dramatico" name="ambito" value="Dramático">
+                                    <label for="ambito-dramatico">Dramático</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <h3>Clase</h3>
+                            <p class="form-description">Seleccione las clases que correspondan a su trabajo:</p>
+                            <div id="clase-options" class="checkbox-group">
+                                <!-- Opciones para Audiovisual -->
+                                <div class="checkbox-item clase-audiovisual hidden">
+                                    <input type="checkbox" id="clase-director" name="clase" value="Director">
+                                    <label for="clase-director">Director</label>
+                                </div>
+                                <div class="checkbox-item clase-audiovisual hidden">
+                                    <input type="checkbox" id="clase-guionista" name="clase" value="Guionista">
+                                    <label for="clase-guionista">Guionista</label>
+                                </div>
+
+                                <!-- Opciones para Dramático -->
+                                <div class="checkbox-item clase-dramatico hidden">
+                                    <input type="checkbox" id="clase-dramaturgo" name="clase" value="Dramaturgo">
+                                    <label for="clase-dramaturgo">Dramaturgo</label>
+                                </div>
+                                <div class="checkbox-item clase-dramatico hidden">
+                                    <input type="checkbox" id="clase-coreografo" name="clase" value="Coreógrafo">
+                                    <label for="clase-coreografo">Coreógrafo</label>
+                                </div>
+                                <div class="checkbox-item clase-dramatico hidden">
+                                    <input type="checkbox" id="clase-compositor" name="clase" value="Compositor">
+                                    <label for="clase-compositor">Compositor</label>
+                                </div>
+                                <div class="checkbox-item clase-dramatico hidden">
+                                    <input type="checkbox" id="clase-traductor" name="clase" value="Traductor">
+                                    <label for="clase-traductor">Traductor</label>
+                                </div>
+                            </div>
+
+                            <div id="no-clase-message" class="info-note hidden">
+                                <p>Seleccione al menos un ámbito para ver las clases disponibles.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observaciones-ambito">Observaciones:</label>
+                            <textarea id="observaciones-ambito" name="observaciones" rows="4"
+                                placeholder="Indíquenos el o los motivos de la solicitud o cualquier observación adicional que considere relevante"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-ambito" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="datos-autor">Volver</button>
+                    </div>
+                </div>
+
+                <!-- Paso: Sociedades -->
+                <div class="carousel-step hidden" id="step-sociedades">
+                    <h2>Actualización de Sociedades</h2>
+                    <p>Gestione su información de sociedades de gestión colectiva:</p>
+
+
+
+                    <div id="sociedades-container" class="hidden form-container">
+                        <div class="table-container">
+                            <table id="sociedades-table" class="sociedades-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sociedad</th>
+                                        <th>País</th>
+                                        <th>Ámbito</th>
+                                        <th>Clase</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sociedades-body">
+                                    <!-- Las filas se agregarán dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="add-sociedad" class="btn btn-secondary">Agregar sociedad</button>
+                        </div>
+
+                        <!-- Formulario para agregar/editar sociedad -->
+                        <div id="sociedad-form" class="sociedad-form hidden">
+                            <h3>Detalles de la sociedad</h3>
+
+                            <div class="form-group">
+                                <label for="sociedad-nombre">Sociedad:</label>
+                                <select id="sociedad-nombre" name="sociedad" required>
+                                    <option value="">Seleccione una sociedad</option>
+                                    <!-- Las sociedades se cargarán desde el archivo JSON -->
+                                </select>
+                            </div>
+
+                            <div id="otra-sociedad-field" class="form-group field-container hidden">
+                                <label for="otra-sociedad-nombre">Especifique sociedad:</label>
+                                <input type="text" id="otra-sociedad-nombre" name="otra-sociedad"
+                                    placeholder="Especifique el nombre de la sociedad">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sociedad-pais">País de la sociedad:</label>
+                                <select id="sociedad-pais" name="pais" required>
+                                    <option value="">Seleccione un país</option>
+                                    <!-- Los países se cargarán desde el archivo JSON -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sociedad-ambito">Ámbito:</label>
+                                <select id="sociedad-ambito" name="ambito" required>
+                                    <option value="">Seleccione un ámbito</option>
+                                    <option value="Audiovisual">Audiovisual</option>
+                                    <option value="Dramático">Dramático</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sociedad-clase">Clase:</label>
+                                <select id="sociedad-clase" name="clase" required>
+                                    <option value="">Seleccione una clase</option>
+                                    <!-- Las clases se cargarán dinámicamente según el ámbito -->
+                                </select>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" id="save-sociedad" class="btn">Guardar</button>
+                                <button type="button" id="cancel-sociedad" class="btn btn-secondary">Cancelar</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="observaciones-sociedades">Observaciones:</label>
+                            <textarea id="observaciones-sociedades" name="observaciones" rows="4"
+                                placeholder="Indíquenos el o los motivos de la solicitud o cualquier observación adicional que considere relevante"></textarea>
+                        </div>
+
+                        <div class="navigation-buttons">
+                            <button type="button" id="submit-button-sociedades" class="btn">Enviar solicitud</button>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button type="button" class="btn btn-secondary prev-step"
+                            data-prev="datos-autor">Volver</button>
+                    </div>
+                </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 - Todos los derechos reservados</p>
+        </footer>
     </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-modal" class="close-modal">&times;</span>
+            <h2>Solicitud enviada con éxito</h2>
+            <p>Su solicitud ha sido recibida y será procesada a la brevedad.</p>
+            <button id="modal-ok" class="btn">Aceptar</button>
+        </div>
+    </div>
+
+    <script src="./script.js"></script>
 </body>
 
+
 </html>
-
-<!-- Modal para gestionar otros títulos por episodio -->
-<div id="modalTitulosEpisodio" class="modal-atn" style="display:none;">
-  <div class="modal-atn-content" style="max-width:900px;">
-    <div class="modal-atn-header-green">
-      <h3>Otros títulos por episodio</h3>
-    </div>
-    <div class="modal-atn-body">
-      <table class="tabla-titulos-episodio">
-        <thead>
-          <tr>
-            <th>Episodio</th>
-            <th>Otro título</th>
-            <th>Idioma</th>
-            <th>País</th>
-            <th>Eliminar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Filas dinámicas -->
-        </tbody>
-      </table>
-      <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-        <button type="button" class="btn btn-outline-success btn-agregar-titulo-episodio">
-          <i class="fas fa-plus"></i> Agregar otro título
-        </button>
-        <button type="button" class="btn btn-secondary btn-ayuda-importar">
-          <i class="fas fa-question-circle"></i> Ayuda importación
-        </button>
-        <button type="button" class="btn btn-secondary btn-importar-titulos-episodio">
-          <i class="fas fa-file-import"></i> Importar títulos
-        </button>
-        <input type="file" accept=".csv, .xlsx, .xls" class="input-importar-titulos-episodio" style="display:none">
-        <button type="button" class="btn btn-secondary btn-pegar-titulos-episodio">
-          <i class="fas fa-paste"></i> Pegar títulos
-        </button>
-      </div>
-    </div>
-    <div class="modal-atn-buttons" style="margin-top:20px;">
-      <button type="button" class="btn btn-success btn-guardar-titulos-episodio">Guardar cambios</button>
-      <button type="button" class="btn btn-secondary btn-cerrar-titulos-episodio">Cerrar</button>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Modal de ayuda para importación -->
-<div id="modalAyudaImportar" class="modal-atn" style="display:none;">
-  <div class="modal-atn-content">
-    <div class="modal-atn-header-green">
-      <h3>Ayuda para importación de títulos</h3>
-    </div>
-    <div class="modal-atn-body">
-      <h4>Importar desde archivo Excel/CSV</h4>
-      <p>El archivo debe contener las siguientes columnas en orden:</p>
-      <ol>
-        <li><strong>Episodio:</strong> Número del episodio</li>
-        <li><strong>Título:</strong> Título alternativo del episodio</li>
-        <li><strong>Idioma:</strong> Idioma del título</li>
-        <li><strong>País:</strong> País donde se utiliza el título</li>
-      </ol>
-      <p><small>Nota: No es necesario incluir encabezados en el archivo.</small></p>
-
-      <h4>Pegar títulos</h4>
-      <p>Al usar la opción "Pegar títulos", debe seguir el formato:</p>
-      <pre>Episodio,Título,Idioma,País</pre>
-      <p>Ejemplo:</p>
-      <pre>1,Título alternativo,Español,Chile
-2,Alternative title,Inglés,Estados Unidos</pre>
-    </div>
-    <div class="modal-atn-buttons">
-      <button type="button" class="btn btn-success btn-cerrar-ayuda">Entendido</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal para pegar títulos de episodios -->
-<div id="modalPegarTitulosEpisodio" class="modal-atn" style="display:none;">
-  <div class="modal-atn-content">
-    <div class="modal-atn-header-green">
-      <h3>Pegar títulos de episodios</h3>
-    </div>
-    <div class="modal-atn-body">
-      <p>Pegue los títulos de los episodios en el siguiente formato:</p>
-      <p><small>Episodio | Otro título | Idioma | País</small></p>
-      <textarea id="textareaPegarTitulos" placeholder="1 | Título alternativo | Español | Chile
-2 | Alternative title | Inglés | Estados Unidos"></textarea>
-    </div>
-    <div class="modal-atn-buttons">
-      <button type="button" class="btn-aceptar-pegar">Aceptar</button>
-      <button type="button" class="btn-cancelar-pegar">Cancelar</button>
-    </div>
-  </div>
-</div>
