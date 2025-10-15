@@ -123,6 +123,15 @@ function validarEmail(email) {
     return regex.test(email);
 }
 
+// Función para formatear fecha en formato DD-MM-YYYY
+function formatearFechaEnvio() {
+    const fecha = new Date();
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const año = fecha.getFullYear();
+    return `${dia}-${mes}-${año}`;
+}
+
 // Función para validar campos de observaciones obligatorios
 function validarObservacionesObligatorias(inputId, nombreCampo = 'observaciones') {
     const input = document.getElementById(inputId);
@@ -136,7 +145,14 @@ function validarObservacionesObligatorias(inputId, nombreCampo = 'observaciones'
 // Variables globales
 let exhibicionesData = [];
 let editingIndex = -1;
-let currentStep = 'inicio';
+let currentStep = 'validacion-inicial';
+
+// Variables globales para almacenar datos de validación inicial
+let validacionInicialData = {
+    rut: '',
+    tipoUsuario: '',
+    emailValidacion: ''
+};
 
 // Variables globales para funciones
 let navigateToStepGlobal = null;
@@ -145,6 +161,13 @@ let resetFormGlobal = null;
 // Función para enviar datos a Power Automate
 function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
     const powerAutomateUrl = 'https://default0c13096209bc40fc8db89d043ff625.1a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/971fb86a29204a7aaaa83de432406db9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=09izjqz5nu4vqRe_PDvYq9iyx2r2WWSUrZqhwWTARSc';
+    
+    // Agregar logging para debug
+    console.log('Enviando datos:', JSON.stringify({
+        tipoSolicitud: tipoSolicitud,
+        datos: datos,
+        fechaEnvio: formatearFechaEnvio()
+    }, null, 2));
     
     // Mostrar indicador de carga
     const loadingIndicator = document.createElement('div');
@@ -174,11 +197,15 @@ function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
         body: JSON.stringify({
             tipoSolicitud: tipoSolicitud,
             datos: datos,
-            fechaEnvio: new Date().toISOString()
+            fechaEnvio: formatearFechaEnvio()
         })
     })
     .then(response => {
         document.body.removeChild(loadingIndicator);
+        
+        // Agregar logging para debug
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
         
         if (response.ok) {
             alert('Su solicitud ha sido enviada con éxito. Nos pondremos en contacto con usted a la brevedad.');
@@ -190,7 +217,11 @@ function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
                 resetFormGlobal();
             }
         } else {
-            alert('Ha ocurrido un error al enviar su solicitud. Por favor, inténtelo nuevamente más tarde.');
+            // Intentar obtener más información del error
+            response.text().then(errorText => {
+                console.error('Error response body:', errorText);
+                alert('Ha ocurrido un error al enviar su solicitud. Por favor, inténtelo nuevamente más tarde.');
+            });
             console.error('Error al enviar datos:', response.status);
         }
     })
@@ -412,10 +443,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Inicializar el primer paso como activo
-    const inicioStep = document.getElementById('step-inicio');
-    if (inicioStep) {
-        inicioStep.classList.remove('hidden');
-        inicioStep.classList.add('active');
+    const validacionInicialStep = document.getElementById('step-validacion-inicial');
+    if (validacionInicialStep) {
+        validacionInicialStep.classList.remove('hidden');
+        validacionInicialStep.classList.add('active');
     }
 
     // Inicializar el breadcrumb
@@ -566,6 +597,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     targetStep.classList.remove('hidden');
                     setTimeout(() => {
                         targetStep.classList.add('active');
+                        
+                        // Mostrar formularios automáticamente para ciertas secciones
+                        if (step === 'datos-contacto') {
+                            const updateOptionsContacto = document.getElementById('update-options-contacto');
+                            if (updateOptionsContacto) {
+                                updateOptionsContacto.classList.remove('hidden');
+                            }
+                        } else if (step === 'datos-bancarios') {
+                            const updateOptionsBancarios = document.getElementById('update-options-bancarios');
+                            if (updateOptionsBancarios) {
+                                updateOptionsBancarios.classList.remove('hidden');
+                            }
+                        } else if (step === 'ambito-clase') {
+                            const ambitoClaseForm = document.getElementById('ambito-clase-form');
+                            if (ambitoClaseForm) {
+                                ambitoClaseForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'sociedades') {
+                            const sociedadesContainer = document.getElementById('sociedades-container');
+                            if (sociedadesContainer) {
+                                sociedadesContainer.classList.remove('hidden');
+                            }
+                        }
                     }, 50);
                 }
             }, 500);
@@ -575,6 +629,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetStep.classList.remove('hidden');
                 setTimeout(() => {
                     targetStep.classList.add('active');
+                    
+                    // Mostrar formularios automáticamente para ciertas secciones
+                    if (step === 'datos-contacto') {
+                        const updateOptionsContacto = document.getElementById('update-options-contacto');
+                        if (updateOptionsContacto) {
+                            updateOptionsContacto.classList.remove('hidden');
+                        }
+                    } else if (step === 'datos-bancarios') {
+                        const updateOptionsBancarios = document.getElementById('update-options-bancarios');
+                        if (updateOptionsBancarios) {
+                            updateOptionsBancarios.classList.remove('hidden');
+                        }
+                    } else if (step === 'ambito-clase') {
+                        const ambitoClaseForm = document.getElementById('ambito-clase-form');
+                        if (ambitoClaseForm) {
+                            ambitoClaseForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'sociedades') {
+                        const sociedadesContainer = document.getElementById('sociedades-container');
+                        if (sociedadesContainer) {
+                            sociedadesContainer.classList.remove('hidden');
+                        }
+                    }
                 }, 50);
             }
         }
@@ -722,6 +799,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });  
   // Validadores de RUT para cada sección
     const rutValidators = [
+        { buttonId: 'validate-rut-inicial', inputId: 'rut-inicial', errorId: 'rut-inicial-error', formId: 'step-inicio' },
         { buttonId: 'validate-rut', inputId: 'rut', errorId: 'rut-error', formId: 'update-options' },
         { buttonId: 'validate-rut-contacto', inputId: 'rut-contacto', errorId: 'rut-contacto-error', formId: 'update-options-contacto' },
         { buttonId: 'validate-rut-bancarios', inputId: 'rut-bancarios', errorId: 'rut-bancarios-error', formId: 'update-options-bancarios' },
@@ -745,12 +823,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const rutValue = rutInput.value.trim();
                 
                 if (!rutValue) {
-                    rutError.textContent = 'Por favor, ingrese un RUT';
+                    rutError.textContent = 'Por favor, ingrese un RUT del autor';
                     return;
                 }
                 
                 // Validación de tipo de usuario para todas las secciones
                 const sectionMap = {
+                    'validate-rut-inicial': 'tipo-usuario-inicial',
                     'validate-rut': 'tipo-usuario',
                     'validate-rut-contacto': 'tipo-usuario-contacto',
                     'validate-rut-bancarios': 'tipo-usuario-bancarios',
@@ -800,10 +879,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 if (!validarRut(rutValue)) {
-                    rutError.textContent = 'RUT inválido';
+                    rutError.textContent = 'RUT del autor inválido';
                 } else {
                     rutError.textContent = '';
-                    if (form) {
+                    if (validator.buttonId === 'validate-rut-inicial') {
+                        // Guardar datos de validación inicial
+                        validacionInicialData.rut = rutValue;
+                        const tipoUsuarioElement = document.querySelector('input[name="tipo-usuario-inicial"]:checked');
+                        const emailElement = document.getElementById('email-validacion-inicial');
+                        
+                        if (tipoUsuarioElement) {
+                            validacionInicialData.tipoUsuario = tipoUsuarioElement.value;
+                        }
+                        if (emailElement) {
+                            validacionInicialData.emailValidacion = emailElement.value;
+                        }
+                        
+                        // Para la validación inicial, ir al home (inicio)
+                        navigateToStepGlobal('inicio');
+                    } else if (form) {
                         form.classList.remove('hidden');
                     }
                 }
@@ -1025,6 +1119,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Validar que los campos requeridos no estén vacíos
+        if (!formData.rut || formData.rut.trim() === '') {
+            alert('Error: No se pudo obtener el RUT del autor de validación. Por favor, recargue la página e intente nuevamente.');
+            return;
+        }
+        
+        if (!formData.tipoUsuario || formData.tipoUsuario.trim() === '') {
+            alert('Error: No se pudo obtener el tipo de usuario. Por favor, recargue la página e intente nuevamente.');
+            return;
+        }
+        
+        if (!formData.emailValidacion || formData.emailValidacion.trim() === '') {
+            alert('Error: No se pudo obtener el email de validación. Por favor, recargue la página e intente nuevamente.');
+            return;
+        }
+        
         enviarDatosAPowerAutomate(formData, tipoSolicitud);
     }
 
@@ -1089,13 +1199,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Verificar si "Nombre" está seleccionado
+            const nombreSelected = document.getElementById('update-nombre').checked;
+            
+            // Validar campo "Detalle de la solicitud" solo si "Nombre" está seleccionado
+            if (nombreSelected) {
+                const observacionesField = document.getElementById('observaciones');
+                if (!observacionesField.value.trim()) {
+                    alert('Por favor, complete el campo "Detalle de la solicitud" cuando seleccione actualizar el nombre.');
+                    observacionesField.focus();
+                    return;
+                }
+            }
+            
             let isValid = true;
-            const tipoUsuario = document.querySelector('input[name="tipo-usuario"]:checked');
             
             let formData = {
-                rut: document.getElementById('rut').value,
-                tipoUsuario: tipoUsuario ? tipoUsuario.value : '',
-                emailValidacion: document.getElementById('email-validacion').value,
+                rut: validacionInicialData.rut || '',
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
                 campos: {},
                 observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
             };
@@ -1112,11 +1234,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 formData.campos[fieldName] = fieldValue;
             });
-            
-            // Validar observaciones obligatorias
-            if (!validarObservacionesObligatorias('observaciones', 'observaciones')) {
-                return;
-            }
             
             if (!isValid) return;
             
@@ -1137,11 +1254,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             let isValid = true;
             let formData = {
-                rut: document.getElementById('rut-contacto').value,
-                tipoUsuario: document.querySelector('input[name="tipo-usuario-contacto"]:checked')?.value || '',
-                emailValidacion: document.getElementById('email-validacion-contacto').value,
+                rut: validacionInicialData.rut || '',
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
                 campos: {},
-                observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+                observaciones: document.getElementById('observaciones-contacto') ? document.getElementById('observaciones-contacto').value : ''
             };
             
             selectedFields.forEach(field => {
@@ -1162,11 +1279,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 formData.campos[fieldName] = fieldValue;
             });
-            
-            // Validar observaciones obligatorias
-            if (!validarObservacionesObligatorias('observaciones', 'observaciones')) {
-                return;
-            }
             
             if (!isValid) return;
             
@@ -1189,15 +1301,15 @@ document.addEventListener('DOMContentLoaded', function() {
             
             let isValid = true;
             let formData = {
-                rut: document.getElementById('rut-bancarios').value,
-                tipoUsuario: document.querySelector('input[name="tipo-usuario-bancarios"]:checked')?.value || '',
-                emailValidacion: document.getElementById('email-validacion-bancarios').value,
+                rut: validacionInicialData.rut || '',
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
                 campos: {
                     'tipo-banco': tipoBanco,
                     'banco': banco,
                     'numero-cuenta': numeroCuenta
                 },
-                observaciones: document.getElementById('observaciones') ? document.getElementById('observaciones').value : ''
+                observaciones: document.getElementById('observaciones-bancarios') ? document.getElementById('observaciones-bancarios').value : ''
             };
             
             if (tipoBanco === 'nacional') {
@@ -1317,10 +1429,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            if (!validarObservacionesObligatorias('afiliacion-motivo', 'motivo de la solicitud')) {
-                return;
-            }
-            
             const datos = {
                 rut: rutInput.value.trim(),
                 tipoAfiliacion: tipoAfiliacion.value,
@@ -1380,10 +1488,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!rutInput || !rutInput.value.trim()) {
                 alert('Por favor, valide su RUT antes de enviar la solicitud.');
-                return;
-            }
-            
-            if (!validarObservacionesObligatorias('desafiliacion-motivo', 'motivo de la desafiliación')) {
                 return;
             }
             
@@ -1483,12 +1587,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const rutValue = rutInput.value.trim();
             
             if (!rutValue) {
-                rutError.textContent = 'Por favor, ingrese un RUT';
+                rutError.textContent = 'Por favor, ingrese un RUT del autor';
                 return;
             }
             
             if (!validarRut(rutValue)) {
-                rutError.textContent = 'RUT inválido';
+                rutError.textContent = 'RUT del autor inválido';
             } else {
                 rutError.textContent = '';
                 if (form) {
@@ -1525,9 +1629,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Validar observaciones obligatorias
-            if (!validarObservacionesObligatorias('observaciones-ambito', 'observaciones')) {
-                return;
-            }
             
             // Preparar datos para enviar
             const ambitos = Array.from(ambitoCheckboxes).map(cb => cb.value);
@@ -1812,12 +1913,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const rutValue = rutInput.value.trim();
             
             if (!rutValue) {
-                rutError.textContent = 'Por favor, ingrese un RUT';
+                rutError.textContent = 'Por favor, ingrese un RUT del autor';
                 return;
             }
             
             if (!validarRut(rutValue)) {
-                rutError.textContent = 'RUT inválido';
+                rutError.textContent = 'RUT del autor inválido';
             } else {
                 rutError.textContent = '';
                 if (form) {
@@ -1848,9 +1949,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Validar observaciones obligatorias
-            if (!validarObservacionesObligatorias('observaciones-sociedades', 'observaciones')) {
-                return;
-            }
             
             const datos = {
                 rut: rutInput.value.trim(),
