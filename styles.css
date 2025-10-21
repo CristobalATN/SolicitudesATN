@@ -365,18 +365,56 @@ textarea:focus {
 /* Estilos para la tabla de exhibiciones */
 .table-container {
     margin-bottom: 20px;
-    overflow-x: auto;
+    overflow-x: auto !important;
+    overflow-y: visible;
+    border-radius: 16px;
+    box-shadow: var(--shadow-light);
+    /* Mejoras para el scroll horizontal */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #097137 #f1f1f1;
+    /* Forzar el comportamiento de scroll */
+    display: block;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+/* Estilos personalizados para la barra de scroll en WebKit */
+.table-container::-webkit-scrollbar {
+    height: 12px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #097137;
+    border-radius: 6px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #075a2b;
 }
 
 .exhibiciones-table {
-    width: 100%;
+    width: auto !important;
+    min-width: 1200px !important; /* Aumentado para forzar el scroll */
     border-collapse: collapse;
     margin: 0;
     background: var(--white);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: var(--shadow-light);
-    margin-bottom: 20px;
+    margin-bottom: 0; /* Removido para evitar doble margen */
+    table-layout: auto; /* Cambiado de fixed a auto para mejor distribución */
+    display: table !important;
+    white-space: nowrap;
+}
+
+.exhibiciones-table td[colspan] {
+    text-align: center !important;
+    width: 100% !important;
 }
 
 .exhibiciones-table th,
@@ -384,6 +422,8 @@ textarea:focus {
     padding: 16px 20px;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
+    white-space: nowrap; /* Evita que el contenido se rompa en múltiples líneas */
+    min-width: 120px; /* Ancho mínimo para cada celda */
 }
 
 .exhibiciones-table th {
@@ -419,6 +459,8 @@ textarea:focus {
 .exhibiciones-table .action-buttons {
     display: flex;
     gap: 8px;
+    white-space: nowrap; /* Evita que los botones se rompan en múltiples líneas */
+    min-width: 140px; /* Ancho mínimo para asegurar que ambos botones sean visibles */
 }
 
 .exhibiciones-table .action-button {
@@ -704,6 +746,64 @@ textarea {
     margin-bottom: 20px;
 }
 
+/* Estilos específicos para el modal informativo */
+#info-modal .modal-content {
+    max-width: 600px;
+    text-align: left;
+}
+
+#info-modal h2 {
+    color: var(--primary-green);
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+#info-modal p {
+    line-height: 1.7;
+    margin-bottom: 25px;
+    color: var(--primary-gray);
+    font-size: 1rem;
+}
+
+#info-modal-understood {
+    width: 100%;
+    background-color: var(--primary-green);
+    color: var(--white);
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#info-modal-understood:hover {
+    background-color: #075a2b;
+}
+
+#info-modal-understood:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+/* Responsive para el modal informativo */
+@media (max-width: 768px) {
+    #info-modal .modal-content {
+        max-width: 95%;
+        padding: 20px;
+    }
+    
+    #info-modal h2 {
+        font-size: 1.3rem;
+    }
+    
+    #info-modal p {
+        font-size: 0.95rem;
+    }
+}
+
 /* Utilidades */
 .hidden {
     display: none;
@@ -897,6 +997,32 @@ ilos específicos para la sección Ámbito o Clase */
 .info-note p {
     margin: 0;
     font-weight: 500;
+}
+
+/* Estilo para mensaje de desarrollo */
+.development-notice {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #ffc107;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    color: #856404;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.1);
+}
+
+.development-notice h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #856404;
+}
+
+.development-notice p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 /* Animación para mostrar clases */
