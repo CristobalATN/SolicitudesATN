@@ -136,7 +136,7 @@ function formatearFechaEnvio() {
 function validarObservacionesObligatorias(inputId, nombreCampo = 'observaciones') {
     const input = document.getElementById(inputId);
     if (!input || !input.value.trim()) {
-        alert(`Por favor, complete el campo de ${nombreCampo}.`);
+        alert(`Por favor, completa el campo de ${nombreCampo}.`);
         return false;
     }
     return true;
@@ -216,7 +216,7 @@ function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
         console.log('Response headers:', response.headers);
         
         if (response.ok) {
-            alert('Tu solicitud ha sido enviada con éxito. Pronto te contactaremos para entregarte más detalles.');
+            alert('Su solicitud ha sido enviada con éxito. Nos pondremos en contacto con usted a la brevedad.');
             // Usar las funciones globales si están disponibles
             if (navigateToStepGlobal) {
                 navigateToStepGlobal('inicio');
@@ -1026,7 +1026,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
                     if (!validarEmail(emailInput.value.trim())) {
-                        emailError.textContent = 'Por favor, ingrese un correo electrónico válido';
+                        emailError.textContent = 'Por favor, ingresa un correo electrónico válido';
                         return;
                     }
                     // Limpiar error de email si es válido
@@ -1289,13 +1289,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         if (!validarFormatoFecha(fecha)) {
-            alert('Por favor, ingrese la fecha en formato dd-mm-yyyy');
+            alert('Por favor, ingresa la fecha en formato dd-mm-yyyy');
             return;
         }
         
         // Validar fecha de término si se proporciona
         if (fechaTermino && !validarFormatoFecha(fechaTermino)) {
-            alert('Por favor, ingrese la fecha estimada de término en formato dd-mm-yyyy');
+            alert('Por favor, ingresa la fecha estimada de término en formato dd-mm-yyyy');
             return;
         }
         
@@ -1682,7 +1682,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (fieldName === 'email' && !validarEmail(fieldValue)) {
                         isValid = false;
-                        alert('Por favor, ingrese un correo electrónico válido.');
+                        alert('Por favor, ingresa un correo electrónico válido.');
                         return;
                     }
                     
@@ -1795,7 +1795,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (!obraInput || !obraInput.value.trim()) {
-                alert('Por favor, ingrese el nombre de la obra en conflicto.');
+                alert('Por favor, ingresa el nombre de la obra en conflicto.');
                 return;
             }
             
@@ -1858,12 +1858,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const fechaFinInput = document.getElementById('derechos-fecha-fin');
             
             if (!fechaInicioInput || !fechaInicioInput.value.trim()) {
-                alert('Por favor, ingrese la fecha de inicio.');
+                alert('Por favor, ingresa la fecha de inicio.');
                 return;
             }
             
             if (!fechaFinInput || !fechaFinInput.value.trim()) {
-                alert('Por favor, ingrese la fecha de fin.');
+                alert('Por favor, ingresa la fecha de fin.');
                 return;
             }
             
@@ -1881,6 +1881,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (submitButtonDesafiliacion) {
         submitButtonDesafiliacion.addEventListener('click', function() {
             const motivoInput = document.getElementById('desafiliacion-motivo');
+            
+            // Validar que el campo motivo no esté vacío
+            if (!motivoInput.value.trim()) {
+                alert('Por favor, ingresa el motivo de la solicitud de desafiliación.');
+                motivoInput.focus();
+                return;
+            }
             
             const datos = {
                 motivo: motivoInput.value.trim()
@@ -1919,7 +1926,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Validar que el campo motivo esté completo
             if (!motivoInput || !motivoInput.value.trim()) {
-                alert('Por favor, complete el campo de motivo de la solicitud.');
+                alert('Por favor, completa el campo de motivo de la solicitud.');
                 return;
             }
             
@@ -1946,12 +1953,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Validar que ambos campos estén completos
             if (!detallesCertificadoInput || !detallesCertificadoInput.value.trim()) {
-                alert('Por favor, ingrese los detalles del certificado solicitado.');
+                alert('Por favor, ingresa los detalles del certificado solicitado.');
                 return;
             }
             
             if (!motivoInput || !motivoInput.value.trim()) {
-                alert('Por favor, ingrese el motivo de la solicitud.');
+                alert('Por favor, ingresa el motivo de la solicitud.');
                 return;
             }
             
@@ -2098,7 +2105,7 @@ function initAmbitoClaseSection() {
             
             // Validar que el campo detalleSolicitud sea obligatorio
             if (!observacionesInput || observacionesInput.value.trim() === '') {
-                alert('Por favor, complete el campo "Detalles de la solicitud".');
+                alert('Por favor, completa el campo "Detalles de la solicitud".');
                 return;
             }
             
@@ -2189,7 +2196,7 @@ function initAmbitoClaseSection() {
         if (!paisSelect) return;
 
         // Limpiar opciones existentes
-        paisSelect.innerHTML = '<option value="">Seleccione un país</option>';
+        paisSelect.innerHTML = '<option value="">Selecciona un país</option>';
 
         // Obtener países únicos
         const paisesUnicos = [...new Set(sociedades.map(s => s.País))].sort();
@@ -2208,7 +2215,7 @@ function initAmbitoClaseSection() {
         if (!sociedadSelect) return;
 
         // Limpiar opciones existentes
-        sociedadSelect.innerHTML = '<option value="">Seleccione una sociedad</option>';
+        sociedadSelect.innerHTML = '<option value="">Selecciona una sociedad</option>';
 
         if (!paisSeleccionado) {
             return;
@@ -2329,7 +2336,7 @@ function initAmbitoClaseSection() {
         const selectedAmbito = ambitoSelect.value;
         
         // Limpiar opciones de clase
-        claseSelect.innerHTML = '<option value="">Seleccione una clase</option>';
+        claseSelect.innerHTML = '<option value="">Selecciona una clase</option>';
         
         if (selectedAmbito) {
             const clases = getClasesPorAmbito(selectedAmbito);
@@ -2357,7 +2364,7 @@ function initAmbitoClaseSection() {
         const nombreFinal = sociedadNombre === 'Otra' ? otraSociedadNombre : sociedadNombre;
         
         if (!nombreFinal) {
-            alert('Por favor ingrese el nombre de la sociedad');
+            alert('Por favor ingresa el nombre de la sociedad');
             return;
         }
         
@@ -2476,7 +2483,7 @@ function initAmbitoClaseSection() {
             const rutValue = rutInput.value.trim();
             
             if (!rutValue) {
-                rutError.textContent = 'Por favor ingrese un RUT';
+                rutError.textContent = 'Por favor ingresa un RUT';
                 return;
             }
             
@@ -2646,7 +2653,7 @@ function initAmbitoClaseSection() {
             
             // Validar que el campo de detalle esté completo
             if (!detalleSolicitudInput || !detalleSolicitudInput.value.trim()) {
-                alert('Por favor, ingrese los detalles de su solicitud.');
+                alert('Por favor, ingresa los detalles de su solicitud.');
                 return;
             }
             
@@ -2862,5 +2869,3 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-
