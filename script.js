@@ -216,7 +216,7 @@ function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
         console.log('Response headers:', response.headers);
         
         if (response.ok) {
-            alert('Su solicitud ha sido enviada con éxito. Nos pondremos en contacto con usted a la brevedad.');
+            alert('Tu solicitud ha sido enviada con éxito. Pronto te contactaremos para entregarte más detalles.');
             // Usar las funciones globales si están disponibles
             if (navigateToStepGlobal) {
                 navigateToStepGlobal('inicio');
@@ -2862,4 +2862,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
 
