@@ -1,41 +1,158 @@
 [
-  { "nombre": "DYGA" },
-  { "nombre": "SCD" },
-  { "nombre": "ALBAUTOR" },
-  { "nombre": "ARGENTORES" },
-  { "nombre": "DAC" },
-  { "nombre": "ASDACS" },
-  { "nombre": "AWGACS" },
-  { "nombre": "VdFS" },
-  { "nombre": "SABAM" },
-  { "nombre": "SOBODAYCOM" },
-  { "nombre": "ABRAMUS" },
-  { "nombre": "DBCA" },
-  { "nombre": "GEDAR" },
-  { "nombre": "CSCS" },
-  { "nombre": "DRCC" },
-  { "nombre": "DASC" },
-  { "nombre": "REDES" },
-  { "nombre": "SAYCO" },
-  { "nombre": "DGK" },
-  { "nombre": "DHFR" },
-  { "nombre": "DAMA" },
-  { "nombre": "SGAE" },
-  { "nombre": "SACD" },
-  { "nombre": "SCAM" },
-  { "nombre": "SIAE" },
-  { "nombre": "DIRECTORES" },
-  { "nombre": "SOGEM" },
-  { "nombre": "VEVAM" },
-  { "nombre": "GEDAR" },
-  { "nombre": "APA" },
-  { "nombre": "SPA" },
-  { "nombre": "ALCS" },
-  { "nombre": "DIRECTORES UK" },
-  { "nombre": "DILIA" },
-  { "nombre": "RAO" },
-  { "nombre": "SSA" },
-  { "nombre": "SUISSIMAGE" },
-  { "nombre": "AGADU" },
-  { "nombre": "SACVEN" }
+  {
+    "País": "Chile",
+    "Sociedad": "DYGA"
+  },
+  {
+    "País": "Chile",
+    "Sociedad": "SCD"
+  },
+  {
+    "País": "Albania",
+    "Sociedad": "ALBAUTOR"
+  },
+  {
+    "País": "Argentina",
+    "Sociedad": "ARGENTORES"
+  },
+  {
+    "País": "Argentina",
+    "Sociedad": "DAC"
+  },
+  {
+    "País": "Australia",
+    "Sociedad": "ASDACS"
+  },
+  {
+    "País": "Australia",
+    "Sociedad": "AWGACS"
+  },
+  {
+    "País": "Austria",
+    "Sociedad": "VdFS"
+  },
+  {
+    "País": "Bélgica",
+    "Sociedad": "SABAM"
+  },
+  {
+    "País": "Bolivia",
+    "Sociedad": "SOBODAYCOM"
+  },
+  {
+    "País": "Brasil",
+    "Sociedad": "ABRAMUS"
+  },
+  {
+    "País": "Brasil",
+    "Sociedad": "DBCA"
+  },
+  {
+    "País": "Brasil",
+    "Sociedad": "GEDAR"
+  },
+  {
+    "País": "Canadá",
+    "Sociedad": "CSCS"
+  },
+  {
+    "País": "Canadá",
+    "Sociedad": "DRCC"
+  },
+  {
+    "País": "Colombia",
+    "Sociedad": "DASC"
+  },
+  {
+    "País": "Colombia",
+    "Sociedad": "REDES"
+  },
+  {
+    "País": "Colombia",
+    "Sociedad": "SAYCO"
+  },
+  {
+    "País": "Corea del Sur",
+    "Sociedad": "DGK"
+  },
+  {
+    "País": "Croacia",
+    "Sociedad": "DHFR"
+  },
+  {
+    "País": "España",
+    "Sociedad": "DAMA"
+  },
+  {
+    "País": "España",
+    "Sociedad": "SGAE"
+  },
+  {
+    "País": "Francia",
+    "Sociedad": "SACD"
+  },
+  {
+    "País": "Francia",
+    "Sociedad": "SCAM"
+  },
+  {
+    "País": "Italia",
+    "Sociedad": "SIAE"
+  },
+  {
+    "País": "México",
+    "Sociedad": "DIRECTORES"
+  },
+  {
+    "País": "México",
+    "Sociedad": "SOGEM"
+  },
+  {
+    "País": "Países Bajos",
+    "Sociedad": "VEVAM"
+  },
+  {
+    "País": "Panamá",
+    "Sociedad": "GEDAR"
+  },
+  {
+    "País": "Paraguay",
+    "Sociedad": "APA"
+  },
+  {
+    "País": "Portugal",
+    "Sociedad": "SPA"
+  },
+  {
+    "País": "Reino Unido",
+    "Sociedad": "ALCS"
+  },
+  {
+    "País": "Reino Unido",
+    "Sociedad": "DIRECTORES UK"
+  },
+  {
+    "País": "República Checa",
+    "Sociedad": "DILIA"
+  },
+  {
+    "País": "Rusia",
+    "Sociedad": "RAO"
+  },
+  {
+    "País": "Suiza",
+    "Sociedad": "SSA"
+  },
+  {
+    "País": "Suiza",
+    "Sociedad": "SUISSIMAGE"
+  },
+  {
+    "País": "Uruguay",
+    "Sociedad": "AGADU"
+  },
+  {
+    "País": "Venezuela",
+    "Sociedad": "SACVEN"
+  }
 ]
