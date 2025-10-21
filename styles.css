@@ -999,6 +999,12 @@ ilos específicos para la sección Ámbito o Clase */
     font-weight: 500;
 }
 
+/* Estilo específico para párrafos en formularios de certificado */
+#afiliacion-form p {
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
 /* Estilo para mensaje de desarrollo */
 .development-notice {
     background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
