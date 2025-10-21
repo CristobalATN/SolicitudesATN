@@ -162,10 +162,18 @@ let resetFormGlobal = null;
 function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
     const powerAutomateUrl = 'https://default0c13096209bc40fc8db89d043ff625.1a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/971fb86a29204a7aaaa83de432406db9/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=09izjqz5nu4vqRe_PDvYq9iyx2r2WWSUrZqhwWTARSc';
     
+    // Combinar datos del formulario con datos de validación inicial
+    const datosCompletos = {
+        ...datos,
+        rut: validacionInicialData.rut || '',
+        tipoUsuario: validacionInicialData.tipoUsuario || '',
+        emailValidacion: validacionInicialData.emailValidacion || ''
+    };
+    
     // Agregar logging para debug
     console.log('Enviando datos:', JSON.stringify({
         tipoSolicitud: tipoSolicitud,
-        datos: datos,
+        datos: datosCompletos,
         fechaEnvio: formatearFechaEnvio()
     }, null, 2));
     
@@ -196,7 +204,7 @@ function enviarDatosAPowerAutomate(datos, tipoSolicitud) {
         },
         body: JSON.stringify({
             tipoSolicitud: tipoSolicitud,
-            datos: datos,
+            datos: datosCompletos,
             fechaEnvio: formatearFechaEnvio()
         })
     })
@@ -318,6 +326,18 @@ function formatDateInput(input) {
             }
         }, 0);
     });
+}
+
+// Función auxiliar para convertir fecha en formato dd-mm-yyyy a objeto Date
+function convertirFechaADate(fechaStr) {
+    const partes = fechaStr.split('-');
+    if (partes.length === 3) {
+        const dia = parseInt(partes[0], 10);
+        const mes = parseInt(partes[1], 10) - 1; // Los meses en JavaScript van de 0 a 11
+        const año = parseInt(partes[2], 10);
+        return new Date(año, mes, dia);
+    }
+    return null;
 }
 
 // Función para inicializar el formateo de RUT en campos correspondientes
@@ -471,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            const paisSelects = document.querySelectorAll('select[id$="-pais"], #exhibicion-pais, #pais');
+            const paisSelects = document.querySelectorAll('select[id$="-pais"], #exhibicion-pais, #pais, #pais-bancario');
             
             paisSelects.forEach(paisSelect => {
                 if (!paisSelect) return;
@@ -536,8 +556,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     'conflicto': 'Declaración de conflicto en obra',
                     'certificado': 'Solicitud de certificado',
                     'afiliacion': 'Certificado de Afiliación',
+                    'obras-declaradas': 'Certificado de Obras Declaradas',
+                    'otro-certificado': 'Otro Certificado',
                     'derechos-recibidos': 'Certificado de Derechos Recibidos',
-                    'desafiliacion': 'Desafiliación'
+                    'desafiliacion': 'Desafiliación',
+                    'representante-legal': 'Representante Legal',
+                    'otro': 'Otro'
                 };
                 
                 newItem.textContent = stepNames[currentStep] || currentStep;
@@ -599,7 +623,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         targetStep.classList.add('active');
                         
                         // Mostrar formularios automáticamente para ciertas secciones
-                        if (step === 'datos-contacto') {
+                        if (step === 'datos-personales') {
+                            const updateOptions = document.getElementById('update-options');
+                            if (updateOptions) {
+                                updateOptions.classList.remove('hidden');
+                            }
+                        } else if (step === 'datos-contacto') {
                             const updateOptionsContacto = document.getElementById('update-options-contacto');
                             if (updateOptionsContacto) {
                                 updateOptionsContacto.classList.remove('hidden');
@@ -619,6 +648,41 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (sociedadesContainer) {
                                 sociedadesContainer.classList.remove('hidden');
                             }
+                        } else if (step === 'exhibicion') {
+                            const exhibicionContainer = document.getElementById('exhibicion-container');
+                            if (exhibicionContainer) {
+                                exhibicionContainer.classList.remove('hidden');
+                            }
+                        } else if (step === 'conflicto') {
+                            const conflictoForm = document.getElementById('conflicto-form');
+                            if (conflictoForm) {
+                                conflictoForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'afiliacion') {
+                            const afiliacionForm = document.getElementById('afiliacion-form');
+                            if (afiliacionForm) {
+                                afiliacionForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'derechos-recibidos') {
+                            const derechosForm = document.getElementById('derechos-form');
+                            if (derechosForm) {
+                                derechosForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'obras-declaradas') {
+                            const obrasDeclaradasForm = document.getElementById('obras-declaradas-form');
+                            if (obrasDeclaradasForm) {
+                                obrasDeclaradasForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'otro-certificado') {
+                            const otroCertificadoForm = document.getElementById('otro-certificado-form');
+                            if (otroCertificadoForm) {
+                                otroCertificadoForm.classList.remove('hidden');
+                            }
+                        } else if (step === 'desafiliacion') {
+                            const desafiliacionForm = document.getElementById('desafiliacion-form');
+                            if (desafiliacionForm) {
+                                desafiliacionForm.classList.remove('hidden');
+                            }
                         }
                     }, 50);
                 }
@@ -631,7 +695,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     targetStep.classList.add('active');
                     
                     // Mostrar formularios automáticamente para ciertas secciones
-                    if (step === 'datos-contacto') {
+                    if (step === 'datos-personales') {
+                        const updateOptions = document.getElementById('update-options');
+                        if (updateOptions) {
+                            updateOptions.classList.remove('hidden');
+                        }
+                    } else if (step === 'datos-contacto') {
                         const updateOptionsContacto = document.getElementById('update-options-contacto');
                         if (updateOptionsContacto) {
                             updateOptionsContacto.classList.remove('hidden');
@@ -650,6 +719,41 @@ document.addEventListener('DOMContentLoaded', function() {
                         const sociedadesContainer = document.getElementById('sociedades-container');
                         if (sociedadesContainer) {
                             sociedadesContainer.classList.remove('hidden');
+                        }
+                    } else if (step === 'exhibicion') {
+                        const exhibicionContainer = document.getElementById('exhibicion-container');
+                        if (exhibicionContainer) {
+                            exhibicionContainer.classList.remove('hidden');
+                        }
+                    } else if (step === 'conflicto') {
+                        const conflictoForm = document.getElementById('conflicto-form');
+                        if (conflictoForm) {
+                            conflictoForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'afiliacion') {
+                        const afiliacionForm = document.getElementById('afiliacion-form');
+                        if (afiliacionForm) {
+                            afiliacionForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'derechos-recibidos') {
+                        const derechosForm = document.getElementById('derechos-form');
+                        if (derechosForm) {
+                            derechosForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'obras-declaradas') {
+                        const obrasDeclaradasForm = document.getElementById('obras-declaradas-form');
+                        if (obrasDeclaradasForm) {
+                            obrasDeclaradasForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'otro-certificado') {
+                        const otroCertificadoForm = document.getElementById('otro-certificado-form');
+                        if (otroCertificadoForm) {
+                            otroCertificadoForm.classList.remove('hidden');
+                        }
+                    } else if (step === 'desafiliacion') {
+                        const desafiliacionForm = document.getElementById('desafiliacion-form');
+                        if (desafiliacionForm) {
+                            desafiliacionForm.classList.remove('hidden');
                         }
                     }
                 }, 50);
@@ -675,6 +779,16 @@ document.addEventListener('DOMContentLoaded', function() {
             radio.checked = false;
         });
         
+        // Restaurar valores por defecto para radio buttons de afiliación
+        const ambitoNoAfiliacion = document.getElementById('ambito-no');
+        const claseNoAfiliacion = document.getElementById('clase-no');
+        if (ambitoNoAfiliacion) {
+            ambitoNoAfiliacion.checked = true;
+        }
+        if (claseNoAfiliacion) {
+            claseNoAfiliacion.checked = true;
+        }
+        
         document.querySelectorAll('select').forEach(select => {
             select.selectedIndex = 0;
         });
@@ -686,6 +800,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const nombreObraField = document.getElementById('nombre-obra-field');
         if (nombreObraField) {
             nombreObraField.classList.add('hidden');
+        }
+        
+        // Ocultar específicamente las opciones de clase en Ámbito o Clase
+        const claseAudiovisualOptions = document.querySelectorAll('.clase-audiovisual');
+        const claseDramaticoOptions = document.querySelectorAll('.clase-dramatico');
+        
+        claseAudiovisualOptions.forEach(option => {
+            option.classList.add('hidden');
+            option.classList.remove('show');
+        });
+        
+        claseDramaticoOptions.forEach(option => {
+            option.classList.add('hidden');
+            option.classList.remove('show');
+        });
+        
+        // Mostrar mensaje informativo de Ámbito o Clase si existe
+        const noClaseMessage = document.getElementById('no-clase-message');
+        if (noClaseMessage) {
+            noClaseMessage.classList.remove('hidden');
         }
     }
 
@@ -742,6 +876,9 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (requestType === 'desafiliacion') {
                 navigateToStep('desafiliacion');
                 updateBreadcrumb('desafiliacion');
+            } else if (requestType === 'otro') {
+                navigateToStep('otro');
+                updateBreadcrumb('otro');
             } else {
                 alert('Esta funcionalidad estará disponible próximamente.');
             }
@@ -764,9 +901,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentStep = subsectionType;
                 navigateToStep(subsectionType);
                 updateBreadcrumb(subsectionType);
-            } else if (['ambito-clase', 'sociedades', 'afiliacion', 'derechos-recibidos'].includes(subsectionType)) {
+            } else if (['ambito-clase', 'sociedades', 'afiliacion', 'derechos-recibidos', 'obras-declaradas', 'otro-certificado'].includes(subsectionType)) {
+                // Para sociedades, limpiar breadcrumb y agregar datos-autor antes
+                if (subsectionType === 'sociedades') {
+                    const items = breadcrumb.querySelectorAll('.breadcrumb-item');
+                    if (items.length > 2) {
+                        for (let i = items.length - 1; i >= 2; i--) {
+                            breadcrumb.removeChild(items[i]);
+                        }
+                    }
+                    // Agregar datos-autor al breadcrumb antes de sociedades
+                    updateBreadcrumb('datos-autor');
+                }
                 navigateToStep(subsectionType);
                 updateBreadcrumb(subsectionType);
+            } else if (subsectionType === 'representante-legal') {
+                navigateToStep('representante-legal');
+                updateBreadcrumb('representante-legal');
             } else {
                 alert('Esta funcionalidad estará disponible próximamente.');
                 navigateToStep('actualizacion');
@@ -823,7 +974,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const rutValue = rutInput.value.trim();
                 
                 if (!rutValue) {
-                    rutError.textContent = 'Por favor, ingrese un RUT del autor';
+                    rutError.textContent = 'Por favor, ingresa un RUT de socio (autor) ';
                     return;
                 }
                 
@@ -833,7 +984,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     'validate-rut': 'tipo-usuario',
                     'validate-rut-contacto': 'tipo-usuario-contacto',
                     'validate-rut-bancarios': 'tipo-usuario-bancarios',
-                    'validate-rut-ambito': 'tipo-usuario-ambito',
                     'validate-rut-sociedades': 'tipo-usuario-sociedades',
                     'validate-rut-exhibicion': 'tipo-usuario-exhibicion',
                     'validate-rut-conflicto': 'tipo-usuario-conflicto',
@@ -846,7 +996,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (tipoUsuarioName) {
                     const tipoUsuario = document.querySelector(`input[name="${tipoUsuarioName}"]:checked`);
                     if (!tipoUsuario) {
-                        rutError.textContent = 'Por favor, seleccione si es socio vigente o representante legal';
+                        rutError.textContent = 'Por favor, selecciona si eres socio vigente o representante legal de un autor inscrito en ATN. ';
                         return;
                     }
                 }
@@ -854,9 +1004,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Validar correo electrónico
                 const emailMap = {
                     'validate-rut': 'email-validacion',
+                    'validate-rut-inicial': 'email-validacion-inicial',
                     'validate-rut-contacto': 'email-validacion-contacto',
                     'validate-rut-bancarios': 'email-validacion-bancarios',
-                    'validate-rut-ambito': 'email-validacion-ambito',
                     'validate-rut-sociedades': 'email-validacion-sociedades',
                     'validate-rut-exhibicion': 'email-validacion-exhibicion',
                     'validate-rut-conflicto': 'email-validacion-conflicto',
@@ -868,14 +1018,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 const emailInputId = emailMap[validator.buttonId];
                 if (emailInputId) {
                     const emailInput = document.getElementById(emailInputId);
+                    const emailError = validator.buttonId === 'validate-rut-inicial' ? 
+                        document.getElementById('email-inicial-error') : rutError;
+                    
                     if (!emailInput || !emailInput.value.trim()) {
-                        rutError.textContent = 'Por favor, ingrese su correo electrónico';
+                        emailError.textContent = 'Ingresa tu correo electrónico ';
                         return;
                     }
                     if (!validarEmail(emailInput.value.trim())) {
-                        rutError.textContent = 'Por favor, ingrese un correo electrónico válido';
+                        emailError.textContent = 'Por favor, ingrese un correo electrónico válido';
                         return;
                     }
+                    // Limpiar error de email si es válido
+                    emailError.textContent = '';
                 }
                 
                 if (!validarRut(rutValue)) {
@@ -895,8 +1050,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             validacionInicialData.emailValidacion = emailElement.value;
                         }
                         
-                        // Para la validación inicial, ir al home (inicio)
-                        navigateToStepGlobal('inicio');
+                        // Para la validación inicial, mostrar modal informativo y luego ir al home
+                        showInfoModal();
+                        
+                        // Modificar la navegación para que ocurra después de cerrar el modal
+                        const originalHideModal = hideInfoModal;
+                        window.hideInfoModal = function() {
+                            originalHideModal();
+                            navigateToStepGlobal('inicio');
+                        };
                     } else if (form) {
                         form.classList.remove('hidden');
                     }
@@ -921,6 +1083,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (fieldContainer) {
                     if (this.checked) {
                         fieldContainer.classList.remove('hidden');
+                        
+                        // Si es el campo de dirección, configurar los event listeners
+                        if (fieldName === 'direccion') {
+                            setupAddressFieldListeners();
+                        }
                     } else {
                         fieldContainer.classList.add('hidden');
                     }
@@ -948,24 +1115,66 @@ document.addEventListener('DOMContentLoaded', function() {
     const tipoBancoSelect = document.getElementById('tipo-banco');
     if (tipoBancoSelect) {
         tipoBancoSelect.addEventListener('change', function() {
-            const tipoCuentaField = document.getElementById('tipo-cuenta-field');
-            const paisField = document.getElementById('pais-field');
-            const direccionBancoField = document.getElementById('direccion-banco-field');
-            const swiftIbanField = document.getElementById('swift-iban-field');
+            handleBankTypeChange();
+        });
+    }
+
+    // Handler para país bancario
+    const paisBancarioSelect = document.getElementById('pais-bancario');
+    if (paisBancarioSelect) {
+        paisBancarioSelect.addEventListener('change', function() {
+            handleBankTypeChange();
+        });
+    }
+
+    function handleBankTypeChange() {
+        const tipoBanco = document.getElementById('tipo-banco').value;
+        const paisBancario = document.getElementById('pais-bancario').value;
+        
+        const tipoCuentaField = document.getElementById('tipo-cuenta-field');
+        const paisField = document.getElementById('pais-field');
+        const direccionBancoField = document.getElementById('direccion-banco-field');
+        const swiftIbanField = document.getElementById('swift-iban-field');
+        
+        if (tipoBanco === 'nacional') {
+            // Banco nacional: mostrar solo tipo de cuenta
+            if (tipoCuentaField) tipoCuentaField.classList.remove('hidden');
+            if (paisField) paisField.classList.add('hidden');
+            if (direccionBancoField) direccionBancoField.classList.add('hidden');
+            if (swiftIbanField) swiftIbanField.classList.add('hidden');
+        } else if (tipoBanco === 'extranjero') {
+            // Mostrar campo país siempre para bancos extranjeros
+            if (paisField) paisField.classList.remove('hidden');
             
-            if (this.value === 'nacional') {
-                if (tipoCuentaField) tipoCuentaField.classList.remove('hidden');
-                if (paisField) paisField.classList.add('hidden');
-                if (direccionBancoField) direccionBancoField.classList.add('hidden');
-                if (swiftIbanField) swiftIbanField.classList.add('hidden');
-            } else if (this.value === 'extranjero') {
-                if (tipoCuentaField) tipoCuentaField.classList.add('hidden');
-                if (paisField) paisField.classList.remove('hidden');
-                if (direccionBancoField) direccionBancoField.classList.remove('hidden');
-                if (swiftIbanField) swiftIbanField.classList.remove('hidden');
+            // Solo cargar países si el select está vacío (evitar limpiar selección)
+            const paisSelect = document.getElementById('pais-bancario');
+            if (paisSelect && paisSelect.options.length <= 1) {
                 cargarPaises();
             }
-        });
+            
+            if (paisBancario === 'Chile') {
+                // Extranjero + Chile: mostrar solo tipo de cuenta (como nacional)
+                if (tipoCuentaField) tipoCuentaField.classList.remove('hidden');
+                if (direccionBancoField) direccionBancoField.classList.add('hidden');
+                if (swiftIbanField) swiftIbanField.classList.add('hidden');
+            } else if (paisBancario && paisBancario !== 'Chile') {
+                // Extranjero + otro país: mostrar dirección banco y swift/iban
+                if (tipoCuentaField) tipoCuentaField.classList.add('hidden');
+                if (direccionBancoField) direccionBancoField.classList.remove('hidden');
+                if (swiftIbanField) swiftIbanField.classList.remove('hidden');
+            } else {
+                // Extranjero sin país seleccionado: ocultar campos condicionales
+                if (tipoCuentaField) tipoCuentaField.classList.add('hidden');
+                if (direccionBancoField) direccionBancoField.classList.add('hidden');
+                if (swiftIbanField) swiftIbanField.classList.add('hidden');
+            }
+        } else {
+            // Sin tipo de banco seleccionado: ocultar todos los campos condicionales
+            if (tipoCuentaField) tipoCuentaField.classList.add('hidden');
+            if (paisField) paisField.classList.add('hidden');
+            if (direccionBancoField) direccionBancoField.classList.add('hidden');
+            if (swiftIbanField) swiftIbanField.classList.add('hidden');
+        }
     }
 
     // Funciones para la gestión de exhibiciones
@@ -978,11 +1187,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const exhibicionesBody = document.getElementById('exhibiciones-body');
         if (!exhibicionesBody) return;
         
+        // Debug: Mostrar datos antes de renderizar
+        console.log('Renderizando tabla con datos:', exhibicionesData);
+        
         exhibicionesBody.innerHTML = '';
         
         if (exhibicionesData.length === 0) {
             const row = document.createElement('tr');
-            row.innerHTML = `<td colspan="5" style="text-align: center;">No hay exhibiciones registradas</td>`;
+            row.innerHTML = `<td colspan="8" style="text-align: center;">No hay exhibiciones extranjeras ingresadas en esta solicitud. </td>`;
             exhibicionesBody.appendChild(row);
             return;
         }
@@ -992,8 +1204,11 @@ document.addEventListener('DOMContentLoaded', function() {
             row.innerHTML = `
                 <td>${exhibicion.ambito}</td>
                 <td>${exhibicion.obra}</td>
+                <td>${exhibicion.tituloTraducido || '-'}</td>
                 <td>${exhibicion.pais}</td>
+                <td>${exhibicion.canal || '-'}</td>
                 <td>${exhibicion.fecha}</td>
+                <td>${exhibicion.fechaTermino || '-'}</td>
                 <td class="action-buttons">
                     <button type="button" class="action-button edit-button" data-index="${index}">Editar</button>
                     <button type="button" class="action-button delete-button" data-index="${index}">Eliminar</button>
@@ -1024,8 +1239,11 @@ document.addEventListener('DOMContentLoaded', function() {
             exhibicionForm.classList.remove('hidden');
             document.getElementById('exhibicion-ambito').value = '';
             document.getElementById('exhibicion-obra').value = '';
+            document.getElementById('exhibicion-titulo-traducido').value = '';
             document.getElementById('exhibicion-pais').value = '';
+            document.getElementById('exhibicion-canal').value = '';
             document.getElementById('exhibicion-fecha').value = '';
+            document.getElementById('exhibicion-fecha-termino').value = '';
             editingIndex = -1;
         }
     }
@@ -1038,13 +1256,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function guardarExhibicion() {
+        console.log('=== INICIO GUARDAR EXHIBICION ===');
+        
         const ambito = document.getElementById('exhibicion-ambito').value;
         const obra = document.getElementById('exhibicion-obra').value;
+        const tituloTraducido = document.getElementById('exhibicion-titulo-traducido').value;
         const pais = document.getElementById('exhibicion-pais').value;
+        const canal = document.getElementById('exhibicion-canal').value;
         const fecha = document.getElementById('exhibicion-fecha').value;
+        const fechaTermino = document.getElementById('exhibicion-fecha-termino').value;
         
-        if (!ambito || !obra || !pais || !fecha) {
-            alert('Por favor, complete todos los campos');
+        // Debug: Verificar que los elementos existen
+        console.log('Elementos del DOM:', {
+            'exhibicion-ambito': document.getElementById('exhibicion-ambito'),
+            'exhibicion-obra': document.getElementById('exhibicion-obra'),
+            'exhibicion-titulo-traducido': document.getElementById('exhibicion-titulo-traducido'),
+            'exhibicion-pais': document.getElementById('exhibicion-pais'),
+            'exhibicion-canal': document.getElementById('exhibicion-canal'),
+            'exhibicion-fecha': document.getElementById('exhibicion-fecha'),
+            'exhibicion-fecha-termino': document.getElementById('exhibicion-fecha-termino')
+        });
+        
+        // Debug: Mostrar valores obtenidos
+        console.log('Valores del formulario:', {
+            ambito, obra, tituloTraducido, pais, canal, fecha, fechaTermino
+        });
+        
+        // Validar campos obligatorios: Ámbito, Obra, País, Canal/Plataforma/Sala, Fecha
+        if (!ambito || !obra || !pais || !canal || !fecha) {
+            alert('Por favor, completa todos los campos obligatorios: Ámbito, Obra, País, Canal/Plataforma/Sala y Fecha estimada');
             return;
         }
         
@@ -1053,12 +1293,42 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        const exhibicion = { ambito, obra, pais, fecha };
+        // Validar fecha de término si se proporciona
+        if (fechaTermino && !validarFormatoFecha(fechaTermino)) {
+            alert('Por favor, ingrese la fecha estimada de término en formato dd-mm-yyyy');
+            return;
+        }
+        
+        // Validar que la fecha de término no sea anterior a la fecha de inicio
+        if (fechaTermino && validarFormatoFecha(fechaTermino) && validarFormatoFecha(fecha)) {
+            const fechaInicio = convertirFechaADate(fecha);
+            const fechaFin = convertirFechaADate(fechaTermino);
+            
+            if (fechaFin < fechaInicio) {
+                alert('La fecha de término no puede ser anterior a la fecha de inicio de la exhibición');
+                return;
+            }
+        }
+        
+        const exhibicion = { 
+            ambito, 
+            obra, 
+            tituloTraducido: tituloTraducido || '', // Campo opcional
+            pais, 
+            canal, 
+            fecha,
+            fechaTermino: fechaTermino || '' // Campo opcional
+        };
+        
+        // Debug: Mostrar objeto exhibición creado
+        console.log('Objeto exhibición creado:', exhibicion);
         
         if (editingIndex === -1) {
             exhibicionesData.push(exhibicion);
+            console.log('Exhibición agregada. Array completo:', exhibicionesData);
         } else {
             exhibicionesData[editingIndex] = exhibicion;
+            console.log('Exhibición editada. Array completo:', exhibicionesData);
         }
         
         renderizarTablaExhibiciones();
@@ -1070,8 +1340,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('exhibicion-ambito').value = exhibicion.ambito;
         document.getElementById('exhibicion-obra').value = exhibicion.obra;
+        document.getElementById('exhibicion-titulo-traducido').value = exhibicion.tituloTraducido || '';
         document.getElementById('exhibicion-pais').value = exhibicion.pais;
+        document.getElementById('exhibicion-canal').value = exhibicion.canal || '';
         document.getElementById('exhibicion-fecha').value = exhibicion.fecha;
+        document.getElementById('exhibicion-fecha-termino').value = exhibicion.fechaTermino || '';
         
         editingIndex = index;
         const exhibicionForm = document.getElementById('exhibicion-form');
@@ -1085,26 +1358,7 @@ document.addEventListener('DOMContentLoaded', function() {
             exhibicionesData.splice(index, 1);
             renderizarTablaExhibiciones();
         }
-    }
-
-    // Event listeners para exhibiciones
-    const addExhibicionBtn = document.getElementById('add-exhibicion');
-    if (addExhibicionBtn) {
-        addExhibicionBtn.addEventListener('click', mostrarFormularioExhibicion);
-    }
-
-    const saveExhibicionBtn = document.getElementById('save-exhibicion');
-    if (saveExhibicionBtn) {
-        saveExhibicionBtn.addEventListener('click', guardarExhibicion);
-    }
-
-    const cancelExhibicionBtn = document.getElementById('cancel-exhibicion');
-    if (cancelExhibicionBtn) {
-        cancelExhibicionBtn.addEventListener('click', ocultarFormularioExhibicion);
-    }
-
-    // Inicializar la tabla de exhibiciones
-    renderizarTablaExhibiciones();  
+    }  
 
 
     // Función para determinar el tipo de solicitud y enviar datos
@@ -1156,27 +1410,83 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para resetear el formulario
     function resetForm() {
+        // Limpiar todos los campos de entrada EXCEPTO el formulario "Otro" y "Otro Certificado"
         document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea').forEach(input => {
-            input.value = '';
+            // No limpiar los campos del formulario "Otro" ni "Otro Certificado"
+            if (input.id !== 'detalleSolicitud' && 
+                input.id !== 'detalles-certificado-otro' && 
+                input.id !== 'otro-certificado-motivo') {
+                input.value = '';
+            }
         });
         
+        // Desmarcar todos los checkboxes y radio buttons
         document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
             input.checked = false;
         });
         
+        // Restaurar valores por defecto para radio buttons de afiliación
+        const ambitoNoAfiliacion = document.getElementById('ambito-no');
+        const claseNoAfiliacion = document.getElementById('clase-no');
+        if (ambitoNoAfiliacion) ambitoNoAfiliacion.checked = true;
+        if (claseNoAfiliacion) claseNoAfiliacion.checked = true;
+        
+        // Resetear todos los selects a su primera opción
         document.querySelectorAll('select').forEach(select => {
             select.selectedIndex = 0;
         });
         
+        // Resetear arrays de datos globales
         exhibicionesData = [];
-        renderizarTablaExhibiciones();
+        sociedadesData = [];
+        editingIndex = -1;
+        editingSociedadIndex = -1;
         
+        // NO resetear datos de validación inicial para permitir múltiples envíos
+        // Los datos de validación inicial se mantienen durante toda la sesión
+        // validacionInicialData = {
+        //     rut: '',
+        //     tipoUsuario: '',
+        //     emailValidacion: ''
+        // };
+        
+        // Resetear step actual
+        currentStep = 'validacion-inicial';
+        
+        // Renderizar tablas vacías
+        if (typeof renderizarTablaExhibiciones === 'function') {
+            renderizarTablaExhibiciones();
+        }
+        if (typeof renderizarTablaSociedades === 'function') {
+            renderizarTablaSociedades();
+        }
+        
+        // Ocultar todos los contenedores de formularios EXCEPTO el del formulario "Otro"
         document.querySelectorAll('.form-container, #update-options, #update-options-contacto, #update-options-bancarios').forEach(container => {
+            // No ocultar el contenedor del formulario "Otro"
+            if (!container.closest('#step-otro')) {
+                container.classList.add('hidden');
+            }
+        });
+        
+        // Ocultar todos los campos específicos
+        document.querySelectorAll('.field-container').forEach(field => {
+            field.classList.add('hidden');
+        });
+        
+        // Ocultar formularios específicos de secciones
+        document.querySelectorAll('#ambito-clase-form, #sociedades-container, #exhibicion-container').forEach(container => {
             container.classList.add('hidden');
         });
         
-        document.querySelectorAll('.field-container').forEach(field => {
-            field.classList.add('hidden');
+        // Ocultar formularios modales/emergentes
+        document.querySelectorAll('#sociedad-form, #exhibicion-form').forEach(form => {
+            form.classList.add('hidden');
+        });
+        
+        // Limpiar mensajes de error
+        document.querySelectorAll('.error-message').forEach(error => {
+            error.textContent = '';
         });
         
         // Resetear el breadcrumb al inicio
@@ -1195,7 +1505,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedFields = document.querySelectorAll('input[name="update-fields"]:checked');
             
             if (selectedFields.length === 0) {
-                alert('Por favor, seleccione al menos un campo para actualizar.');
+                alert('Por favor, selecciona al menos un campo para actualizar. ');
                 return;
             }
             
@@ -1206,7 +1516,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (nombreSelected) {
                 const observacionesField = document.getElementById('observaciones');
                 if (!observacionesField.value.trim()) {
-                    alert('Por favor, complete el campo "Detalle de la solicitud" cuando seleccione actualizar el nombre.');
+                    alert('Por favor, completa el campo "Detalle de la solicitud" cuando selecciones actualizar el nombre.');
                     observacionesField.focus();
                     return;
                 }
@@ -1228,7 +1538,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (!fieldValue) {
                     isValid = false;
-                    alert(`Por favor, complete el campo ${fieldName}.`);
+                    let fieldDisplayName;
+                    switch(fieldName) {
+                        case 'nombre':
+                            fieldDisplayName = 'Nombre completo';
+                            break;
+                        case 'seudonimo':
+                            fieldDisplayName = 'Seudónimo';
+                            break;
+                        case 'genero':
+                            fieldDisplayName = 'Género';
+                            break;
+                        default:
+                            fieldDisplayName = fieldName;
+                    }
+                    alert(`Por favor, completa el campo ${fieldDisplayName}.`);
                     return;
                 }
                 
@@ -1248,7 +1572,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedFields = document.querySelectorAll('input[name="update-fields-contacto"]:checked');
             
             if (selectedFields.length === 0) {
-                alert('Por favor, seleccione al menos un campo para actualizar.');
+                alert('Por favor, selecciona al menos un campo para actualizar. ');
                 return;
             }
             
@@ -1263,21 +1587,107 @@ document.addEventListener('DOMContentLoaded', function() {
             
             selectedFields.forEach(field => {
                 const fieldName = field.value;
-                const fieldValue = document.getElementById(fieldName).value;
                 
-                if (!fieldValue) {
-                    isValid = false;
-                    alert(`Por favor, complete el campo ${fieldName}.`);
-                    return;
+                // Validación especial para el campo dirección
+                if (fieldName === 'direccion') {
+                    // Validar campos obligatorios de dirección
+                    const paisSelect = document.getElementById('pais');
+                    const direccionInput = document.getElementById('direccion');
+                    
+                    if (!paisSelect || !paisSelect.value) {
+                        isValid = false;
+                        alert('Por favor, selecciona un país.');
+                        return;
+                    }
+                    
+                    if (!direccionInput || !direccionInput.value.trim()) {
+                        isValid = false;
+                        alert('Por favor, completa la información de tu dirección actualizada. ');
+                        return;
+                    }
+                    
+                    // Validaciones específicas según el país
+                    if (paisSelect.value === 'Chile') {
+                        const regionSelect = document.getElementById('region');
+                        const comunaSelect = document.getElementById('comuna');
+                        
+                        if (!regionSelect || !regionSelect.value) {
+                            isValid = false;
+                            alert('Por favor, selecciona una región.');
+                            return;
+                        }
+                        
+                        if (!comunaSelect || !comunaSelect.value) {
+                            isValid = false;
+                            alert('Por favor, selecciona una comuna.');
+                            return;
+                        }
+                        
+                        // Agregar datos de Chile al formData
+                        formData.campos.pais = paisSelect.value;
+                        formData.campos.region = regionSelect.value;
+                        formData.campos.comuna = comunaSelect.value;
+                    } else {
+                        // Validar campos para otros países
+                        const estadoInput = document.getElementById('estado');
+                        const distritoInput = document.getElementById('distrito');
+                        
+                        if (!estadoInput || !estadoInput.value.trim()) {
+                            isValid = false;
+                            alert('Por favor, completa el campo Estado.');
+                            return;
+                        }
+                        
+                        if (!distritoInput || !distritoInput.value.trim()) {
+                            isValid = false;
+                            alert('Por favor, completa el campo Distrito.');
+                            return;
+                        }
+                        
+                        // Agregar datos de otros países al formData
+                        formData.campos.pais = paisSelect.value;
+                        formData.campos.estado = estadoInput.value.trim();
+                        formData.campos.distrito = distritoInput.value.trim();
+                    }
+                    
+                    // Agregar dirección y campo opcional
+                    formData.campos.direccion = direccionInput.value.trim();
+                    
+                    const deptoCasaOficinaInput = document.getElementById('depto-casa-oficina');
+                    if (deptoCasaOficinaInput && deptoCasaOficinaInput.value.trim()) {
+                        formData.campos.deptoCasaOficina = deptoCasaOficinaInput.value.trim();
+                    }
+                    
+                } else {
+                    // Validación para otros campos (email, teléfono)
+                    const fieldValue = document.getElementById(fieldName).value;
+                    
+                    if (!fieldValue) {
+                        isValid = false;
+                        
+                        // Mensajes personalizados según el campo
+                        let displayName = fieldName;
+                        switch(fieldName) {
+                            case 'email':
+                                displayName = 'Email';
+                                break;
+                            case 'telefono':
+                                displayName = 'Teléfono';
+                                break;
+                        }
+                        
+                        alert(`Por favor, completa el campo ${displayName}.`);
+                        return;
+                    }
+                    
+                    if (fieldName === 'email' && !validarEmail(fieldValue)) {
+                        isValid = false;
+                        alert('Por favor, ingrese un correo electrónico válido.');
+                        return;
+                    }
+                    
+                    formData.campos[fieldName] = fieldValue;
                 }
-                
-                if (fieldName === 'email' && !validarEmail(fieldValue)) {
-                    isValid = false;
-                    alert('Por favor, ingrese un correo electrónico válido.');
-                    return;
-                }
-                
-                formData.campos[fieldName] = fieldValue;
             });
             
             if (!isValid) return;
@@ -1294,8 +1704,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const banco = document.getElementById('banco').value;
             const numeroCuenta = document.getElementById('numero-cuenta').value;
             
-            if (!tipoBanco || !banco || !numeroCuenta) {
-                alert('Por favor, complete todos los campos obligatorios.');
+            // Validaciones específicas para campos básicos obligatorios
+            if (!tipoBanco) {
+                alert('Por favor, selecciona el tipo de banco.');
+                return;
+            }
+            
+            if (!banco) {
+                alert('Por favor, ingresa el nombre del banco.');
+                return;
+            }
+            
+            if (!numeroCuenta) {
+                alert('Por favor, ingresa el número de cuenta.');
                 return;
             }
             
@@ -1315,25 +1736,40 @@ document.addEventListener('DOMContentLoaded', function() {
             if (tipoBanco === 'nacional') {
                 const tipoCuenta = document.getElementById('tipo-cuenta').value;
                 if (!tipoCuenta) {
-                    isValid = false;
-                    alert('Por favor, seleccione un tipo de cuenta.');
+                    alert('Por favor, selecciona el tipo de cuenta.');
                     return;
                 }
                 formData.campos['tipo-cuenta'] = tipoCuenta;
             } else if (tipoBanco === 'extranjero') {
-                const pais = document.getElementById('pais').value;
+                const pais = document.getElementById('pais-bancario').value;
                 const direccionBanco = document.getElementById('direccion-banco').value;
                 const swiftIban = document.getElementById('swift-iban').value;
                 
-                if (!pais || !direccionBanco || !swiftIban) {
-                    isValid = false;
-                    alert('Por favor, complete todos los campos para banco extranjero.');
+                // Validaciones específicas para banco extranjero
+                if (!pais) {
+                    alert('Por favor, selecciona el país del banco.');
                     return;
                 }
                 
+                // Si el país es Chile, validar como banco nacional
+                if (pais === 'Chile') {
+                    const tipoCuenta = document.getElementById('tipo-cuenta').value;
+                    if (!tipoCuenta) {
+                        alert('Por favor, selecciona el tipo de cuenta.');
+                        return;
+                    }
+                    formData.campos['tipo-cuenta'] = tipoCuenta;
+                } else {
+                    // Para países que NO son Chile, validar Swift/IBAN (dirección del banco es opcional)
+                    if (!swiftIban) {
+                        alert('Por favor, ingresa el código Swift o IBAN.');
+                        return;
+                    }
+                    formData.campos['direccion-banco'] = direccionBanco; // Opcional, se incluye si tiene valor
+                    formData.campos['swift-iban'] = swiftIban;
+                }
+                
                 formData.campos['pais'] = pais;
-                formData.campos['direccion-banco'] = direccionBanco;
-                formData.campos['swift-iban'] = swiftIban;
             }
             
             if (!isValid) return;
@@ -1342,43 +1778,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Exhibición de obra
-    const submitButtonExhibicion = document.getElementById('submit-button-exhibicion');
-    if (submitButtonExhibicion) {
-        submitButtonExhibicion.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-exhibicion');
-            
-            if (!rutInput || !rutInput.value.trim()) {
-                alert('Por favor, valide su RUT antes de enviar la solicitud.');
-                return;
-            }
-            
-            if (exhibicionesData.length === 0) {
-                alert('Por favor, agregue al menos una exhibición antes de enviar la solicitud.');
-                return;
-            }
-            
-            const datos = {
-                rut: rutInput.value.trim(),
-                tipoUsuario: document.querySelector('input[name="tipo-usuario-exhibicion"]:checked')?.value || '',
-                emailValidacion: document.getElementById('email-validacion-exhibicion').value,
-                exhibiciones: exhibicionesData
-            };
-            
-            enviarDatosAPowerAutomate(datos, 'exhibicion-obra-extranjero');
-        });
-    }
+
 
     // Conflicto en obra
     const submitButtonConflicto = document.getElementById('submit-button-conflicto');
     if (submitButtonConflicto) {
         submitButtonConflicto.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-conflicto');
             const obraInput = document.getElementById('conflicto-obra');
             const descripcionInput = document.getElementById('conflicto-descripcion');
             const ambitoRadio = document.querySelector('input[name="conflicto-ambito"]:checked');
             
-            if (!rutInput || !rutInput.value.trim()) {
+            // Usar el RUT almacenado en validacionInicialData en lugar del campo HTML
+            if (!validacionInicialData.rut || !validacionInicialData.rut.trim()) {
                 alert('Por favor, valide su RUT antes de enviar la solicitud.');
                 return;
             }
@@ -1399,9 +1810,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const datos = {
-                rut: rutInput.value.trim(),
-                tipoUsuario: document.querySelector('input[name="tipo-usuario-conflicto"]:checked')?.value || '',
-                emailValidacion: document.getElementById('email-validacion-conflicto').value,
+                rut: validacionInicialData.rut,
+                tipoUsuario: validacionInicialData.tipoUsuario,
+                emailValidacion: validacionInicialData.emailValidacion,
                 ambito: ambitoRadio.value,
                 obra: obraInput.value.trim(),
                 descripcion: descripcionInput.value.trim()
@@ -1415,32 +1826,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButtonAfiliacion = document.getElementById('submit-button-afiliacion');
     if (submitButtonAfiliacion) {
         submitButtonAfiliacion.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-afiliacion');
             const motivoInput = document.getElementById('afiliacion-motivo');
-            const tipoAfiliacion = document.querySelector('input[name="tipo-afiliacion"]:checked');
+            const ambitoAfiliacion = document.querySelector('input[name="ambito-afiliacion"]:checked');
+            const claseAfiliacion = document.querySelector('input[name="clase-afiliacion"]:checked');
             
-            if (!rutInput || !rutInput.value.trim()) {
-                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+            if (!ambitoAfiliacion) {
+                alert('Por favor, seleccione una opción para Ámbito.');
                 return;
             }
             
-            if (!tipoAfiliacion) {
-                alert('Por favor, seleccione un tipo de afiliación.');
+            if (!claseAfiliacion) {
+                alert('Por favor, seleccione una opción para Clase.');
                 return;
             }
             
             const datos = {
-                rut: rutInput.value.trim(),
-                tipoAfiliacion: tipoAfiliacion.value,
+                ambitoAfiliacion: ambitoAfiliacion.value,
+                claseAfiliacion: claseAfiliacion.value,
                 motivo: motivoInput.value.trim()
             };
-            
-            if (tipoAfiliacion.value === 'con-obra') {
-                const nombreObraInput = document.getElementById('nombre-obra');
-                if (nombreObraInput && nombreObraInput.value.trim()) {
-                    datos.nombreObra = nombreObraInput.value.trim();
-                }
-            }
             
             enviarDatosAPowerAutomate(datos, 'certificado-afiliacion');
         });
@@ -1450,14 +1854,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButtonDerechos = document.getElementById('submit-button-derechos');
     if (submitButtonDerechos) {
         submitButtonDerechos.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-derechos');
             const fechaInicioInput = document.getElementById('derechos-fecha-inicio');
             const fechaFinInput = document.getElementById('derechos-fecha-fin');
-            
-            if (!rutInput || !rutInput.value.trim()) {
-                alert('Por favor, valide su RUT antes de enviar la solicitud.');
-                return;
-            }
             
             if (!fechaInicioInput || !fechaInicioInput.value.trim()) {
                 alert('Por favor, ingrese la fecha de inicio.');
@@ -1470,7 +1868,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const datos = {
-                rut: rutInput.value.trim(),
                 fechaInicio: fechaInicioInput.value.trim(),
                 fechaFin: fechaFinInput.value.trim()
             };
@@ -1483,16 +1880,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButtonDesafiliacion = document.getElementById('submit-button-desafiliacion');
     if (submitButtonDesafiliacion) {
         submitButtonDesafiliacion.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-desafiliacion');
             const motivoInput = document.getElementById('desafiliacion-motivo');
             
-            if (!rutInput || !rutInput.value.trim()) {
-                alert('Por favor, valide su RUT antes de enviar la solicitud.');
-                return;
-            }
-            
             const datos = {
-                rut: rutInput.value.trim(),
                 motivo: motivoInput.value.trim()
             };
             
@@ -1500,14 +1890,125 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-});  // Fin del DOMContentLoaded    
+    // Certificado de obras declaradas
+    const submitButtonObrasDeclaradas = document.getElementById('submit-button-obras-declaradas');
+    if (submitButtonObrasDeclaradas) {
+        submitButtonObrasDeclaradas.addEventListener('click', function() {
+            const motivoInput = document.getElementById('obras-declaradas-motivo');
+            
+            // Validar que al menos un ámbito esté seleccionado
+            const ambitosSeleccionados = document.querySelectorAll('input[name="ambito-obras"]:checked');
+            if (ambitosSeleccionados.length === 0) {
+                alert('Por favor, seleccione al menos un ámbito (Audiovisual o Dramático).');
+                return;
+            }
+            
+            // Validar que se haya seleccionado una opción para incluir rol
+            const incluirRol = document.querySelector('input[name="incluir-rol-obras"]:checked');
+            if (!incluirRol) {
+                alert('Por favor, seleccione si desea incluir el rol declarado para cada obra.');
+                return;
+            }
+            
+            // Validar que se haya seleccionado una opción para incluir porcentaje
+            const incluirPorcentaje = document.querySelector('input[name="incluir-porcentaje-obras"]:checked');
+            if (!incluirPorcentaje) {
+                alert('Por favor, seleccione si desea incluir el porcentaje de participación.');
+                return;
+            }
+            
+            // Validar que el campo motivo esté completo
+            if (!motivoInput || !motivoInput.value.trim()) {
+                alert('Por favor, complete el campo de motivo de la solicitud.');
+                return;
+            }
+            
+            // Recopilar los ámbitos seleccionados
+            const ambitosArray = Array.from(ambitosSeleccionados).map(checkbox => checkbox.value);
+            
+            const datos = {
+                ambitosObras: ambitosArray,
+                incluirRolObras: incluirRol.value,
+                incluirPorcentajeObras: incluirPorcentaje.value,
+                motivo: motivoInput.value.trim()
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'certificado-obras-declaradas');
+        });
+    }
+
+    // Otro certificado
+    const submitButtonOtroCertificado = document.getElementById('submit-button-otro-certificado');
+    if (submitButtonOtroCertificado) {
+        submitButtonOtroCertificado.addEventListener('click', function() {
+            const detallesCertificadoInput = document.getElementById('detalles-certificado-otro');
+            const motivoInput = document.getElementById('otro-certificado-motivo');
+            
+            // Validar que ambos campos estén completos
+            if (!detallesCertificadoInput || !detallesCertificadoInput.value.trim()) {
+                alert('Por favor, ingrese los detalles del certificado solicitado.');
+                return;
+            }
+            
+            if (!motivoInput || !motivoInput.value.trim()) {
+                alert('Por favor, ingrese el motivo de la solicitud.');
+                return;
+            }
+            
+            const datos = {
+                detallesCertificadoOtro: detallesCertificadoInput.value.trim(),
+                motivo: motivoInput.value.trim()
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'otro-certificado');
+        });
+    }
+
 // Funcionalidad específica para Ámbito o Clase
-    function initAmbitoClaseSection() {
+function initAmbitoClaseSection() {
         const ambitoAudiovisual = document.getElementById('ambito-audiovisual');
         const ambitoDramatico = document.getElementById('ambito-dramatico');
         const claseAudiovisualOptions = document.querySelectorAll('.clase-audiovisual');
         const claseDramaticoOptions = document.querySelectorAll('.clase-dramatico');
         const noClaseMessage = document.getElementById('no-clase-message');
+        const observacionesInput = document.getElementById('observaciones-ambito');
+
+        // Función para limpiar el formulario al inicializar
+        function resetAmbitoClaseForm() {
+            // Desmarcar todos los checkboxes de ámbito
+            if (ambitoAudiovisual) ambitoAudiovisual.checked = false;
+            if (ambitoDramatico) ambitoDramatico.checked = false;
+            
+            // Desmarcar todos los checkboxes de clase y ocultarlos
+            const allClaseCheckboxes = document.querySelectorAll('input[name="clase"]');
+            allClaseCheckboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Ocultar todas las opciones de clase
+            claseAudiovisualOptions.forEach(option => {
+                option.classList.add('hidden');
+                option.classList.remove('show');
+            });
+            
+            claseDramaticoOptions.forEach(option => {
+                option.classList.add('hidden');
+                option.classList.remove('show');
+            });
+            
+            // Limpiar observaciones
+            if (observacionesInput) {
+                observacionesInput.value = '';
+            }
+            
+            // Mostrar mensaje informativo
+            if (noClaseMessage) {
+                noClaseMessage.classList.remove('hidden');
+            }
+        }
+
+        // Limpiar formulario al inicializar
+        resetAmbitoClaseForm();
 
         // Función para mostrar/ocultar opciones de clase según el ámbito seleccionado
         function toggleClaseOptions() {
@@ -1574,49 +2075,16 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleClaseOptions();
     }
 
-    // Validador de RUT para ámbito
-    const validateRutAmbitoButton = document.getElementById('validate-rut-ambito');
-    if (validateRutAmbitoButton) {
-        validateRutAmbitoButton.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-ambito');
-            const rutError = document.getElementById('rut-ambito-error');
-            const form = document.getElementById('ambito-clase-form');
-            
-            if (!rutInput || !rutError) return;
-            
-            const rutValue = rutInput.value.trim();
-            
-            if (!rutValue) {
-                rutError.textContent = 'Por favor, ingrese un RUT del autor';
-                return;
-            }
-            
-            if (!validarRut(rutValue)) {
-                rutError.textContent = 'RUT del autor inválido';
-            } else {
-                rutError.textContent = '';
-                if (form) {
-                    form.classList.remove('hidden');
-                    // Inicializar la funcionalidad después de mostrar el formulario
-                    setTimeout(initAmbitoClaseSection, 100);
-                }
-            }
-        });
-    }
+    // Inicializar funcionalidad de ámbito y clase directamente
+    initAmbitoClaseSection();
 
     // Handler de envío para ámbito y clase
     const submitButtonAmbito = document.getElementById('submit-button-ambito');
     if (submitButtonAmbito) {
         submitButtonAmbito.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-ambito');
             const ambitoCheckboxes = document.querySelectorAll('input[name="ambito"]:checked');
             const claseCheckboxes = document.querySelectorAll('input[name="clase"]:checked');
             const observacionesInput = document.getElementById('observaciones-ambito');
-            
-            if (!rutInput || !rutInput.value.trim()) {
-                alert('Por favor, valide su RUT antes de enviar la solicitud.');
-                return;
-            }
             
             if (ambitoCheckboxes.length === 0) {
                 alert('Por favor, seleccione al menos un ámbito.');
@@ -1628,16 +2096,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Validar observaciones obligatorias
+            // Validar que el campo detalleSolicitud sea obligatorio
+            if (!observacionesInput || observacionesInput.value.trim() === '') {
+                alert('Por favor, complete el campo "Detalles de la solicitud".');
+                return;
+            }
             
-            // Preparar datos para enviar
+            // Validación especial: si se marcan ambos ámbitos, debe haber al menos una clase de cada uno
             const ambitos = Array.from(ambitoCheckboxes).map(cb => cb.value);
             const clases = Array.from(claseCheckboxes).map(cb => cb.value);
             
+            if (ambitos.length === 2) { // Si se marcaron ambos ámbitos
+                // Clases del ámbito Audiovisual: Director, Guionista
+                const clasesAudiovisuales = ['Director', 'Guionista'];
+                // Clases del ámbito Dramático: Dramaturgo, Compositor, Coreógrafo, Traductor
+                const clasesDramaticas = ['Dramaturgo', 'Compositor', 'Coreógrafo', 'Traductor'];
+                
+                const tieneClaseAudiovisual = clases.some(clase => clasesAudiovisuales.includes(clase));
+                const tieneClaseDramatica = clases.some(clase => clasesDramaticas.includes(clase));
+                
+                if (!tieneClaseAudiovisual) {
+                    alert('Ha seleccionado ambos ámbitos. Por favor, seleccione al menos una clase del ámbito Audiovisual (Director o Guionista).');
+                    return;
+                }
+                
+                if (!tieneClaseDramatica) {
+                    alert('Ha seleccionado ambos ámbitos. Por favor, seleccione al menos una clase del ámbito Dramático (Dramaturgo, Compositor, Coreógrafo o Traductor).');
+                    return;
+                }
+            }
+            
+            // Validar observaciones obligatorias
+            
             const datos = {
-                rut: rutInput.value.trim(),
-                tipoUsuario: document.querySelector('input[name="tipo-usuario-ambito"]:checked')?.value || '',
-                emailValidacion: document.getElementById('email-validacion-ambito').value,
+                rut: validacionInicialData.rut,
+                tipoUsuario: validacionInicialData.tipoUsuario,
+                emailValidacion: validacionInicialData.emailValidacion,
                 campos: {
                     ambitos: ambitos,
                     clases: clases
@@ -1652,10 +2146,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar la sección si ya está visible
     if (document.getElementById('ambito-clase-form') && !document.getElementById('ambito-clase-form').classList.contains('hidden')) {
         initAmbitoClaseSection();
-    } 
-   // Funcionalidad para la gestión de sociedades
+    }
+
+    // ===== CÓDIGO DE SOCIEDADES =====
     let sociedadesData = [];
     let editingSociedadIndex = -1;
+    let sociedadesDataGlobal = []; // Variable global para almacenar todas las sociedades
 
     function cargarSociedades() {
         const rutaAbsoluta = window.location.origin + '/assets/sociedades.json';
@@ -1675,28 +2171,65 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            const sociedadSelect = document.getElementById('sociedad-nombre');
+            // Almacenar todas las sociedades globalmente
+            sociedadesDataGlobal = data;
             
-            if (!sociedadSelect) return;
-            
-            // Limpiar opciones existentes excepto la primera
-            while (sociedadSelect.options.length > 1) {
-                sociedadSelect.remove(1);
-            }
-            
-            // Agregar cada sociedad como una opción
-            data.forEach(sociedad => {
-                const option = document.createElement('option');
-                option.value = sociedad.nombre;
-                option.textContent = sociedad.nombre;
-                sociedadSelect.appendChild(option);
-            });
+            // Cargar países únicos en el select de países
+            cargarPaisesSociedades(data);
             
             console.log('Sociedades cargadas correctamente:', data.length);
         })
         .catch(error => {
             console.error('Error al cargar las sociedades:', error);
         });
+    }
+
+    function cargarPaisesSociedades(sociedades) {
+        const paisSelect = document.getElementById('sociedad-pais');
+        if (!paisSelect) return;
+
+        // Limpiar opciones existentes
+        paisSelect.innerHTML = '<option value="">Seleccione un país</option>';
+
+        // Obtener países únicos
+        const paisesUnicos = [...new Set(sociedades.map(s => s.País))].sort();
+
+        // Agregar opciones al select
+        paisesUnicos.forEach(pais => {
+            const option = document.createElement('option');
+            option.value = pais;
+            option.textContent = pais;
+            paisSelect.appendChild(option);
+        });
+    }
+
+    function actualizarSociedadesPorPais(paisSeleccionado) {
+        const sociedadSelect = document.getElementById('sociedad-nombre');
+        if (!sociedadSelect) return;
+
+        // Limpiar opciones existentes
+        sociedadSelect.innerHTML = '<option value="">Seleccione una sociedad</option>';
+
+        if (!paisSeleccionado) {
+            return;
+        }
+
+        // Filtrar sociedades por país
+        const sociedadesFiltradas = sociedadesDataGlobal.filter(s => s.País === paisSeleccionado);
+
+        // Agregar opciones al select
+        sociedadesFiltradas.forEach(sociedad => {
+            const option = document.createElement('option');
+            option.value = sociedad.Sociedad;
+            option.textContent = sociedad.Sociedad;
+            sociedadSelect.appendChild(option);
+        });
+
+        // Agregar opción "Otra"
+        const otraOption = document.createElement('option');
+        otraOption.value = 'Otra';
+        otraOption.textContent = 'Otra';
+        sociedadSelect.appendChild(otraOption);
     }
 
     function renderizarTablaSociedades() {
@@ -1707,7 +2240,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (sociedadesData.length === 0) {
             const row = document.createElement('tr');
-            row.innerHTML = `<td colspan="5" style="text-align: center;">No hay sociedades registradas</td>`;
+            row.innerHTML = `<td colspan="5" style="text-align: center;">No hay otras sociedades ingresadas en esta solicitud.</td>`;
             sociedadesBody.appendChild(row);
             return;
         }
@@ -1757,6 +2290,15 @@ document.addEventListener('DOMContentLoaded', function() {
             // Ocultar campo "otra sociedad"
             document.getElementById('otra-sociedad-field').classList.add('hidden');
             
+            // Cargar sociedades si no están cargadas
+            if (!sociedadesDataGlobal || sociedadesDataGlobal.length === 0) {
+                cargarSociedades();
+            } else {
+                // Cargar países y limpiar sociedades
+                cargarPaisesSociedades(sociedadesDataGlobal);
+                actualizarSociedadesPorPais(''); // Limpiar sociedades
+            }
+            
             editingSociedadIndex = -1;
         }
     }
@@ -1768,27 +2310,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Función para obtener las clases según el ámbito seleccionado
+    function getClasesPorAmbito(ambito) {
+        if (ambito === 'Audiovisual') {
+            return ['Director', 'Guionista'];
+        } else if (ambito === 'Dramático') {
+            return ['Dramaturgo', 'Coreógrafo', 'Compositor', 'Traductor'];
+        }
+        return [];
+    }
+
     function actualizarClasesSociedad() {
         const ambitoSelect = document.getElementById('sociedad-ambito');
         const claseSelect = document.getElementById('sociedad-clase');
         
         if (!ambitoSelect || !claseSelect) return;
         
-        const ambito = ambitoSelect.value;
+        const selectedAmbito = ambitoSelect.value;
         
         // Limpiar opciones de clase
         claseSelect.innerHTML = '<option value="">Seleccione una clase</option>';
         
-        if (ambito === 'Audiovisual') {
-            const clases = ['Director', 'Guionista'];
-            clases.forEach(clase => {
-                const option = document.createElement('option');
-                option.value = clase;
-                option.textContent = clase;
-                claseSelect.appendChild(option);
-            });
-        } else if (ambito === 'Dramático') {
-            const clases = ['Dramaturgo', 'Coreógrafo', 'Compositor', 'Traductor'];
+        if (selectedAmbito) {
+            const clases = getClasesPorAmbito(selectedAmbito);
             clases.forEach(clase => {
                 const option = document.createElement('option');
                 option.value = clase;
@@ -1800,36 +2344,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function guardarSociedad() {
         const sociedadNombre = document.getElementById('sociedad-nombre').value;
-        const otraSociedad = document.getElementById('otra-sociedad-nombre').value;
-        const pais = document.getElementById('sociedad-pais').value;
-        const ambito = document.getElementById('sociedad-ambito').value;
-        const clase = document.getElementById('sociedad-clase').value;
+        const otraSociedadNombre = document.getElementById('otra-sociedad-nombre').value;
+        const sociedadPais = document.getElementById('sociedad-pais').value;
+        const sociedadAmbito = document.getElementById('sociedad-ambito').value;
+        const sociedadClase = document.getElementById('sociedad-clase').value;
         
-        // Validar campos
-        if (!sociedadNombre || !pais || !ambito || !clase) {
-            alert('Por favor, complete todos los campos');
+        if (!sociedadPais || !sociedadAmbito || !sociedadClase) {
+            alert('Por favor Por favor, completa todos los campos los campos obligatorios');
             return;
         }
         
-        // Si seleccionó "Otra", validar que haya especificado el nombre
-        if (sociedadNombre === 'Otra' && !otraSociedad.trim()) {
-            alert('Por favor, especifique el nombre de la sociedad');
+        const nombreFinal = sociedadNombre === 'Otra' ? otraSociedadNombre : sociedadNombre;
+        
+        if (!nombreFinal) {
+            alert('Por favor ingrese el nombre de la sociedad');
             return;
         }
         
-        const sociedad = {
-            sociedad: sociedadNombre === 'Otra' ? otraSociedad.trim() : sociedadNombre,
-            pais,
-            ambito,
-            clase
+        const nuevaSociedad = {
+            sociedad: nombreFinal,
+            pais: sociedadPais,
+            ambito: sociedadAmbito,
+            clase: sociedadClase
         };
         
-        if (editingSociedadIndex === -1) {
-            // Agregar nueva sociedad
-            sociedadesData.push(sociedad);
+        if (editingSociedadIndex >= 0) {
+            sociedadesData[editingSociedadIndex] = nuevaSociedad;
         } else {
-            // Actualizar sociedad existente
-            sociedadesData[editingSociedadIndex] = sociedad;
+            sociedadesData.push(nuevaSociedad);
         }
         
         renderizarTablaSociedades();
@@ -1839,23 +2381,26 @@ document.addEventListener('DOMContentLoaded', function() {
     function editarSociedad(index) {
         const sociedad = sociedadesData[index];
         
-        document.getElementById('sociedad-nombre').value = sociedad.sociedad;
         document.getElementById('sociedad-pais').value = sociedad.pais;
-        document.getElementById('sociedad-ambito').value = sociedad.ambito;
         
-        // Actualizar clases según el ámbito
-        actualizarClasesSociedad();
+        // Cargar sociedades para el país seleccionado
+        actualizarSociedadesPorPais(sociedad.pais);
         
-        // Establecer la clase después de actualizar las opciones
+        // Esperar un momento para que se carguen las opciones
         setTimeout(() => {
-            document.getElementById('sociedad-clase').value = sociedad.clase;
+            document.getElementById('sociedad-nombre').value = sociedad.sociedad;
+            document.getElementById('sociedad-ambito').value = sociedad.ambito;
+            
+            // Actualizar clases basadas en el ámbito
+            actualizarClasesSociedad();
+            
+            setTimeout(() => {
+                document.getElementById('sociedad-clase').value = sociedad.clase;
+            }, 100);
         }, 100);
         
         editingSociedadIndex = index;
-        const sociedadForm = document.getElementById('sociedad-form');
-        if (sociedadForm) {
-            sociedadForm.classList.remove('hidden');
-        }
+        mostrarFormularioSociedad();
     }
 
     function eliminarSociedad(index) {
@@ -1887,6 +2432,24 @@ document.addEventListener('DOMContentLoaded', function() {
         sociedadAmbitoSelect.addEventListener('change', actualizarClasesSociedad);
     }
 
+    // Event listener para cambio de país (filtrar sociedades)
+    const sociedadPaisSelect = document.getElementById('sociedad-pais');
+    if (sociedadPaisSelect) {
+        sociedadPaisSelect.addEventListener('change', function() {
+            actualizarSociedadesPorPais(this.value);
+            // Limpiar selección de sociedad cuando cambia el país
+            const sociedadSelect = document.getElementById('sociedad-nombre');
+            if (sociedadSelect) {
+                sociedadSelect.value = '';
+            }
+            // Ocultar campo "otra sociedad"
+            const otraSociedadField = document.getElementById('otra-sociedad-field');
+            if (otraSociedadField) {
+                otraSociedadField.classList.add('hidden');
+            }
+        });
+    }
+
     // Event listener para cambio de sociedad (mostrar/ocultar campo "otra")
     const sociedadNombreSelect = document.getElementById('sociedad-nombre');
     if (sociedadNombreSelect) {
@@ -1900,20 +2463,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Validador de RUT para sociedades
+    // Validación de RUT para sociedades
     const validateRutSociedadesButton = document.getElementById('validate-rut-sociedades');
     if (validateRutSociedadesButton) {
         validateRutSociedadesButton.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-sociedades');
-            const rutError = document.getElementById('rut-sociedades-error');
-            const form = document.getElementById('sociedades-container');
+            const rutInput = document.getElementById('rut-inicial');
+            const rutError = document.getElementById('rut-error-sociedades');
+            const form = document.getElementById('sociedades-form-content');
             
             if (!rutInput || !rutError) return;
             
             const rutValue = rutInput.value.trim();
             
             if (!rutValue) {
-                rutError.textContent = 'Por favor, ingrese un RUT del autor';
+                rutError.textContent = 'Por favor ingrese un RUT';
                 return;
             }
             
@@ -1935,25 +2498,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const submitButtonSociedades = document.getElementById('submit-button-sociedades');
     if (submitButtonSociedades) {
         submitButtonSociedades.addEventListener('click', function() {
-            const rutInput = document.getElementById('rut-sociedades');
             const observacionesInput = document.getElementById('observaciones-sociedades');
             
-            if (!rutInput || !rutInput.value.trim()) {
+            // Debug: verificar el estado de validacionInicialData
+            console.log('Debug - validacionInicialData al enviar:', validacionInicialData);
+            
+            // Usar el RUT almacenado en validacionInicialData en lugar del campo HTML
+            if (!validacionInicialData.rut || !validacionInicialData.rut.trim()) {
                 alert('Por favor, valide su RUT antes de enviar la solicitud.');
                 return;
             }
             
-            if (sociedadesData.length === 0) {
-                alert('Por favor, agregue al menos una sociedad antes de enviar la solicitud.');
-                return;
-            }
-            
-            // Validar observaciones obligatorias
-            
             const datos = {
-                rut: rutInput.value.trim(),
-                tipoUsuario: document.querySelector('input[name="tipo-usuario-sociedades"]:checked')?.value || '',
-                emailValidacion: document.getElementById('email-validacion-sociedades').value,
+                rut: validacionInicialData.rut,
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
                 sociedades: sociedadesData,
                 observaciones: observacionesInput ? observacionesInput.value.trim() : ''
             };
@@ -1961,3 +2520,346 @@ document.addEventListener('DOMContentLoaded', function() {
             enviarDatosAPowerAutomate(datos, 'actualizacion-datos-autor-sociedades');
         });
     }
+
+    // ===== CÓDIGO DE EXHIBICIONES =====
+    // Funciones para la gestión de exhibiciones
+    function validarFormatoFecha(fecha) {
+        const regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(\d{4})$/;
+        return regex.test(fecha);
+    }
+
+    // FUNCIÓN DUPLICADA ELIMINADA - Esta función solo mostraba los campos originales
+    // La función correcta está en la línea 1102 con todos los campos nuevos
+
+    // FUNCIÓN DUPLICADA ELIMINADA - La función completa está en la línea 1192
+
+    function ocultarFormularioExhibicion() {
+        const exhibicionForm = document.getElementById('exhibicion-form');
+        if (exhibicionForm) {
+            exhibicionForm.classList.add('hidden');
+        }
+    }
+
+    // FUNCIÓN DUPLICADA ELIMINADA - Esta función estaba sobrescribiendo la función principal
+    // que incluye los nuevos campos (tituloTraducido, canal, fechaTermino)
+
+    function editarExhibicion(index) {
+        const exhibicion = exhibicionesData[index];
+        
+        document.getElementById('exhibicion-ambito').value = exhibicion.ambito;
+        document.getElementById('exhibicion-obra').value = exhibicion.obra;
+        document.getElementById('exhibicion-pais').value = exhibicion.pais;
+        document.getElementById('exhibicion-fecha').value = exhibicion.fecha;
+        
+        editingIndex = index;
+        const exhibicionForm = document.getElementById('exhibicion-form');
+        if (exhibicionForm) {
+            exhibicionForm.classList.remove('hidden');
+        }
+    }
+
+    function eliminarExhibicion(index) {
+        if (confirm('¿Está seguro de que desea eliminar esta exhibición?')) {
+            exhibicionesData.splice(index, 1);
+            renderizarTablaExhibiciones();
+        }
+    }
+
+    // Event listeners para exhibiciones
+    const addExhibicionBtn = document.getElementById('add-exhibicion');
+    if (addExhibicionBtn) {
+        addExhibicionBtn.addEventListener('click', mostrarFormularioExhibicion);
+    }
+
+    const saveExhibicionBtn = document.getElementById('save-exhibicion');
+    console.log('Botón save-exhibicion encontrado:', saveExhibicionBtn);
+    if (saveExhibicionBtn) {
+        console.log('Asignando event listener al botón save-exhibicion');
+        saveExhibicionBtn.addEventListener('click', function(e) {
+            console.log('¡CLICK EN BOTÓN GUARDAR DETECTADO!');
+            e.preventDefault();
+            try {
+                console.log('Intentando ejecutar guardarExhibicion()...');
+                guardarExhibicion();
+                console.log('guardarExhibicion() ejecutada exitosamente');
+            } catch (error) {
+                console.error('ERROR en guardarExhibicion():', error);
+                console.error('Stack trace:', error.stack);
+            }
+        });
+    } else {
+        console.error('ERROR: No se encontró el botón save-exhibicion');
+    }
+
+    const cancelExhibicionBtn = document.getElementById('cancel-exhibicion');
+    if (cancelExhibicionBtn) {
+        cancelExhibicionBtn.addEventListener('click', ocultarFormularioExhibicion);
+    }
+
+    // Submit button para exhibiciones
+    const submitButtonExhibicion = document.getElementById('submit-button-exhibicion');
+    if (submitButtonExhibicion) {
+        submitButtonExhibicion.addEventListener('click', function() {
+            const observacionesInput = document.getElementById('observaciones-exhibicion');
+            
+            // Usar el RUT almacenado en validacionInicialData
+            if (!validacionInicialData.rut || !validacionInicialData.rut.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            // Validar que existan exhibiciones registradas
+            if (!exhibicionesData || exhibicionesData.length === 0) {
+                alert('Por favor, agregue al menos una exhibición antes de enviar la solicitud.');
+                return;
+            }
+            
+            const datos = {
+                rut: validacionInicialData.rut,
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
+                exhibiciones: exhibicionesData,
+                observaciones: observacionesInput ? observacionesInput.value.trim() : ''
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'exhibicion-obra-extranjero');
+        });
+    }
+
+    // Inicializar la tabla de exhibiciones
+    renderizarTablaExhibiciones();
+
+    // Inicializar la tabla de sociedades al cargar la página
+    renderizarTablaSociedades();
+
+    // Submit button para solicitud "Otro"
+    const submitButtonOtro = document.getElementById('submit-button-otro');
+    if (submitButtonOtro) {
+        submitButtonOtro.addEventListener('click', function() {
+            const detalleSolicitudInput = document.getElementById('detalleSolicitud');
+            
+            // Usar el RUT almacenado en validacionInicialData
+            if (!validacionInicialData.rut || !validacionInicialData.rut.trim()) {
+                alert('Por favor, valide su RUT antes de enviar la solicitud.');
+                return;
+            }
+            
+            // Validar que el campo de detalle esté completo
+            if (!detalleSolicitudInput || !detalleSolicitudInput.value.trim()) {
+                alert('Por favor, ingrese los detalles de su solicitud.');
+                return;
+            }
+            
+            const datos = {
+                rut: validacionInicialData.rut,
+                tipoUsuario: validacionInicialData.tipoUsuario || '',
+                emailValidacion: validacionInicialData.emailValidacion || '',
+                detalleSolicitud: detalleSolicitudInput.value.trim()
+            };
+            
+            enviarDatosAPowerAutomate(datos, 'otro');
+        });
+    }
+
+    // Establecer valores por defecto para radio buttons de afiliación
+    const ambitoNoAfiliacion = document.getElementById('ambito-no');
+    const claseNoAfiliacion = document.getElementById('clase-no');
+    if (ambitoNoAfiliacion) {
+        ambitoNoAfiliacion.checked = true;
+    }
+    if (claseNoAfiliacion) {
+        claseNoAfiliacion.checked = true;
+    }
+
+});  // Fin del DOMContentLoaded
+
+// ===== CÓDIGO DE UBICACIÓN (PAÍSES, REGIONES, COMUNAS) =====
+
+// Variables globales para datos de países y regiones
+let paisesData = [];
+    let regionesComunasData = [];
+
+    // Cargar datos de países y regiones al inicializar
+    async function loadLocationData() {
+        try {
+            // Cargar países
+            const paisesResponse = await fetch('./assets/paises.json');
+            paisesData = await paisesResponse.json();
+            
+            // Cargar regiones y comunas
+            const regionesResponse = await fetch('./assets/regionesycomunas.json');
+            regionesComunasData = await regionesResponse.json();
+            
+            // Poblar el select de países
+            populateCountries();
+        } catch (error) {
+            console.error('Error cargando datos de ubicación:', error);
+        }
+    }
+
+    // Poblar el select de países
+    function populateCountries() {
+        const paisSelect = document.getElementById('pais');
+        if (paisSelect) {
+            // Limpiar opciones existentes (excepto la primera)
+            paisSelect.innerHTML = '<option value="">Selecciona una opción</option>';
+            
+            // Agregar países
+            paisesData.forEach(pais => {
+                const option = document.createElement('option');
+                option.value = pais['Nombre del país'];
+                option.textContent = pais['Nombre del país'];
+                paisSelect.appendChild(option);
+            });
+        }
+    }
+
+    // Poblar el select de regiones (solo regiones únicas)
+    function populateRegions() {
+        const regionSelect = document.getElementById('region');
+        if (regionSelect) {
+            // Limpiar opciones existentes
+            regionSelect.innerHTML = '<option value="">Selecciona una opción</option>';
+            
+            // Obtener regiones únicas
+            const regionesUnicas = [...new Set(regionesComunasData.map(item => item.Región))];
+            
+            // Agregar regiones
+            regionesUnicas.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region;
+                option.textContent = region;
+                regionSelect.appendChild(option);
+            });
+        }
+    }
+
+    // Poblar el select de comunas basado en la región seleccionada
+    function populateCommunes(selectedRegion) {
+        const comunaSelect = document.getElementById('comuna');
+        if (comunaSelect) {
+            // Limpiar opciones existentes
+            comunaSelect.innerHTML = '<option value="">Selecciona una opción</option>';
+            
+            // Filtrar comunas por región
+            const comunasFiltradas = regionesComunasData
+                .filter(item => item.Región === selectedRegion)
+                .map(item => item.Comuna);
+            
+            // Agregar comunas
+            comunasFiltradas.forEach(comuna => {
+                const option = document.createElement('option');
+                option.value = comuna;
+                option.textContent = comuna;
+                comunaSelect.appendChild(option);
+            });
+        }
+    }
+
+    // Manejar cambio de país
+    function handleCountryChange() {
+        const paisSelect = document.getElementById('pais');
+        const estadoField = document.getElementById('estado-field');
+        const distritoField = document.getElementById('distrito-field');
+        const regionField = document.getElementById('region-field');
+        const comunaField = document.getElementById('comuna-field');
+        
+        if (paisSelect && paisSelect.value === 'Chile') {
+            // Mostrar campos de Chile
+            estadoField.classList.add('hidden');
+            distritoField.classList.add('hidden');
+            regionField.classList.remove('hidden');
+            comunaField.classList.remove('hidden');
+            
+            // Poblar regiones
+            populateRegions();
+        } else if (paisSelect && paisSelect.value !== '') {
+            // Mostrar campos para otros países
+            estadoField.classList.remove('hidden');
+            distritoField.classList.remove('hidden');
+            regionField.classList.add('hidden');
+            comunaField.classList.add('hidden');
+        } else {
+            // Ocultar todos los campos específicos
+            estadoField.classList.add('hidden');
+            distritoField.classList.add('hidden');
+            regionField.classList.add('hidden');
+            comunaField.classList.add('hidden');
+        }
+    }
+
+    // Manejar cambio de región
+    function handleRegionChange() {
+        const regionSelect = document.getElementById('region');
+        if (regionSelect && regionSelect.value) {
+            populateCommunes(regionSelect.value);
+        }
+    }
+
+    // Configurar event listeners para los campos de dirección
+    function setupAddressFieldListeners() {
+        const paisSelect = document.getElementById('pais');
+        const regionSelect = document.getElementById('region');
+        
+        if (paisSelect) {
+            paisSelect.removeEventListener('change', handleCountryChange); // Evitar duplicados
+            paisSelect.addEventListener('change', handleCountryChange);
+        }
+        
+        if (regionSelect) {
+            regionSelect.removeEventListener('change', handleRegionChange); // Evitar duplicados
+            regionSelect.addEventListener('change', handleRegionChange);
+        }
+    }
+
+    // Cargar datos de ubicación al inicializar la página
+    loadLocationData();
+
+// Funciones para el modal informativo post-validación
+function showInfoModal() {
+    /**
+     * Muestra el modal informativo después de una validación exitosa
+     * Bloquea la interacción con el formulario hasta que el usuario haga clic en "Entendido"
+     */
+    const infoModal = document.getElementById('info-modal');
+    if (infoModal) {
+        infoModal.classList.remove('hidden');
+        // Enfocar el botón para accesibilidad
+        const understoodButton = document.getElementById('info-modal-understood');
+        if (understoodButton) {
+            understoodButton.focus();
+        }
+    }
+}
+
+function hideInfoModal() {
+    /**
+     * Cierra el modal informativo y desbloquea el formulario
+     * Permite al usuario continuar con el proceso de completar el formulario
+     */
+    const infoModal = document.getElementById('info-modal');
+    if (infoModal) {
+        infoModal.classList.add('hidden');
+    }
+}
+
+// Event listener para el botón "Entendido" del modal informativo
+document.addEventListener('DOMContentLoaded', function() {
+    const understoodButton = document.getElementById('info-modal-understood');
+    if (understoodButton) {
+        understoodButton.addEventListener('click', function() {
+            hideInfoModal();
+        });
+    }
+    
+    // Cerrar modal con tecla Escape para accesibilidad
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            const infoModal = document.getElementById('info-modal');
+            if (infoModal && !infoModal.classList.contains('hidden')) {
+                hideInfoModal();
+            }
+        }
+    });
+});
+
