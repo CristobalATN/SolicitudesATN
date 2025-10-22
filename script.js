@@ -2516,6 +2516,12 @@ function initAmbitoClaseSection() {
                 return;
             }
             
+            // Validar que se haya registrado al menos una sociedad
+            if (!sociedadesData || sociedadesData.length === 0) {
+                alert('Debe registrar al menos una sociedad antes de enviar la solicitud.');
+                return;
+            }
+            
             const datos = {
                 rut: validacionInicialData.rut,
                 tipoUsuario: validacionInicialData.tipoUsuario || '',
