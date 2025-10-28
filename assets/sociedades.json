@@ -21,11 +21,11 @@
   },
   {
     "País": "Australia",
-    "Sociedad": "ASDACS"
+    "Sociedad": "AWGACS"
   },
   {
     "País": "Australia",
-    "Sociedad": "AWGACS"
+    "Sociedad": "ASDACS"
   },
   {
     "País": "Austria",
@@ -61,6 +61,10 @@
   },
   {
     "País": "Colombia",
+    "Sociedad": "SAYCO"
+  },
+  {
+    "País": "Colombia",
     "Sociedad": "DASC"
   },
   {
@@ -68,24 +72,28 @@
     "Sociedad": "REDES"
   },
   {
-    "País": "Colombia",
-    "Sociedad": "SAYCO"
+    "País": "Corea",
+    "Sociedad": "DGK"
   },
   {
-    "País": "Corea del Sur",
-    "Sociedad": "DGK"
+    "País": "Corea",
+    "Sociedad": "KTRWA"
   },
   {
     "País": "Croacia",
     "Sociedad": "DHFR"
   },
   {
-    "País": "España",
-    "Sociedad": "DAMA"
+    "País": "Eslovenia",
+    "Sociedad": "AIPA"
   },
   {
     "País": "España",
     "Sociedad": "SGAE"
+  },
+  {
+    "País": "España",
+    "Sociedad": "DAMA"
   },
   {
     "País": "Francia",
@@ -96,16 +104,40 @@
     "Sociedad": "SCAM"
   },
   {
+    "País": "Hungría",
+    "Sociedad": "FILMJUS"
+  },
+  {
+    "País": "India",
+    "Sociedad": "SRAI"
+  },
+  {
     "País": "Italia",
     "Sociedad": "SIAE"
+  },
+  {
+    "País": "Japón",
+    "Sociedad": "WGJ"
+  },
+  {
+    "País": "Lituania",
+    "Sociedad": "LATGA"
+  },
+  {
+    "País": "Madagascar, Egipto, Mozambique, Mauricio",
+    "Sociedad": "APASER"
+  },
+  {
+    "País": "México",
+    "Sociedad": "SOGEM"
   },
   {
     "País": "México",
     "Sociedad": "DIRECTORES"
   },
   {
-    "País": "México",
-    "Sociedad": "SOGEM"
+    "País": "Países Bajos",
+    "Sociedad": "LIRA"
   },
   {
     "País": "Países Bajos",
@@ -113,11 +145,15 @@
   },
   {
     "País": "Panamá",
-    "Sociedad": "GEDAR"
+    "Sociedad": "EDAP"
   },
   {
     "País": "Paraguay",
     "Sociedad": "APA"
+  },
+  {
+    "País": "Polonia",
+    "Sociedad": "ZAPA"
   },
   {
     "País": "Portugal",
@@ -132,7 +168,7 @@
     "Sociedad": "DIRECTORES UK"
   },
   {
-    "País": "República Checa",
+    "País": "Rep. Checa",
     "Sociedad": "DILIA"
   },
   {
@@ -141,11 +177,27 @@
   },
   {
     "País": "Suiza",
-    "Sociedad": "SSA"
+    "Sociedad": "SUISSIMAGE"
   },
   {
     "País": "Suiza",
-    "Sociedad": "SUISSIMAGE"
+    "Sociedad": "SSA"
+  },
+  {
+    "País": "Turquía",
+    "Sociedad": "SETTEM (EGAAT)"
+  },
+  {
+    "País": "Turquía",
+    "Sociedad": "SINEBIR (EGAAT)"
+  },
+  {
+    "País": "Turquía",
+    "Sociedad": "BSB (EGAAT)"
+  },
+  {
+    "País": "Turquía",
+    "Sociedad": "SENARISTBIR (EGAAT)"
   },
   {
     "País": "Uruguay",
